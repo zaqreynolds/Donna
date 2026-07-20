@@ -21,16 +21,25 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { NotesPanel } from "@/components/NotesPanel"
+import {
+  TouchesPanel,
+  type CreateTouchInput,
+  type UpdateTouchInput,
+} from "@/components/TouchesPanel"
 import { VipStarToggle } from "@/components/VipStarToggle"
 import {
   createLeadNote,
+  createLeadTouch,
   fetchLeadDetail,
   fetchLeads,
+  fetchTouchTypes,
   formatLeadDate,
   formatLeadName,
+  uniqueTouchTypes,
+  updateLeadTouch,
   updateLeadVip,
 } from "@/lib/api"
-import type { EntityNote, Lead } from "@/lib/types"
+import type { EntityNote, Lead, LeadTouch } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 type SortKey =
@@ -136,6 +145,7 @@ function matchesSearch(lead: Lead, query: string): boolean {
     lead.phone,
     lead.status,
     lead.company?.name,
+    ...(lead.touches?.map((touch) => touch.type) ?? []),
   ]
     .filter(Boolean)
     .join(" ")
@@ -153,7 +163,9 @@ export function LeadsPage() {
   const [sort, setSort] = useState<SortKey>("name-asc")
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [selectedNotes, setSelectedNotes] = useState<EntityNote[]>([])
-  const [notesLoading, setNotesLoading] = useState(false)
+  const [selectedTouches, setSelectedTouches] = useState<LeadTouch[]>([])
+  const [touchTypes, setTouchTypes] = useState<string[]>([])
+  const [detailLoading, setDetailLoading] = useState(false)
   const deferredSearch = useDeferredValue(search)
 
   useEffect(() => {
@@ -161,10 +173,14 @@ export function LeadsPage() {
 
     async function load() {
       setLoading(true)
-      const result = await fetchLeads()
+      const [result, types] = await Promise.all([
+        fetchLeads(),
+        fetchTouchTypes(),
+      ])
       if (!cancelled) {
         setLeads(result.leads)
         setSource(result.source)
+        setTouchTypes(types)
         setLoading(false)
       }
     }
@@ -179,35 +195,39 @@ export function LeadsPage() {
   useEffect(() => {
     if (!selectedId) {
       setSelectedNotes([])
+      setSelectedTouches([])
       return
     }
 
     const leadId = selectedId
     let cancelled = false
 
-    async function loadNotes() {
-      setNotesLoading(true)
+    async function loadDetail() {
+      setDetailLoading(true)
       try {
         if (source === "api") {
           const detail = await fetchLeadDetail(leadId)
           if (!cancelled) {
             setSelectedNotes(detail.notes ?? [])
+            setSelectedTouches(detail.touches ?? [])
           }
         } else if (!cancelled) {
           setSelectedNotes([])
+          setSelectedTouches([])
         }
       } catch {
         if (!cancelled) {
           setSelectedNotes([])
+          setSelectedTouches([])
         }
       } finally {
         if (!cancelled) {
-          setNotesLoading(false)
+          setDetailLoading(false)
         }
       }
     }
 
-    void loadNotes()
+    void loadDetail()
 
     return () => {
       cancelled = true
@@ -263,6 +283,94 @@ export function LeadsPage() {
       },
       ...current,
     ])
+  }
+
+  async function handleAddTouch(input: CreateTouchInput) {
+    if (!selectedId) return
+
+    if (source === "api") {
+      const touch = await createLeadTouch(selectedId, input)
+      setSelectedTouches((current) => [touch, ...current])
+      setLeads((current) =>
+        current.map((lead) =>
+          lead.id === selectedId
+            ? { ...lead, touches: [touch, ...(lead.touches ?? [])] }
+            : lead,
+        ),
+      )
+      return
+    }
+
+    const touch: LeadTouch = {
+      id: crypto.randomUUID(),
+      type: input.type,
+      notes: input.notes,
+      date: input.date ?? new Date().toISOString(),
+    }
+    setSelectedTouches((current) => [touch, ...current])
+    setLeads((current) =>
+      current.map((lead) =>
+        lead.id === selectedId
+          ? { ...lead, touches: [touch, ...(lead.touches ?? [])] }
+          : lead,
+      ),
+    )
+  }
+
+  async function handleUpdateTouch(touchId: string, input: UpdateTouchInput) {
+    if (!selectedId) return
+
+    const applyUpdate = (touch: LeadTouch): LeadTouch =>
+      touch.id === touchId
+        ? {
+            ...touch,
+            type: input.type,
+            notes: input.notes,
+            date: input.date ?? touch.date,
+          }
+        : touch
+
+    if (source === "api") {
+      const touch = await updateLeadTouch(selectedId, touchId, input)
+      setSelectedTouches((current) =>
+        current
+          .map((row) => (row.id === touchId ? touch : row))
+          .sort(
+            (a, b) => Date.parse(b.date) - Date.parse(a.date),
+          ),
+      )
+      setLeads((current) =>
+        current.map((lead) =>
+          lead.id === selectedId
+            ? {
+                ...lead,
+                touches: (lead.touches ?? [])
+                  .map((row) => (row.id === touchId ? touch : row))
+                  .sort((a, b) => Date.parse(b.date) - Date.parse(a.date)),
+              }
+            : lead,
+        ),
+      )
+      return
+    }
+
+    setSelectedTouches((current) =>
+      current
+        .map(applyUpdate)
+        .sort((a, b) => Date.parse(b.date) - Date.parse(a.date)),
+    )
+    setLeads((current) =>
+      current.map((lead) =>
+        lead.id === selectedId
+          ? {
+              ...lead,
+              touches: (lead.touches ?? [])
+                .map(applyUpdate)
+                .sort((a, b) => Date.parse(b.date) - Date.parse(a.date)),
+            }
+          : lead,
+      ),
+    )
   }
 
   return (
@@ -422,6 +530,23 @@ export function LeadsPage() {
                           ) : null}
                           <span>Added {formatLeadDate(lead.createdAt)}</span>
                         </div>
+
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className="text-xs text-muted-foreground">
+                            {(lead.touches?.length ?? 0) === 1
+                              ? "1 touch"
+                              : `${lead.touches?.length ?? 0} touches`}
+                          </span>
+                          {uniqueTouchTypes(lead.touches).map((touchType) => (
+                            <Badge
+                              key={`${lead.id}-${touchType}`}
+                              variant="outline"
+                              className="text-[10px] font-normal"
+                            >
+                              {touchType}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                     </button>
                   </li>
@@ -433,7 +558,7 @@ export function LeadsPage() {
       </div>
 
       {selectedLead ? (
-        <aside className="flex w-full max-w-sm shrink-0 flex-col overflow-hidden border-l border-border bg-background">
+        <aside className="flex w-full max-w-md shrink-0 flex-col overflow-hidden border-l border-border bg-background">
           <div className="flex items-start justify-between gap-3 border-b border-border px-4 py-4">
             <div className="min-w-0 flex flex-col gap-1">
               <p className="truncate text-sm font-semibold">
@@ -448,15 +573,22 @@ export function LeadsPage() {
               variant="ghost"
               size="icon-sm"
               onClick={() => setSelectedId(null)}
-              aria-label="Close notes panel"
+              aria-label="Close lead detail"
             >
               <X className="size-4" />
             </Button>
           </div>
-          <div className="flex min-h-0 flex-1 flex-col p-4">
+          <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto p-4">
+            <TouchesPanel
+              touches={selectedTouches}
+              touchTypes={touchTypes}
+              loading={detailLoading}
+              onAdd={handleAddTouch}
+              onUpdate={handleUpdateTouch}
+            />
             <NotesPanel
               notes={selectedNotes}
-              loading={notesLoading}
+              loading={detailLoading}
               onAdd={handleAddNote}
             />
           </div>

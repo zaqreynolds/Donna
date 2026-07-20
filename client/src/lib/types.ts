@@ -6,6 +6,13 @@ export type EntityNote = {
   createdAt: string
 }
 
+export type LeadTouch = {
+  id: string
+  type: string
+  notes: string
+  date: string
+}
+
 export type Company = {
   id: string
   name: string
@@ -37,7 +44,26 @@ export type Lead = {
   }
   createdAt?: string
   notes?: EntityNote[]
+  touches?: LeadTouch[]
 }
+
+export const DEFAULT_TOUCH_TYPES = [
+  "Phone",
+  "Email",
+  "Networking",
+  "Canvassing",
+  "Cold Call",
+  "Face to Face",
+  "LinkedIn",
+  "Retreva",
+  "Text",
+  "Voicemail",
+  "Video Message",
+  "Post Card",
+  "Social Media",
+  "Estimate",
+  "Invoice",
+] as const
 
 export const MOCK_COMPANIES: Company[] = [
   {

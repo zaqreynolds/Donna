@@ -119,7 +119,14 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 
 exports.Prisma.IndustryScalarFieldEnum = {
   id: 'id',
-  name: 'name'
+  name: 'name',
+  isSystem: 'isSystem'
+};
+
+exports.Prisma.TouchTypeScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  isSystem: 'isSystem'
 };
 
 exports.Prisma.CompanyScalarFieldEnum = {
@@ -181,6 +188,7 @@ exports.Prisma.NullsOrder = {
 
 exports.Prisma.ModelName = {
   Industry: 'Industry',
+  TouchType: 'TouchType',
   Company: 'Company',
   CompanyNote: 'CompanyNote',
   Lead: 'Lead',

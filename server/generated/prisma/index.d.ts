@@ -21,6 +21,14 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type Industry = $Result.DefaultSelection<Prisma.$IndustryPayload>
 /**
+ * Model TouchType
+ * Outreach channel labels used by Touch.type.
+ * Seeded defaults: Phone, Email, Networking, Canvassing, Cold Call, Face to Face,
+ * LinkedIn, Retreva, Text, Voicemail, Video Message, Post Card, Social Media,
+ * Estimate, Invoice. Additional types can be added in Settings.
+ */
+export type TouchType = $Result.DefaultSelection<Prisma.$TouchTypePayload>
+/**
  * Model Company
  * 
  */
@@ -176,6 +184,16 @@ export class PrismaClient<
     * ```
     */
   get industry(): Prisma.IndustryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.touchType`: Exposes CRUD operations for the **TouchType** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TouchTypes
+    * const touchTypes = await prisma.touchType.findMany()
+    * ```
+    */
+  get touchType(): Prisma.TouchTypeDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.company`: Exposes CRUD operations for the **Company** model.
@@ -661,6 +679,7 @@ export namespace Prisma {
 
   export const ModelName: {
     Industry: 'Industry',
+    TouchType: 'TouchType',
     Company: 'Company',
     CompanyNote: 'CompanyNote',
     Lead: 'Lead',
@@ -681,7 +700,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "industry" | "company" | "companyNote" | "lead" | "leadNote" | "touch"
+      modelProps: "industry" | "touchType" | "company" | "companyNote" | "lead" | "leadNote" | "touch"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -756,6 +775,80 @@ export namespace Prisma {
           count: {
             args: Prisma.IndustryCountArgs<ExtArgs>
             result: $Utils.Optional<IndustryCountAggregateOutputType> | number
+          }
+        }
+      }
+      TouchType: {
+        payload: Prisma.$TouchTypePayload<ExtArgs>
+        fields: Prisma.TouchTypeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TouchTypeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TouchTypePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TouchTypeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TouchTypePayload>
+          }
+          findFirst: {
+            args: Prisma.TouchTypeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TouchTypePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TouchTypeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TouchTypePayload>
+          }
+          findMany: {
+            args: Prisma.TouchTypeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TouchTypePayload>[]
+          }
+          create: {
+            args: Prisma.TouchTypeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TouchTypePayload>
+          }
+          createMany: {
+            args: Prisma.TouchTypeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TouchTypeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TouchTypePayload>[]
+          }
+          delete: {
+            args: Prisma.TouchTypeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TouchTypePayload>
+          }
+          update: {
+            args: Prisma.TouchTypeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TouchTypePayload>
+          }
+          deleteMany: {
+            args: Prisma.TouchTypeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TouchTypeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TouchTypeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TouchTypePayload>[]
+          }
+          upsert: {
+            args: Prisma.TouchTypeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TouchTypePayload>
+          }
+          aggregate: {
+            args: Prisma.TouchTypeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTouchType>
+          }
+          groupBy: {
+            args: Prisma.TouchTypeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TouchTypeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TouchTypeCountArgs<ExtArgs>
+            result: $Utils.Optional<TouchTypeCountAggregateOutputType> | number
           }
         }
       }
@@ -1238,6 +1331,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     industry?: IndustryOmit
+    touchType?: TouchTypeOmit
     company?: CompanyOmit
     companyNote?: CompanyNoteOmit
     lead?: LeadOmit
@@ -1446,16 +1540,19 @@ export namespace Prisma {
   export type IndustryMinAggregateOutputType = {
     id: string | null
     name: string | null
+    isSystem: boolean | null
   }
 
   export type IndustryMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    isSystem: boolean | null
   }
 
   export type IndustryCountAggregateOutputType = {
     id: number
     name: number
+    isSystem: number
     _all: number
   }
 
@@ -1463,16 +1560,19 @@ export namespace Prisma {
   export type IndustryMinAggregateInputType = {
     id?: true
     name?: true
+    isSystem?: true
   }
 
   export type IndustryMaxAggregateInputType = {
     id?: true
     name?: true
+    isSystem?: true
   }
 
   export type IndustryCountAggregateInputType = {
     id?: true
     name?: true
+    isSystem?: true
     _all?: true
   }
 
@@ -1551,6 +1651,7 @@ export namespace Prisma {
   export type IndustryGroupByOutputType = {
     id: string
     name: string
+    isSystem: boolean
     _count: IndustryCountAggregateOutputType | null
     _min: IndustryMinAggregateOutputType | null
     _max: IndustryMaxAggregateOutputType | null
@@ -1573,6 +1674,7 @@ export namespace Prisma {
   export type IndustrySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    isSystem?: boolean
     companies?: boolean | Industry$companiesArgs<ExtArgs>
     _count?: boolean | IndustryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["industry"]>
@@ -1580,19 +1682,22 @@ export namespace Prisma {
   export type IndustrySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    isSystem?: boolean
   }, ExtArgs["result"]["industry"]>
 
   export type IndustrySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    isSystem?: boolean
   }, ExtArgs["result"]["industry"]>
 
   export type IndustrySelectScalar = {
     id?: boolean
     name?: boolean
+    isSystem?: boolean
   }
 
-  export type IndustryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name", ExtArgs["result"]["industry"]>
+  export type IndustryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isSystem", ExtArgs["result"]["industry"]>
   export type IndustryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     companies?: boolean | Industry$companiesArgs<ExtArgs>
     _count?: boolean | IndustryCountOutputTypeDefaultArgs<ExtArgs>
@@ -1608,6 +1713,10 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      /**
+       * Built-in seeded industries cannot be renamed or deleted in Settings.
+       */
+      isSystem: boolean
     }, ExtArgs["result"]["industry"]>
     composites: {}
   }
@@ -2034,6 +2143,7 @@ export namespace Prisma {
   interface IndustryFieldRefs {
     readonly id: FieldRef<"Industry", 'String'>
     readonly name: FieldRef<"Industry", 'String'>
+    readonly isSystem: FieldRef<"Industry", 'Boolean'>
   }
     
 
@@ -2464,6 +2574,981 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: IndustryInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TouchType
+   */
+
+  export type AggregateTouchType = {
+    _count: TouchTypeCountAggregateOutputType | null
+    _min: TouchTypeMinAggregateOutputType | null
+    _max: TouchTypeMaxAggregateOutputType | null
+  }
+
+  export type TouchTypeMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    isSystem: boolean | null
+  }
+
+  export type TouchTypeMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    isSystem: boolean | null
+  }
+
+  export type TouchTypeCountAggregateOutputType = {
+    id: number
+    name: number
+    isSystem: number
+    _all: number
+  }
+
+
+  export type TouchTypeMinAggregateInputType = {
+    id?: true
+    name?: true
+    isSystem?: true
+  }
+
+  export type TouchTypeMaxAggregateInputType = {
+    id?: true
+    name?: true
+    isSystem?: true
+  }
+
+  export type TouchTypeCountAggregateInputType = {
+    id?: true
+    name?: true
+    isSystem?: true
+    _all?: true
+  }
+
+  export type TouchTypeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TouchType to aggregate.
+     */
+    where?: TouchTypeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TouchTypes to fetch.
+     */
+    orderBy?: TouchTypeOrderByWithRelationInput | TouchTypeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TouchTypeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TouchTypes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TouchTypes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TouchTypes
+    **/
+    _count?: true | TouchTypeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TouchTypeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TouchTypeMaxAggregateInputType
+  }
+
+  export type GetTouchTypeAggregateType<T extends TouchTypeAggregateArgs> = {
+        [P in keyof T & keyof AggregateTouchType]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTouchType[P]>
+      : GetScalarType<T[P], AggregateTouchType[P]>
+  }
+
+
+
+
+  export type TouchTypeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TouchTypeWhereInput
+    orderBy?: TouchTypeOrderByWithAggregationInput | TouchTypeOrderByWithAggregationInput[]
+    by: TouchTypeScalarFieldEnum[] | TouchTypeScalarFieldEnum
+    having?: TouchTypeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TouchTypeCountAggregateInputType | true
+    _min?: TouchTypeMinAggregateInputType
+    _max?: TouchTypeMaxAggregateInputType
+  }
+
+  export type TouchTypeGroupByOutputType = {
+    id: string
+    name: string
+    isSystem: boolean
+    _count: TouchTypeCountAggregateOutputType | null
+    _min: TouchTypeMinAggregateOutputType | null
+    _max: TouchTypeMaxAggregateOutputType | null
+  }
+
+  type GetTouchTypeGroupByPayload<T extends TouchTypeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TouchTypeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TouchTypeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TouchTypeGroupByOutputType[P]>
+            : GetScalarType<T[P], TouchTypeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TouchTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    isSystem?: boolean
+  }, ExtArgs["result"]["touchType"]>
+
+  export type TouchTypeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    isSystem?: boolean
+  }, ExtArgs["result"]["touchType"]>
+
+  export type TouchTypeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    isSystem?: boolean
+  }, ExtArgs["result"]["touchType"]>
+
+  export type TouchTypeSelectScalar = {
+    id?: boolean
+    name?: boolean
+    isSystem?: boolean
+  }
+
+  export type TouchTypeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isSystem", ExtArgs["result"]["touchType"]>
+
+  export type $TouchTypePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TouchType"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      /**
+       * Built-in seeded touch types cannot be renamed or deleted in Settings.
+       */
+      isSystem: boolean
+    }, ExtArgs["result"]["touchType"]>
+    composites: {}
+  }
+
+  type TouchTypeGetPayload<S extends boolean | null | undefined | TouchTypeDefaultArgs> = $Result.GetResult<Prisma.$TouchTypePayload, S>
+
+  type TouchTypeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TouchTypeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TouchTypeCountAggregateInputType | true
+    }
+
+  export interface TouchTypeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TouchType'], meta: { name: 'TouchType' } }
+    /**
+     * Find zero or one TouchType that matches the filter.
+     * @param {TouchTypeFindUniqueArgs} args - Arguments to find a TouchType
+     * @example
+     * // Get one TouchType
+     * const touchType = await prisma.touchType.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TouchTypeFindUniqueArgs>(args: SelectSubset<T, TouchTypeFindUniqueArgs<ExtArgs>>): Prisma__TouchTypeClient<$Result.GetResult<Prisma.$TouchTypePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TouchType that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TouchTypeFindUniqueOrThrowArgs} args - Arguments to find a TouchType
+     * @example
+     * // Get one TouchType
+     * const touchType = await prisma.touchType.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TouchTypeFindUniqueOrThrowArgs>(args: SelectSubset<T, TouchTypeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TouchTypeClient<$Result.GetResult<Prisma.$TouchTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TouchType that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TouchTypeFindFirstArgs} args - Arguments to find a TouchType
+     * @example
+     * // Get one TouchType
+     * const touchType = await prisma.touchType.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TouchTypeFindFirstArgs>(args?: SelectSubset<T, TouchTypeFindFirstArgs<ExtArgs>>): Prisma__TouchTypeClient<$Result.GetResult<Prisma.$TouchTypePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TouchType that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TouchTypeFindFirstOrThrowArgs} args - Arguments to find a TouchType
+     * @example
+     * // Get one TouchType
+     * const touchType = await prisma.touchType.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TouchTypeFindFirstOrThrowArgs>(args?: SelectSubset<T, TouchTypeFindFirstOrThrowArgs<ExtArgs>>): Prisma__TouchTypeClient<$Result.GetResult<Prisma.$TouchTypePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TouchTypes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TouchTypeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TouchTypes
+     * const touchTypes = await prisma.touchType.findMany()
+     * 
+     * // Get first 10 TouchTypes
+     * const touchTypes = await prisma.touchType.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const touchTypeWithIdOnly = await prisma.touchType.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TouchTypeFindManyArgs>(args?: SelectSubset<T, TouchTypeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TouchTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TouchType.
+     * @param {TouchTypeCreateArgs} args - Arguments to create a TouchType.
+     * @example
+     * // Create one TouchType
+     * const TouchType = await prisma.touchType.create({
+     *   data: {
+     *     // ... data to create a TouchType
+     *   }
+     * })
+     * 
+     */
+    create<T extends TouchTypeCreateArgs>(args: SelectSubset<T, TouchTypeCreateArgs<ExtArgs>>): Prisma__TouchTypeClient<$Result.GetResult<Prisma.$TouchTypePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TouchTypes.
+     * @param {TouchTypeCreateManyArgs} args - Arguments to create many TouchTypes.
+     * @example
+     * // Create many TouchTypes
+     * const touchType = await prisma.touchType.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TouchTypeCreateManyArgs>(args?: SelectSubset<T, TouchTypeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TouchTypes and returns the data saved in the database.
+     * @param {TouchTypeCreateManyAndReturnArgs} args - Arguments to create many TouchTypes.
+     * @example
+     * // Create many TouchTypes
+     * const touchType = await prisma.touchType.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TouchTypes and only return the `id`
+     * const touchTypeWithIdOnly = await prisma.touchType.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TouchTypeCreateManyAndReturnArgs>(args?: SelectSubset<T, TouchTypeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TouchTypePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TouchType.
+     * @param {TouchTypeDeleteArgs} args - Arguments to delete one TouchType.
+     * @example
+     * // Delete one TouchType
+     * const TouchType = await prisma.touchType.delete({
+     *   where: {
+     *     // ... filter to delete one TouchType
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TouchTypeDeleteArgs>(args: SelectSubset<T, TouchTypeDeleteArgs<ExtArgs>>): Prisma__TouchTypeClient<$Result.GetResult<Prisma.$TouchTypePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TouchType.
+     * @param {TouchTypeUpdateArgs} args - Arguments to update one TouchType.
+     * @example
+     * // Update one TouchType
+     * const touchType = await prisma.touchType.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TouchTypeUpdateArgs>(args: SelectSubset<T, TouchTypeUpdateArgs<ExtArgs>>): Prisma__TouchTypeClient<$Result.GetResult<Prisma.$TouchTypePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TouchTypes.
+     * @param {TouchTypeDeleteManyArgs} args - Arguments to filter TouchTypes to delete.
+     * @example
+     * // Delete a few TouchTypes
+     * const { count } = await prisma.touchType.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TouchTypeDeleteManyArgs>(args?: SelectSubset<T, TouchTypeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TouchTypes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TouchTypeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TouchTypes
+     * const touchType = await prisma.touchType.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TouchTypeUpdateManyArgs>(args: SelectSubset<T, TouchTypeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TouchTypes and returns the data updated in the database.
+     * @param {TouchTypeUpdateManyAndReturnArgs} args - Arguments to update many TouchTypes.
+     * @example
+     * // Update many TouchTypes
+     * const touchType = await prisma.touchType.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TouchTypes and only return the `id`
+     * const touchTypeWithIdOnly = await prisma.touchType.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TouchTypeUpdateManyAndReturnArgs>(args: SelectSubset<T, TouchTypeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TouchTypePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TouchType.
+     * @param {TouchTypeUpsertArgs} args - Arguments to update or create a TouchType.
+     * @example
+     * // Update or create a TouchType
+     * const touchType = await prisma.touchType.upsert({
+     *   create: {
+     *     // ... data to create a TouchType
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TouchType we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TouchTypeUpsertArgs>(args: SelectSubset<T, TouchTypeUpsertArgs<ExtArgs>>): Prisma__TouchTypeClient<$Result.GetResult<Prisma.$TouchTypePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TouchTypes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TouchTypeCountArgs} args - Arguments to filter TouchTypes to count.
+     * @example
+     * // Count the number of TouchTypes
+     * const count = await prisma.touchType.count({
+     *   where: {
+     *     // ... the filter for the TouchTypes we want to count
+     *   }
+     * })
+    **/
+    count<T extends TouchTypeCountArgs>(
+      args?: Subset<T, TouchTypeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TouchTypeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TouchType.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TouchTypeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TouchTypeAggregateArgs>(args: Subset<T, TouchTypeAggregateArgs>): Prisma.PrismaPromise<GetTouchTypeAggregateType<T>>
+
+    /**
+     * Group by TouchType.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TouchTypeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TouchTypeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TouchTypeGroupByArgs['orderBy'] }
+        : { orderBy?: TouchTypeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TouchTypeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTouchTypeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TouchType model
+   */
+  readonly fields: TouchTypeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TouchType.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TouchTypeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TouchType model
+   */
+  interface TouchTypeFieldRefs {
+    readonly id: FieldRef<"TouchType", 'String'>
+    readonly name: FieldRef<"TouchType", 'String'>
+    readonly isSystem: FieldRef<"TouchType", 'Boolean'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TouchType findUnique
+   */
+  export type TouchTypeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TouchType
+     */
+    select?: TouchTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TouchType
+     */
+    omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * Filter, which TouchType to fetch.
+     */
+    where: TouchTypeWhereUniqueInput
+  }
+
+  /**
+   * TouchType findUniqueOrThrow
+   */
+  export type TouchTypeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TouchType
+     */
+    select?: TouchTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TouchType
+     */
+    omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * Filter, which TouchType to fetch.
+     */
+    where: TouchTypeWhereUniqueInput
+  }
+
+  /**
+   * TouchType findFirst
+   */
+  export type TouchTypeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TouchType
+     */
+    select?: TouchTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TouchType
+     */
+    omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * Filter, which TouchType to fetch.
+     */
+    where?: TouchTypeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TouchTypes to fetch.
+     */
+    orderBy?: TouchTypeOrderByWithRelationInput | TouchTypeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TouchTypes.
+     */
+    cursor?: TouchTypeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TouchTypes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TouchTypes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TouchTypes.
+     */
+    distinct?: TouchTypeScalarFieldEnum | TouchTypeScalarFieldEnum[]
+  }
+
+  /**
+   * TouchType findFirstOrThrow
+   */
+  export type TouchTypeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TouchType
+     */
+    select?: TouchTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TouchType
+     */
+    omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * Filter, which TouchType to fetch.
+     */
+    where?: TouchTypeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TouchTypes to fetch.
+     */
+    orderBy?: TouchTypeOrderByWithRelationInput | TouchTypeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TouchTypes.
+     */
+    cursor?: TouchTypeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TouchTypes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TouchTypes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TouchTypes.
+     */
+    distinct?: TouchTypeScalarFieldEnum | TouchTypeScalarFieldEnum[]
+  }
+
+  /**
+   * TouchType findMany
+   */
+  export type TouchTypeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TouchType
+     */
+    select?: TouchTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TouchType
+     */
+    omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * Filter, which TouchTypes to fetch.
+     */
+    where?: TouchTypeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TouchTypes to fetch.
+     */
+    orderBy?: TouchTypeOrderByWithRelationInput | TouchTypeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TouchTypes.
+     */
+    cursor?: TouchTypeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TouchTypes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TouchTypes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TouchTypes.
+     */
+    distinct?: TouchTypeScalarFieldEnum | TouchTypeScalarFieldEnum[]
+  }
+
+  /**
+   * TouchType create
+   */
+  export type TouchTypeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TouchType
+     */
+    select?: TouchTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TouchType
+     */
+    omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * The data needed to create a TouchType.
+     */
+    data: XOR<TouchTypeCreateInput, TouchTypeUncheckedCreateInput>
+  }
+
+  /**
+   * TouchType createMany
+   */
+  export type TouchTypeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TouchTypes.
+     */
+    data: TouchTypeCreateManyInput | TouchTypeCreateManyInput[]
+  }
+
+  /**
+   * TouchType createManyAndReturn
+   */
+  export type TouchTypeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TouchType
+     */
+    select?: TouchTypeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TouchType
+     */
+    omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * The data used to create many TouchTypes.
+     */
+    data: TouchTypeCreateManyInput | TouchTypeCreateManyInput[]
+  }
+
+  /**
+   * TouchType update
+   */
+  export type TouchTypeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TouchType
+     */
+    select?: TouchTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TouchType
+     */
+    omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * The data needed to update a TouchType.
+     */
+    data: XOR<TouchTypeUpdateInput, TouchTypeUncheckedUpdateInput>
+    /**
+     * Choose, which TouchType to update.
+     */
+    where: TouchTypeWhereUniqueInput
+  }
+
+  /**
+   * TouchType updateMany
+   */
+  export type TouchTypeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TouchTypes.
+     */
+    data: XOR<TouchTypeUpdateManyMutationInput, TouchTypeUncheckedUpdateManyInput>
+    /**
+     * Filter which TouchTypes to update
+     */
+    where?: TouchTypeWhereInput
+    /**
+     * Limit how many TouchTypes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TouchType updateManyAndReturn
+   */
+  export type TouchTypeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TouchType
+     */
+    select?: TouchTypeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TouchType
+     */
+    omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * The data used to update TouchTypes.
+     */
+    data: XOR<TouchTypeUpdateManyMutationInput, TouchTypeUncheckedUpdateManyInput>
+    /**
+     * Filter which TouchTypes to update
+     */
+    where?: TouchTypeWhereInput
+    /**
+     * Limit how many TouchTypes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TouchType upsert
+   */
+  export type TouchTypeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TouchType
+     */
+    select?: TouchTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TouchType
+     */
+    omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * The filter to search for the TouchType to update in case it exists.
+     */
+    where: TouchTypeWhereUniqueInput
+    /**
+     * In case the TouchType found by the `where` argument doesn't exist, create a new TouchType with this data.
+     */
+    create: XOR<TouchTypeCreateInput, TouchTypeUncheckedCreateInput>
+    /**
+     * In case the TouchType was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TouchTypeUpdateInput, TouchTypeUncheckedUpdateInput>
+  }
+
+  /**
+   * TouchType delete
+   */
+  export type TouchTypeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TouchType
+     */
+    select?: TouchTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TouchType
+     */
+    omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * Filter which TouchType to delete.
+     */
+    where: TouchTypeWhereUniqueInput
+  }
+
+  /**
+   * TouchType deleteMany
+   */
+  export type TouchTypeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TouchTypes to delete
+     */
+    where?: TouchTypeWhereInput
+    /**
+     * Limit how many TouchTypes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TouchType without action
+   */
+  export type TouchTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TouchType
+     */
+    select?: TouchTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TouchType
+     */
+    omit?: TouchTypeOmit<ExtArgs> | null
   }
 
 
@@ -7122,10 +8207,7 @@ export namespace Prisma {
       id: string
       date: Date
       /**
-       * Outreach channel.
-       * Allowed values: "Phone" | "Email" | "Networking" | "Canvassing" | "Cold Call" |
-       * "Face to Face" | "LinkedIn" | "Retreva" | "Text" | "Voicemail" | "Video Message" |
-       * "Post Card" | "Social Media" | "Estimate" | "Invoice"
+       * Outreach channel — must match a TouchType.name (see Settings).
        */
       type: string
       notes: string
@@ -7989,10 +9071,20 @@ export namespace Prisma {
 
   export const IndustryScalarFieldEnum: {
     id: 'id',
-    name: 'name'
+    name: 'name',
+    isSystem: 'isSystem'
   };
 
   export type IndustryScalarFieldEnum = (typeof IndustryScalarFieldEnum)[keyof typeof IndustryScalarFieldEnum]
+
+
+  export const TouchTypeScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    isSystem: 'isSystem'
+  };
+
+  export type TouchTypeScalarFieldEnum = (typeof TouchTypeScalarFieldEnum)[keyof typeof TouchTypeScalarFieldEnum]
 
 
   export const CompanyScalarFieldEnum: {
@@ -8114,12 +9206,14 @@ export namespace Prisma {
     NOT?: IndustryWhereInput | IndustryWhereInput[]
     id?: StringFilter<"Industry"> | string
     name?: StringFilter<"Industry"> | string
+    isSystem?: BoolFilter<"Industry"> | boolean
     companies?: CompanyListRelationFilter
   }
 
   export type IndustryOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    isSystem?: SortOrder
     companies?: CompanyOrderByRelationAggregateInput
   }
 
@@ -8129,12 +9223,14 @@ export namespace Prisma {
     AND?: IndustryWhereInput | IndustryWhereInput[]
     OR?: IndustryWhereInput[]
     NOT?: IndustryWhereInput | IndustryWhereInput[]
+    isSystem?: BoolFilter<"Industry"> | boolean
     companies?: CompanyListRelationFilter
   }, "id" | "name">
 
   export type IndustryOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    isSystem?: SortOrder
     _count?: IndustryCountOrderByAggregateInput
     _max?: IndustryMaxOrderByAggregateInput
     _min?: IndustryMinOrderByAggregateInput
@@ -8146,6 +9242,49 @@ export namespace Prisma {
     NOT?: IndustryScalarWhereWithAggregatesInput | IndustryScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Industry"> | string
     name?: StringWithAggregatesFilter<"Industry"> | string
+    isSystem?: BoolWithAggregatesFilter<"Industry"> | boolean
+  }
+
+  export type TouchTypeWhereInput = {
+    AND?: TouchTypeWhereInput | TouchTypeWhereInput[]
+    OR?: TouchTypeWhereInput[]
+    NOT?: TouchTypeWhereInput | TouchTypeWhereInput[]
+    id?: StringFilter<"TouchType"> | string
+    name?: StringFilter<"TouchType"> | string
+    isSystem?: BoolFilter<"TouchType"> | boolean
+  }
+
+  export type TouchTypeOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+  }
+
+  export type TouchTypeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    AND?: TouchTypeWhereInput | TouchTypeWhereInput[]
+    OR?: TouchTypeWhereInput[]
+    NOT?: TouchTypeWhereInput | TouchTypeWhereInput[]
+    isSystem?: BoolFilter<"TouchType"> | boolean
+  }, "id" | "name">
+
+  export type TouchTypeOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+    _count?: TouchTypeCountOrderByAggregateInput
+    _max?: TouchTypeMaxOrderByAggregateInput
+    _min?: TouchTypeMinOrderByAggregateInput
+  }
+
+  export type TouchTypeScalarWhereWithAggregatesInput = {
+    AND?: TouchTypeScalarWhereWithAggregatesInput | TouchTypeScalarWhereWithAggregatesInput[]
+    OR?: TouchTypeScalarWhereWithAggregatesInput[]
+    NOT?: TouchTypeScalarWhereWithAggregatesInput | TouchTypeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TouchType"> | string
+    name?: StringWithAggregatesFilter<"TouchType"> | string
+    isSystem?: BoolWithAggregatesFilter<"TouchType"> | boolean
   }
 
   export type CompanyWhereInput = {
@@ -8468,40 +9607,89 @@ export namespace Prisma {
   export type IndustryCreateInput = {
     id?: string
     name: string
+    isSystem?: boolean
     companies?: CompanyCreateNestedManyWithoutIndustryInput
   }
 
   export type IndustryUncheckedCreateInput = {
     id?: string
     name: string
+    isSystem?: boolean
     companies?: CompanyUncheckedCreateNestedManyWithoutIndustryInput
   }
 
   export type IndustryUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
     companies?: CompanyUpdateManyWithoutIndustryNestedInput
   }
 
   export type IndustryUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
     companies?: CompanyUncheckedUpdateManyWithoutIndustryNestedInput
   }
 
   export type IndustryCreateManyInput = {
     id?: string
     name: string
+    isSystem?: boolean
   }
 
   export type IndustryUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type IndustryUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type TouchTypeCreateInput = {
+    id?: string
+    name: string
+    isSystem?: boolean
+  }
+
+  export type TouchTypeUncheckedCreateInput = {
+    id?: string
+    name: string
+    isSystem?: boolean
+  }
+
+  export type TouchTypeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type TouchTypeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type TouchTypeCreateManyInput = {
+    id?: string
+    name: string
+    isSystem?: boolean
+  }
+
+  export type TouchTypeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type TouchTypeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CompanyCreateInput = {
@@ -8786,7 +9974,7 @@ export namespace Prisma {
     id?: string
     date?: Date | string
     type: string
-    notes: string
+    notes?: string
     lead: LeadCreateNestedOneWithoutTouchesInput
   }
 
@@ -8794,7 +9982,7 @@ export namespace Prisma {
     id?: string
     date?: Date | string
     type: string
-    notes: string
+    notes?: string
     leadId: string
   }
 
@@ -8818,7 +10006,7 @@ export namespace Prisma {
     id?: string
     date?: Date | string
     type: string
-    notes: string
+    notes?: string
     leadId: string
   }
 
@@ -8851,6 +10039,11 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type CompanyListRelationFilter = {
     every?: CompanyWhereInput
     some?: CompanyWhereInput
@@ -8864,16 +10057,19 @@ export namespace Prisma {
   export type IndustryCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    isSystem?: SortOrder
   }
 
   export type IndustryMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    isSystem?: SortOrder
   }
 
   export type IndustryMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    isSystem?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -8893,6 +10089,32 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type TouchTypeCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+  }
+
+  export type TouchTypeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+  }
+
+  export type TouchTypeMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+  }
+
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | null
@@ -8905,11 +10127,6 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -9001,14 +10218,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -9178,6 +10387,10 @@ export namespace Prisma {
     set?: string
   }
 
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type CompanyUpdateManyWithoutIndustryNestedInput = {
     create?: XOR<CompanyCreateWithoutIndustryInput, CompanyUncheckedCreateWithoutIndustryInput> | CompanyCreateWithoutIndustryInput[] | CompanyUncheckedCreateWithoutIndustryInput[]
     connectOrCreate?: CompanyCreateOrConnectWithoutIndustryInput | CompanyCreateOrConnectWithoutIndustryInput[]
@@ -9242,10 +10455,6 @@ export namespace Prisma {
 
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -9470,6 +10679,11 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[]
@@ -9498,6 +10712,14 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | null
@@ -9510,11 +10732,6 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -9554,14 +10771,6 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -9644,11 +10853,13 @@ export namespace Prisma {
   export type IndustryCreateWithoutCompaniesInput = {
     id?: string
     name: string
+    isSystem?: boolean
   }
 
   export type IndustryUncheckedCreateWithoutCompaniesInput = {
     id?: string
     name: string
+    isSystem?: boolean
   }
 
   export type IndustryCreateOrConnectWithoutCompaniesInput = {
@@ -9728,11 +10939,13 @@ export namespace Prisma {
   export type IndustryUpdateWithoutCompaniesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type IndustryUncheckedUpdateWithoutCompaniesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type LeadUpsertWithWhereUniqueWithoutCompanyInput = {
@@ -9890,14 +11103,14 @@ export namespace Prisma {
     id?: string
     date?: Date | string
     type: string
-    notes: string
+    notes?: string
   }
 
   export type TouchUncheckedCreateWithoutLeadInput = {
     id?: string
     date?: Date | string
     type: string
-    notes: string
+    notes?: string
   }
 
   export type TouchCreateOrConnectWithoutLeadInput = {
@@ -10286,7 +11499,7 @@ export namespace Prisma {
     id?: string
     date?: Date | string
     type: string
-    notes: string
+    notes?: string
   }
 
   export type LeadNoteCreateManyLeadInput = {

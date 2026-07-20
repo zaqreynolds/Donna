@@ -13,7 +13,22 @@ datasource db {
 model Industry {
   id        String    @id @default(uuid())
   name      String    @unique
+  /// Built-in seeded industries cannot be renamed or deleted in Settings.
+  isSystem  Boolean   @default(false)
   companies Company[]
+}
+
+/// Outreach channel labels used by Touch.type.
+/// Seeded defaults: Phone, Email, Networking, Canvassing, Cold Call, Face to Face,
+/// LinkedIn, Retreva, Text, Voicemail, Video Message, Post Card, Social Media,
+/// Estimate, Invoice. Additional types can be added in Settings.
+model TouchType {
+  id       String  @id @default(uuid())
+  name     String  @unique
+  /// Built-in seeded touch types cannot be renamed or deleted in Settings.
+  isSystem Boolean @default(false)
+
+  @@index([name])
 }
 
 model Company {
@@ -83,12 +98,9 @@ model LeadNote {
 model Touch {
   id     String   @id @default(uuid())
   date   DateTime @default(now())
-  /// Outreach channel.
-  /// Allowed values: "Phone" | "Email" | "Networking" | "Canvassing" | "Cold Call" |
-  /// "Face to Face" | "LinkedIn" | "Retreva" | "Text" | "Voicemail" | "Video Message" |
-  /// "Post Card" | "Social Media" | "Estimate" | "Invoice"
+  /// Outreach channel — must match a TouchType.name (see Settings).
   type   String
-  notes  String
+  notes  String   @default("")
   leadId String
   lead   Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
 

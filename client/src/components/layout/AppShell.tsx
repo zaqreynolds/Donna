@@ -15,6 +15,10 @@ const pageMeta: Record<string, { title: string; subtitle: string }> = {
     title: "Companies",
     subtitle: "Accounts and notes",
   },
+  "/settings": {
+    title: "Settings",
+    subtitle: "Industries and touch types",
+  },
 }
 
 export function AppShell() {

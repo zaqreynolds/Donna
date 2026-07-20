@@ -15,6 +15,24 @@ const INDUSTRIES = [
   "Other",
 ] as const
 
+const TOUCH_TYPES = [
+  "Phone",
+  "Email",
+  "Networking",
+  "Canvassing",
+  "Cold Call",
+  "Face to Face",
+  "LinkedIn",
+  "Retreva",
+  "Text",
+  "Voicemail",
+  "Video Message",
+  "Post Card",
+  "Social Media",
+  "Estimate",
+  "Invoice",
+] as const
+
 const DEMO_COMPANIES = [
   {
     name: "Northwind Labs",
@@ -208,12 +226,21 @@ async function main() {
   for (const name of INDUSTRIES) {
     await prisma.industry.upsert({
       where: { name },
-      update: {},
-      create: { name },
+      update: { isSystem: true },
+      create: { name, isSystem: true },
+    })
+  }
+
+  for (const name of TOUCH_TYPES) {
+    await prisma.touchType.upsert({
+      where: { name },
+      update: { isSystem: true },
+      create: { name, isSystem: true },
     })
   }
 
   const industries = await prisma.industry.findMany()
+  const touchTypeCount = await prisma.touchType.count()
   const industryByName = Object.fromEntries(
     industries.map((industry) => [industry.name, industry.id]),
   )
@@ -286,7 +313,7 @@ async function main() {
   ])
 
   console.log(
-    `Seeded industries (${industries.length}), companies (${companyCount}), leads (${leadCount}), touches (${touchCount})`,
+    `Seeded industries (${industries.length}), touch types (${touchTypeCount}), companies (${companyCount}), leads (${leadCount}), touches (${touchCount})`,
   )
 }
 

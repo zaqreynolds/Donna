@@ -1,11 +1,12 @@
 import { NavLink } from "react-router-dom"
-import { Building2, LayoutDashboard, Users } from "lucide-react"
+import { Building2, LayoutDashboard, Settings, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navItems = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/leads", label: "Leads", icon: Users, end: false },
   { to: "/companies", label: "Companies", icon: Building2, end: false },
+  { to: "/settings", label: "Settings", icon: Settings, end: false },
 ] as const
 
 export function AppSidebar() {

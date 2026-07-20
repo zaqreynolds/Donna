@@ -13,8 +13,20 @@ export const LEAD_STATUSES = [
   "LOST",
 ] as const
 
-/** Predefined outreach channels for Touch.type (UI-facing labels) */
-export const TOUCH_TYPES = [
+export const DEFAULT_INDUSTRIES = [
+  "Commercial Real Estate",
+  "Apartments/Property Management",
+  "Construction",
+  "Healthcare",
+  "Education",
+  "Retail",
+  "Manufacturing",
+  "Religious",
+  "Other",
+] as const
+
+/** Default outreach channels — seeded as system (locked) TouchType rows */
+export const DEFAULT_TOUCH_TYPES = [
   "Phone",
   "Email",
   "Networking",
@@ -33,14 +45,32 @@ export const TOUCH_TYPES = [
 ] as const
 
 type LeadStatus = (typeof LEAD_STATUSES)[number]
-type TouchTypeLabel = (typeof TOUCH_TYPES)[number]
 
 function isLeadStatus(value: unknown): value is LeadStatus {
   return typeof value === "string" && (LEAD_STATUSES as readonly string[]).includes(value)
 }
 
-function isTouchType(value: unknown): value is TouchTypeLabel {
-  return typeof value === "string" && (TOUCH_TYPES as readonly string[]).includes(value)
+async function getTouchTypeNames(): Promise<string[]> {
+  const rows = await prisma.touchType.findMany({
+    select: { name: true },
+  })
+  const names = rows.map((row) => row.name)
+  if (names.length === 0) {
+    return [...DEFAULT_TOUCH_TYPES]
+  }
+
+  const defaultSet = new Set<string>(DEFAULT_TOUCH_TYPES)
+  const orderedDefaults = DEFAULT_TOUCH_TYPES.filter((name) => names.includes(name))
+  const custom = names
+    .filter((name) => !defaultSet.has(name))
+    .sort((a, b) => a.localeCompare(b))
+  return [...orderedDefaults, ...custom]
+}
+
+async function isKnownTouchType(value: unknown): Promise<boolean> {
+  if (typeof value !== "string" || !value.trim()) return false
+  const names = await getTouchTypeNames()
+  return names.includes(value.trim())
 }
 
 function parseDate(value: unknown): Date | null {
@@ -104,11 +134,193 @@ function handlePrismaError(error: unknown, res: Response, fallback: string) {
 router.get("/industries", async (_req, res) => {
   try {
     const industries = await prisma.industry.findMany({
-      orderBy: { name: "asc" },
+      orderBy: [{ isSystem: "desc" }, { name: "asc" }],
     })
     return res.json({ industries })
   } catch (error) {
     return handlePrismaError(error, res, "Failed to fetch industries")
+  }
+})
+
+router.post("/industries", async (req, res) => {
+  try {
+    const name = requireString(req.body?.name)
+    if (!name) {
+      return res.status(400).json({ error: "name is required" })
+    }
+
+    const industry = await prisma.industry.create({
+      data: { name, isSystem: false },
+    })
+    return res.status(201).json({ industry })
+  } catch (error) {
+    return handlePrismaError(error, res, "Failed to create industry")
+  }
+})
+
+router.patch("/industries/:id", async (req, res) => {
+  try {
+    const industryId = routeParam(req, "id")
+    if (!industryId) {
+      return res.status(400).json({ error: "industry id is required" })
+    }
+
+    const name = requireString(req.body?.name)
+    if (!name) {
+      return res.status(400).json({ error: "name is required" })
+    }
+
+    const existing = await prisma.industry.findUnique({ where: { id: industryId } })
+    if (!existing) {
+      return res.status(404).json({ error: "Industry not found" })
+    }
+    if (existing.isSystem) {
+      return res.status(403).json({ error: "Built-in industries cannot be edited" })
+    }
+
+    const industry = await prisma.industry.update({
+      where: { id: industryId },
+      data: { name },
+    })
+    return res.json({ industry })
+  } catch (error) {
+    return handlePrismaError(error, res, "Failed to update industry")
+  }
+})
+
+router.delete("/industries/:id", async (req, res) => {
+  try {
+    const industryId = routeParam(req, "id")
+    if (!industryId) {
+      return res.status(400).json({ error: "industry id is required" })
+    }
+
+    const existing = await prisma.industry.findUnique({
+      where: { id: industryId },
+      include: { _count: { select: { companies: true } } },
+    })
+    if (!existing) {
+      return res.status(404).json({ error: "Industry not found" })
+    }
+    if (existing.isSystem) {
+      return res.status(403).json({ error: "Built-in industries cannot be deleted" })
+    }
+    if (existing._count.companies > 0) {
+      return res.status(409).json({
+        error: "Industry is in use by one or more companies",
+      })
+    }
+
+    await prisma.industry.delete({ where: { id: industryId } })
+    return res.status(204).send()
+  } catch (error) {
+    return handlePrismaError(error, res, "Failed to delete industry")
+  }
+})
+
+router.get("/touch-types", async (_req, res) => {
+  try {
+    let touchTypes = await prisma.touchType.findMany()
+
+    if (touchTypes.length === 0) {
+      await prisma.touchType.createMany({
+        data: DEFAULT_TOUCH_TYPES.map((name) => ({ name, isSystem: true })),
+      })
+      touchTypes = await prisma.touchType.findMany()
+    }
+
+    const names = await getTouchTypeNames()
+    const byName = Object.fromEntries(touchTypes.map((row) => [row.name, row]))
+    return res.json({
+      touchTypes: names.map((name) => byName[name]).filter(Boolean),
+    })
+  } catch (error) {
+    return handlePrismaError(error, res, "Failed to fetch touch types")
+  }
+})
+
+router.post("/touch-types", async (req, res) => {
+  try {
+    const name = requireString(req.body?.name)
+    if (!name) {
+      return res.status(400).json({ error: "name is required" })
+    }
+
+    const touchType = await prisma.touchType.create({
+      data: { name, isSystem: false },
+    })
+    return res.status(201).json({ touchType })
+  } catch (error) {
+    return handlePrismaError(error, res, "Failed to create touch type")
+  }
+})
+
+router.patch("/touch-types/:id", async (req, res) => {
+  try {
+    const touchTypeId = routeParam(req, "id")
+    if (!touchTypeId) {
+      return res.status(400).json({ error: "touch type id is required" })
+    }
+
+    const name = requireString(req.body?.name)
+    if (!name) {
+      return res.status(400).json({ error: "name is required" })
+    }
+
+    const existing = await prisma.touchType.findUnique({ where: { id: touchTypeId } })
+    if (!existing) {
+      return res.status(404).json({ error: "Touch type not found" })
+    }
+    if (existing.isSystem) {
+      return res.status(403).json({ error: "Built-in touch types cannot be edited" })
+    }
+
+    const touchType = await prisma.$transaction(async (tx) => {
+      const updated = await tx.touchType.update({
+        where: { id: touchTypeId },
+        data: { name },
+      })
+      if (existing.name !== name) {
+        await tx.touch.updateMany({
+          where: { type: existing.name },
+          data: { type: name },
+        })
+      }
+      return updated
+    })
+
+    return res.json({ touchType })
+  } catch (error) {
+    return handlePrismaError(error, res, "Failed to update touch type")
+  }
+})
+
+router.delete("/touch-types/:id", async (req, res) => {
+  try {
+    const touchTypeId = routeParam(req, "id")
+    if (!touchTypeId) {
+      return res.status(400).json({ error: "touch type id is required" })
+    }
+
+    const existing = await prisma.touchType.findUnique({ where: { id: touchTypeId } })
+    if (!existing) {
+      return res.status(404).json({ error: "Touch type not found" })
+    }
+    if (existing.isSystem) {
+      return res.status(403).json({ error: "Built-in touch types cannot be deleted" })
+    }
+
+    const inUse = await prisma.touch.count({ where: { type: existing.name } })
+    if (inUse > 0) {
+      return res.status(409).json({
+        error: "Touch type is in use by one or more touches",
+      })
+    }
+
+    await prisma.touchType.delete({ where: { id: touchTypeId } })
+    return res.status(204).send()
+  } catch (error) {
+    return handlePrismaError(error, res, "Failed to delete touch type")
   }
 })
 
@@ -285,6 +497,10 @@ router.get("/leads", async (_req, res) => {
       prisma.lead.findMany({
         include: {
           company: { select: { id: true, name: true, isVip: true } },
+          touches: {
+            select: { id: true, type: true, date: true, notes: true },
+            orderBy: { date: "desc" },
+          },
         },
         orderBy: { createdAt: "desc" },
       }),
@@ -309,6 +525,7 @@ router.get("/leads/:id", async (req, res) => {
       include: {
         company: { select: { id: true, name: true, isVip: true } },
         notes: { orderBy: { createdAt: "desc" } },
+        touches: { orderBy: { date: "desc" } },
       },
     })
 
@@ -527,20 +744,21 @@ router.post("/leads/:id/touches", async (req, res) => {
       return res.status(400).json({ error: "lead id is required" })
     }
 
-    const { type, notes, date } = req.body as {
-      type?: string
-      notes?: string
-      date?: string
-    }
+    const type = requireString(req.body?.type)
+    const notesRaw = req.body?.notes
+    const notes =
+      typeof notesRaw === "string" ? notesRaw.trim() : notesRaw == null ? "" : null
+    const date = req.body?.date as string | undefined
 
-    if (!isTouchType(type)) {
+    if (!type || !(await isKnownTouchType(type))) {
+      const touchTypes = await getTouchTypeNames()
       return res.status(400).json({
-        error: "type is required and must be a predefined touch type",
-        touchTypes: TOUCH_TYPES,
+        error: "type is required and must match a configured touch type",
+        touchTypes,
       })
     }
-    if (typeof notes !== "string" || !notes.trim()) {
-      return res.status(400).json({ error: "notes is required" })
+    if (notes === null) {
+      return res.status(400).json({ error: "notes must be a string when provided" })
     }
 
     const parsedDate = date !== undefined ? parseDate(date) : null
@@ -556,7 +774,7 @@ router.post("/leads/:id/touches", async (req, res) => {
     const touch = await prisma.touch.create({
       data: {
         type,
-        notes: notes.trim(),
+        notes,
         leadId,
         ...(parsedDate ? { date: parsedDate } : {}),
       },
@@ -565,6 +783,72 @@ router.post("/leads/:id/touches", async (req, res) => {
     return res.status(201).json({ touch })
   } catch (error) {
     return handlePrismaError(error, res, "Failed to create touch")
+  }
+})
+
+router.patch("/leads/:id/touches/:touchId", async (req, res) => {
+  try {
+    const leadId = routeParam(req, "id")
+    const touchId = routeParam(req, "touchId")
+    if (!leadId) {
+      return res.status(400).json({ error: "lead id is required" })
+    }
+    if (!touchId) {
+      return res.status(400).json({ error: "touch id is required" })
+    }
+
+    const type = asOptionalString(req.body?.type) ?? undefined
+    const notesProvided = Object.prototype.hasOwnProperty.call(req.body ?? {}, "notes")
+    const notesRaw = req.body?.notes
+    const notes = notesProvided
+      ? typeof notesRaw === "string"
+        ? notesRaw.trim()
+        : notesRaw == null
+          ? ""
+          : null
+      : undefined
+    const dateProvided = Object.prototype.hasOwnProperty.call(req.body ?? {}, "date")
+    const date = req.body?.date as string | undefined
+
+    if (type === undefined && notes === undefined && !dateProvided) {
+      return res.status(400).json({ error: "No fields to update" })
+    }
+
+    if (type !== undefined && !(await isKnownTouchType(type))) {
+      const touchTypes = await getTouchTypeNames()
+      return res.status(400).json({
+        error: "type must match a configured touch type",
+        touchTypes,
+      })
+    }
+    if (notes === null) {
+      return res.status(400).json({ error: "notes must be a string when provided" })
+    }
+
+    const parsedDate = dateProvided ? parseDate(date) : undefined
+    if (dateProvided && !parsedDate) {
+      return res.status(400).json({ error: "date must be a valid DateTime" })
+    }
+
+    const existing = await prisma.touch.findFirst({
+      where: { id: touchId, leadId },
+    })
+    if (!existing) {
+      return res.status(404).json({ error: "Touch not found" })
+    }
+
+    const touch = await prisma.touch.update({
+      where: { id: touchId },
+      data: {
+        ...(type !== undefined ? { type } : {}),
+        ...(notes !== undefined ? { notes } : {}),
+        ...(parsedDate ? { date: parsedDate } : {}),
+      },
+    })
+
+    return res.json({ touch })
+  } catch (error) {
+    return handlePrismaError(error, res, "Failed to update touch")
   }
 })
 
