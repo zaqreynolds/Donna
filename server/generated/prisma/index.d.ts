@@ -36,6 +36,11 @@ export type CompanyNote = $Result.DefaultSelection<Prisma.$CompanyNotePayload>
  */
 export type Lead = $Result.DefaultSelection<Prisma.$LeadPayload>
 /**
+ * Model LeadNote
+ * 
+ */
+export type LeadNote = $Result.DefaultSelection<Prisma.$LeadNotePayload>
+/**
  * Model Touch
  * 
  */
@@ -201,6 +206,16 @@ export class PrismaClient<
     * ```
     */
   get lead(): Prisma.LeadDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.leadNote`: Exposes CRUD operations for the **LeadNote** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more LeadNotes
+    * const leadNotes = await prisma.leadNote.findMany()
+    * ```
+    */
+  get leadNote(): Prisma.LeadNoteDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.touch`: Exposes CRUD operations for the **Touch** model.
@@ -649,6 +664,7 @@ export namespace Prisma {
     Company: 'Company',
     CompanyNote: 'CompanyNote',
     Lead: 'Lead',
+    LeadNote: 'LeadNote',
     Touch: 'Touch'
   };
 
@@ -665,7 +681,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "industry" | "company" | "companyNote" | "lead" | "touch"
+      modelProps: "industry" | "company" | "companyNote" | "lead" | "leadNote" | "touch"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -965,6 +981,80 @@ export namespace Prisma {
           }
         }
       }
+      LeadNote: {
+        payload: Prisma.$LeadNotePayload<ExtArgs>
+        fields: Prisma.LeadNoteFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LeadNoteFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LeadNoteFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>
+          }
+          findFirst: {
+            args: Prisma.LeadNoteFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LeadNoteFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>
+          }
+          findMany: {
+            args: Prisma.LeadNoteFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>[]
+          }
+          create: {
+            args: Prisma.LeadNoteCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>
+          }
+          createMany: {
+            args: Prisma.LeadNoteCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.LeadNoteCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>[]
+          }
+          delete: {
+            args: Prisma.LeadNoteDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>
+          }
+          update: {
+            args: Prisma.LeadNoteUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>
+          }
+          deleteMany: {
+            args: Prisma.LeadNoteDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LeadNoteUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.LeadNoteUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>[]
+          }
+          upsert: {
+            args: Prisma.LeadNoteUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>
+          }
+          aggregate: {
+            args: Prisma.LeadNoteAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLeadNote>
+          }
+          groupBy: {
+            args: Prisma.LeadNoteGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LeadNoteGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.LeadNoteCountArgs<ExtArgs>
+            result: $Utils.Optional<LeadNoteCountAggregateOutputType> | number
+          }
+        }
+      }
       Touch: {
         payload: Prisma.$TouchPayload<ExtArgs>
         fields: Prisma.TouchFieldRefs
@@ -1151,6 +1241,7 @@ export namespace Prisma {
     company?: CompanyOmit
     companyNote?: CompanyNoteOmit
     lead?: LeadOmit
+    leadNote?: LeadNoteOmit
     touch?: TouchOmit
   }
 
@@ -1304,10 +1395,12 @@ export namespace Prisma {
 
   export type LeadCountOutputType = {
     touches: number
+    notes: number
   }
 
   export type LeadCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     touches?: boolean | LeadCountOutputTypeCountTouchesArgs
+    notes?: boolean | LeadCountOutputTypeCountNotesArgs
   }
 
   // Custom InputTypes
@@ -1326,6 +1419,13 @@ export namespace Prisma {
    */
   export type LeadCountOutputTypeCountTouchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TouchWhereInput
+  }
+
+  /**
+   * LeadCountOutputType without action
+   */
+  export type LeadCountOutputTypeCountNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LeadNoteWhereInput
   }
 
 
@@ -2382,6 +2482,7 @@ export namespace Prisma {
     name: string | null
     address: string | null
     phone: string | null
+    isVip: boolean | null
     industryId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -2392,6 +2493,7 @@ export namespace Prisma {
     name: string | null
     address: string | null
     phone: string | null
+    isVip: boolean | null
     industryId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -2402,6 +2504,7 @@ export namespace Prisma {
     name: number
     address: number
     phone: number
+    isVip: number
     industryId: number
     createdAt: number
     updatedAt: number
@@ -2414,6 +2517,7 @@ export namespace Prisma {
     name?: true
     address?: true
     phone?: true
+    isVip?: true
     industryId?: true
     createdAt?: true
     updatedAt?: true
@@ -2424,6 +2528,7 @@ export namespace Prisma {
     name?: true
     address?: true
     phone?: true
+    isVip?: true
     industryId?: true
     createdAt?: true
     updatedAt?: true
@@ -2434,6 +2539,7 @@ export namespace Prisma {
     name?: true
     address?: true
     phone?: true
+    isVip?: true
     industryId?: true
     createdAt?: true
     updatedAt?: true
@@ -2517,6 +2623,7 @@ export namespace Prisma {
     name: string
     address: string | null
     phone: string | null
+    isVip: boolean
     industryId: string
     createdAt: Date
     updatedAt: Date
@@ -2544,6 +2651,7 @@ export namespace Prisma {
     name?: boolean
     address?: boolean
     phone?: boolean
+    isVip?: boolean
     industryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2558,6 +2666,7 @@ export namespace Prisma {
     name?: boolean
     address?: boolean
     phone?: boolean
+    isVip?: boolean
     industryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2569,6 +2678,7 @@ export namespace Prisma {
     name?: boolean
     address?: boolean
     phone?: boolean
+    isVip?: boolean
     industryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2580,12 +2690,13 @@ export namespace Prisma {
     name?: boolean
     address?: boolean
     phone?: boolean
+    isVip?: boolean
     industryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type CompanyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "address" | "phone" | "industryId" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
+  export type CompanyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "address" | "phone" | "isVip" | "industryId" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
   export type CompanyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     industry?: boolean | IndustryDefaultArgs<ExtArgs>
     leads?: boolean | Company$leadsArgs<ExtArgs>
@@ -2611,6 +2722,7 @@ export namespace Prisma {
       name: string
       address: string | null
       phone: string | null
+      isVip: boolean
       industryId: string
       createdAt: Date
       updatedAt: Date
@@ -3044,6 +3156,7 @@ export namespace Prisma {
     readonly name: FieldRef<"Company", 'String'>
     readonly address: FieldRef<"Company", 'String'>
     readonly phone: FieldRef<"Company", 'String'>
+    readonly isVip: FieldRef<"Company", 'Boolean'>
     readonly industryId: FieldRef<"Company", 'String'>
     readonly createdAt: FieldRef<"Company", 'DateTime'>
     readonly updatedAt: FieldRef<"Company", 'DateTime'>
@@ -4578,6 +4691,7 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     status: string | null
+    isVip: boolean | null
     companyId: string | null
     createdAt: Date | null
   }
@@ -4590,6 +4704,7 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     status: string | null
+    isVip: boolean | null
     companyId: string | null
     createdAt: Date | null
   }
@@ -4602,6 +4717,7 @@ export namespace Prisma {
     email: number
     phone: number
     status: number
+    isVip: number
     companyId: number
     createdAt: number
     _all: number
@@ -4616,6 +4732,7 @@ export namespace Prisma {
     email?: true
     phone?: true
     status?: true
+    isVip?: true
     companyId?: true
     createdAt?: true
   }
@@ -4628,6 +4745,7 @@ export namespace Prisma {
     email?: true
     phone?: true
     status?: true
+    isVip?: true
     companyId?: true
     createdAt?: true
   }
@@ -4640,6 +4758,7 @@ export namespace Prisma {
     email?: true
     phone?: true
     status?: true
+    isVip?: true
     companyId?: true
     createdAt?: true
     _all?: true
@@ -4725,6 +4844,7 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     status: string
+    isVip: boolean
     companyId: string
     createdAt: Date
     _count: LeadCountAggregateOutputType | null
@@ -4754,10 +4874,12 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     status?: boolean
+    isVip?: boolean
     companyId?: boolean
     createdAt?: boolean
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     touches?: boolean | Lead$touchesArgs<ExtArgs>
+    notes?: boolean | Lead$notesArgs<ExtArgs>
     _count?: boolean | LeadCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["lead"]>
 
@@ -4769,6 +4891,7 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     status?: boolean
+    isVip?: boolean
     companyId?: boolean
     createdAt?: boolean
     company?: boolean | CompanyDefaultArgs<ExtArgs>
@@ -4782,6 +4905,7 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     status?: boolean
+    isVip?: boolean
     companyId?: boolean
     createdAt?: boolean
     company?: boolean | CompanyDefaultArgs<ExtArgs>
@@ -4795,14 +4919,16 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     status?: boolean
+    isVip?: boolean
     companyId?: boolean
     createdAt?: boolean
   }
 
-  export type LeadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "firstName" | "lastName" | "title" | "email" | "phone" | "status" | "companyId" | "createdAt", ExtArgs["result"]["lead"]>
+  export type LeadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "firstName" | "lastName" | "title" | "email" | "phone" | "status" | "isVip" | "companyId" | "createdAt", ExtArgs["result"]["lead"]>
   export type LeadInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     touches?: boolean | Lead$touchesArgs<ExtArgs>
+    notes?: boolean | Lead$notesArgs<ExtArgs>
     _count?: boolean | LeadCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type LeadIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4817,6 +4943,7 @@ export namespace Prisma {
     objects: {
       company: Prisma.$CompanyPayload<ExtArgs>
       touches: Prisma.$TouchPayload<ExtArgs>[]
+      notes: Prisma.$LeadNotePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4830,6 +4957,7 @@ export namespace Prisma {
        * Allowed values: "NEW" | "CONTACTED" | "QUALIFIED" | "NURTURING" | "LOST"
        */
       status: string
+      isVip: boolean
       companyId: string
       createdAt: Date
     }, ExtArgs["result"]["lead"]>
@@ -5228,6 +5356,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     touches<T extends Lead$touchesArgs<ExtArgs> = {}>(args?: Subset<T, Lead$touchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TouchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    notes<T extends Lead$notesArgs<ExtArgs> = {}>(args?: Subset<T, Lead$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5264,6 +5393,7 @@ export namespace Prisma {
     readonly email: FieldRef<"Lead", 'String'>
     readonly phone: FieldRef<"Lead", 'String'>
     readonly status: FieldRef<"Lead", 'String'>
+    readonly isVip: FieldRef<"Lead", 'Boolean'>
     readonly companyId: FieldRef<"Lead", 'String'>
     readonly createdAt: FieldRef<"Lead", 'DateTime'>
   }
@@ -5689,6 +5819,30 @@ export namespace Prisma {
   }
 
   /**
+   * Lead.notes
+   */
+  export type Lead$notesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeadNote
+     */
+    select?: LeadNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeadNote
+     */
+    omit?: LeadNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeadNoteInclude<ExtArgs> | null
+    where?: LeadNoteWhereInput
+    orderBy?: LeadNoteOrderByWithRelationInput | LeadNoteOrderByWithRelationInput[]
+    cursor?: LeadNoteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LeadNoteScalarFieldEnum | LeadNoteScalarFieldEnum[]
+  }
+
+  /**
    * Lead without action
    */
   export type LeadDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5704,6 +5858,1054 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: LeadInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model LeadNote
+   */
+
+  export type AggregateLeadNote = {
+    _count: LeadNoteCountAggregateOutputType | null
+    _min: LeadNoteMinAggregateOutputType | null
+    _max: LeadNoteMaxAggregateOutputType | null
+  }
+
+  export type LeadNoteMinAggregateOutputType = {
+    id: string | null
+    text: string | null
+    leadId: string | null
+    createdAt: Date | null
+  }
+
+  export type LeadNoteMaxAggregateOutputType = {
+    id: string | null
+    text: string | null
+    leadId: string | null
+    createdAt: Date | null
+  }
+
+  export type LeadNoteCountAggregateOutputType = {
+    id: number
+    text: number
+    leadId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type LeadNoteMinAggregateInputType = {
+    id?: true
+    text?: true
+    leadId?: true
+    createdAt?: true
+  }
+
+  export type LeadNoteMaxAggregateInputType = {
+    id?: true
+    text?: true
+    leadId?: true
+    createdAt?: true
+  }
+
+  export type LeadNoteCountAggregateInputType = {
+    id?: true
+    text?: true
+    leadId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type LeadNoteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LeadNote to aggregate.
+     */
+    where?: LeadNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LeadNotes to fetch.
+     */
+    orderBy?: LeadNoteOrderByWithRelationInput | LeadNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LeadNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LeadNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LeadNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned LeadNotes
+    **/
+    _count?: true | LeadNoteCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LeadNoteMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LeadNoteMaxAggregateInputType
+  }
+
+  export type GetLeadNoteAggregateType<T extends LeadNoteAggregateArgs> = {
+        [P in keyof T & keyof AggregateLeadNote]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLeadNote[P]>
+      : GetScalarType<T[P], AggregateLeadNote[P]>
+  }
+
+
+
+
+  export type LeadNoteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LeadNoteWhereInput
+    orderBy?: LeadNoteOrderByWithAggregationInput | LeadNoteOrderByWithAggregationInput[]
+    by: LeadNoteScalarFieldEnum[] | LeadNoteScalarFieldEnum
+    having?: LeadNoteScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LeadNoteCountAggregateInputType | true
+    _min?: LeadNoteMinAggregateInputType
+    _max?: LeadNoteMaxAggregateInputType
+  }
+
+  export type LeadNoteGroupByOutputType = {
+    id: string
+    text: string
+    leadId: string
+    createdAt: Date
+    _count: LeadNoteCountAggregateOutputType | null
+    _min: LeadNoteMinAggregateOutputType | null
+    _max: LeadNoteMaxAggregateOutputType | null
+  }
+
+  type GetLeadNoteGroupByPayload<T extends LeadNoteGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LeadNoteGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LeadNoteGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LeadNoteGroupByOutputType[P]>
+            : GetScalarType<T[P], LeadNoteGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LeadNoteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    text?: boolean
+    leadId?: boolean
+    createdAt?: boolean
+    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["leadNote"]>
+
+  export type LeadNoteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    text?: boolean
+    leadId?: boolean
+    createdAt?: boolean
+    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["leadNote"]>
+
+  export type LeadNoteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    text?: boolean
+    leadId?: boolean
+    createdAt?: boolean
+    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["leadNote"]>
+
+  export type LeadNoteSelectScalar = {
+    id?: boolean
+    text?: boolean
+    leadId?: boolean
+    createdAt?: boolean
+  }
+
+  export type LeadNoteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "leadId" | "createdAt", ExtArgs["result"]["leadNote"]>
+  export type LeadNoteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  }
+  export type LeadNoteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  }
+  export type LeadNoteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  }
+
+  export type $LeadNotePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "LeadNote"
+    objects: {
+      lead: Prisma.$LeadPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      text: string
+      leadId: string
+      createdAt: Date
+    }, ExtArgs["result"]["leadNote"]>
+    composites: {}
+  }
+
+  type LeadNoteGetPayload<S extends boolean | null | undefined | LeadNoteDefaultArgs> = $Result.GetResult<Prisma.$LeadNotePayload, S>
+
+  type LeadNoteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<LeadNoteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: LeadNoteCountAggregateInputType | true
+    }
+
+  export interface LeadNoteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['LeadNote'], meta: { name: 'LeadNote' } }
+    /**
+     * Find zero or one LeadNote that matches the filter.
+     * @param {LeadNoteFindUniqueArgs} args - Arguments to find a LeadNote
+     * @example
+     * // Get one LeadNote
+     * const leadNote = await prisma.leadNote.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LeadNoteFindUniqueArgs>(args: SelectSubset<T, LeadNoteFindUniqueArgs<ExtArgs>>): Prisma__LeadNoteClient<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one LeadNote that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {LeadNoteFindUniqueOrThrowArgs} args - Arguments to find a LeadNote
+     * @example
+     * // Get one LeadNote
+     * const leadNote = await prisma.leadNote.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LeadNoteFindUniqueOrThrowArgs>(args: SelectSubset<T, LeadNoteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LeadNoteClient<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LeadNote that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeadNoteFindFirstArgs} args - Arguments to find a LeadNote
+     * @example
+     * // Get one LeadNote
+     * const leadNote = await prisma.leadNote.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LeadNoteFindFirstArgs>(args?: SelectSubset<T, LeadNoteFindFirstArgs<ExtArgs>>): Prisma__LeadNoteClient<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LeadNote that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeadNoteFindFirstOrThrowArgs} args - Arguments to find a LeadNote
+     * @example
+     * // Get one LeadNote
+     * const leadNote = await prisma.leadNote.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LeadNoteFindFirstOrThrowArgs>(args?: SelectSubset<T, LeadNoteFindFirstOrThrowArgs<ExtArgs>>): Prisma__LeadNoteClient<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more LeadNotes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeadNoteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all LeadNotes
+     * const leadNotes = await prisma.leadNote.findMany()
+     * 
+     * // Get first 10 LeadNotes
+     * const leadNotes = await prisma.leadNote.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const leadNoteWithIdOnly = await prisma.leadNote.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LeadNoteFindManyArgs>(args?: SelectSubset<T, LeadNoteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a LeadNote.
+     * @param {LeadNoteCreateArgs} args - Arguments to create a LeadNote.
+     * @example
+     * // Create one LeadNote
+     * const LeadNote = await prisma.leadNote.create({
+     *   data: {
+     *     // ... data to create a LeadNote
+     *   }
+     * })
+     * 
+     */
+    create<T extends LeadNoteCreateArgs>(args: SelectSubset<T, LeadNoteCreateArgs<ExtArgs>>): Prisma__LeadNoteClient<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many LeadNotes.
+     * @param {LeadNoteCreateManyArgs} args - Arguments to create many LeadNotes.
+     * @example
+     * // Create many LeadNotes
+     * const leadNote = await prisma.leadNote.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LeadNoteCreateManyArgs>(args?: SelectSubset<T, LeadNoteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many LeadNotes and returns the data saved in the database.
+     * @param {LeadNoteCreateManyAndReturnArgs} args - Arguments to create many LeadNotes.
+     * @example
+     * // Create many LeadNotes
+     * const leadNote = await prisma.leadNote.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many LeadNotes and only return the `id`
+     * const leadNoteWithIdOnly = await prisma.leadNote.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends LeadNoteCreateManyAndReturnArgs>(args?: SelectSubset<T, LeadNoteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a LeadNote.
+     * @param {LeadNoteDeleteArgs} args - Arguments to delete one LeadNote.
+     * @example
+     * // Delete one LeadNote
+     * const LeadNote = await prisma.leadNote.delete({
+     *   where: {
+     *     // ... filter to delete one LeadNote
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LeadNoteDeleteArgs>(args: SelectSubset<T, LeadNoteDeleteArgs<ExtArgs>>): Prisma__LeadNoteClient<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one LeadNote.
+     * @param {LeadNoteUpdateArgs} args - Arguments to update one LeadNote.
+     * @example
+     * // Update one LeadNote
+     * const leadNote = await prisma.leadNote.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LeadNoteUpdateArgs>(args: SelectSubset<T, LeadNoteUpdateArgs<ExtArgs>>): Prisma__LeadNoteClient<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more LeadNotes.
+     * @param {LeadNoteDeleteManyArgs} args - Arguments to filter LeadNotes to delete.
+     * @example
+     * // Delete a few LeadNotes
+     * const { count } = await prisma.leadNote.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LeadNoteDeleteManyArgs>(args?: SelectSubset<T, LeadNoteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LeadNotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeadNoteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many LeadNotes
+     * const leadNote = await prisma.leadNote.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LeadNoteUpdateManyArgs>(args: SelectSubset<T, LeadNoteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LeadNotes and returns the data updated in the database.
+     * @param {LeadNoteUpdateManyAndReturnArgs} args - Arguments to update many LeadNotes.
+     * @example
+     * // Update many LeadNotes
+     * const leadNote = await prisma.leadNote.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more LeadNotes and only return the `id`
+     * const leadNoteWithIdOnly = await prisma.leadNote.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends LeadNoteUpdateManyAndReturnArgs>(args: SelectSubset<T, LeadNoteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one LeadNote.
+     * @param {LeadNoteUpsertArgs} args - Arguments to update or create a LeadNote.
+     * @example
+     * // Update or create a LeadNote
+     * const leadNote = await prisma.leadNote.upsert({
+     *   create: {
+     *     // ... data to create a LeadNote
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the LeadNote we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LeadNoteUpsertArgs>(args: SelectSubset<T, LeadNoteUpsertArgs<ExtArgs>>): Prisma__LeadNoteClient<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of LeadNotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeadNoteCountArgs} args - Arguments to filter LeadNotes to count.
+     * @example
+     * // Count the number of LeadNotes
+     * const count = await prisma.leadNote.count({
+     *   where: {
+     *     // ... the filter for the LeadNotes we want to count
+     *   }
+     * })
+    **/
+    count<T extends LeadNoteCountArgs>(
+      args?: Subset<T, LeadNoteCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LeadNoteCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a LeadNote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeadNoteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LeadNoteAggregateArgs>(args: Subset<T, LeadNoteAggregateArgs>): Prisma.PrismaPromise<GetLeadNoteAggregateType<T>>
+
+    /**
+     * Group by LeadNote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LeadNoteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LeadNoteGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LeadNoteGroupByArgs['orderBy'] }
+        : { orderBy?: LeadNoteGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LeadNoteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLeadNoteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the LeadNote model
+   */
+  readonly fields: LeadNoteFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for LeadNote.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LeadNoteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    lead<T extends LeadDefaultArgs<ExtArgs> = {}>(args?: Subset<T, LeadDefaultArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the LeadNote model
+   */
+  interface LeadNoteFieldRefs {
+    readonly id: FieldRef<"LeadNote", 'String'>
+    readonly text: FieldRef<"LeadNote", 'String'>
+    readonly leadId: FieldRef<"LeadNote", 'String'>
+    readonly createdAt: FieldRef<"LeadNote", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * LeadNote findUnique
+   */
+  export type LeadNoteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeadNote
+     */
+    select?: LeadNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeadNote
+     */
+    omit?: LeadNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeadNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which LeadNote to fetch.
+     */
+    where: LeadNoteWhereUniqueInput
+  }
+
+  /**
+   * LeadNote findUniqueOrThrow
+   */
+  export type LeadNoteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeadNote
+     */
+    select?: LeadNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeadNote
+     */
+    omit?: LeadNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeadNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which LeadNote to fetch.
+     */
+    where: LeadNoteWhereUniqueInput
+  }
+
+  /**
+   * LeadNote findFirst
+   */
+  export type LeadNoteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeadNote
+     */
+    select?: LeadNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeadNote
+     */
+    omit?: LeadNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeadNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which LeadNote to fetch.
+     */
+    where?: LeadNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LeadNotes to fetch.
+     */
+    orderBy?: LeadNoteOrderByWithRelationInput | LeadNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LeadNotes.
+     */
+    cursor?: LeadNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LeadNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LeadNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LeadNotes.
+     */
+    distinct?: LeadNoteScalarFieldEnum | LeadNoteScalarFieldEnum[]
+  }
+
+  /**
+   * LeadNote findFirstOrThrow
+   */
+  export type LeadNoteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeadNote
+     */
+    select?: LeadNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeadNote
+     */
+    omit?: LeadNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeadNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which LeadNote to fetch.
+     */
+    where?: LeadNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LeadNotes to fetch.
+     */
+    orderBy?: LeadNoteOrderByWithRelationInput | LeadNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LeadNotes.
+     */
+    cursor?: LeadNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LeadNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LeadNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LeadNotes.
+     */
+    distinct?: LeadNoteScalarFieldEnum | LeadNoteScalarFieldEnum[]
+  }
+
+  /**
+   * LeadNote findMany
+   */
+  export type LeadNoteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeadNote
+     */
+    select?: LeadNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeadNote
+     */
+    omit?: LeadNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeadNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which LeadNotes to fetch.
+     */
+    where?: LeadNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LeadNotes to fetch.
+     */
+    orderBy?: LeadNoteOrderByWithRelationInput | LeadNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing LeadNotes.
+     */
+    cursor?: LeadNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LeadNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LeadNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LeadNotes.
+     */
+    distinct?: LeadNoteScalarFieldEnum | LeadNoteScalarFieldEnum[]
+  }
+
+  /**
+   * LeadNote create
+   */
+  export type LeadNoteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeadNote
+     */
+    select?: LeadNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeadNote
+     */
+    omit?: LeadNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeadNoteInclude<ExtArgs> | null
+    /**
+     * The data needed to create a LeadNote.
+     */
+    data: XOR<LeadNoteCreateInput, LeadNoteUncheckedCreateInput>
+  }
+
+  /**
+   * LeadNote createMany
+   */
+  export type LeadNoteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many LeadNotes.
+     */
+    data: LeadNoteCreateManyInput | LeadNoteCreateManyInput[]
+  }
+
+  /**
+   * LeadNote createManyAndReturn
+   */
+  export type LeadNoteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeadNote
+     */
+    select?: LeadNoteSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeadNote
+     */
+    omit?: LeadNoteOmit<ExtArgs> | null
+    /**
+     * The data used to create many LeadNotes.
+     */
+    data: LeadNoteCreateManyInput | LeadNoteCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeadNoteIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * LeadNote update
+   */
+  export type LeadNoteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeadNote
+     */
+    select?: LeadNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeadNote
+     */
+    omit?: LeadNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeadNoteInclude<ExtArgs> | null
+    /**
+     * The data needed to update a LeadNote.
+     */
+    data: XOR<LeadNoteUpdateInput, LeadNoteUncheckedUpdateInput>
+    /**
+     * Choose, which LeadNote to update.
+     */
+    where: LeadNoteWhereUniqueInput
+  }
+
+  /**
+   * LeadNote updateMany
+   */
+  export type LeadNoteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update LeadNotes.
+     */
+    data: XOR<LeadNoteUpdateManyMutationInput, LeadNoteUncheckedUpdateManyInput>
+    /**
+     * Filter which LeadNotes to update
+     */
+    where?: LeadNoteWhereInput
+    /**
+     * Limit how many LeadNotes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * LeadNote updateManyAndReturn
+   */
+  export type LeadNoteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeadNote
+     */
+    select?: LeadNoteSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeadNote
+     */
+    omit?: LeadNoteOmit<ExtArgs> | null
+    /**
+     * The data used to update LeadNotes.
+     */
+    data: XOR<LeadNoteUpdateManyMutationInput, LeadNoteUncheckedUpdateManyInput>
+    /**
+     * Filter which LeadNotes to update
+     */
+    where?: LeadNoteWhereInput
+    /**
+     * Limit how many LeadNotes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeadNoteIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * LeadNote upsert
+   */
+  export type LeadNoteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeadNote
+     */
+    select?: LeadNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeadNote
+     */
+    omit?: LeadNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeadNoteInclude<ExtArgs> | null
+    /**
+     * The filter to search for the LeadNote to update in case it exists.
+     */
+    where: LeadNoteWhereUniqueInput
+    /**
+     * In case the LeadNote found by the `where` argument doesn't exist, create a new LeadNote with this data.
+     */
+    create: XOR<LeadNoteCreateInput, LeadNoteUncheckedCreateInput>
+    /**
+     * In case the LeadNote was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LeadNoteUpdateInput, LeadNoteUncheckedUpdateInput>
+  }
+
+  /**
+   * LeadNote delete
+   */
+  export type LeadNoteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeadNote
+     */
+    select?: LeadNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeadNote
+     */
+    omit?: LeadNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeadNoteInclude<ExtArgs> | null
+    /**
+     * Filter which LeadNote to delete.
+     */
+    where: LeadNoteWhereUniqueInput
+  }
+
+  /**
+   * LeadNote deleteMany
+   */
+  export type LeadNoteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LeadNotes to delete
+     */
+    where?: LeadNoteWhereInput
+    /**
+     * Limit how many LeadNotes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * LeadNote without action
+   */
+  export type LeadNoteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LeadNote
+     */
+    select?: LeadNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LeadNote
+     */
+    omit?: LeadNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeadNoteInclude<ExtArgs> | null
   }
 
 
@@ -6798,6 +8000,7 @@ export namespace Prisma {
     name: 'name',
     address: 'address',
     phone: 'phone',
+    isVip: 'isVip',
     industryId: 'industryId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -6824,11 +8027,22 @@ export namespace Prisma {
     email: 'email',
     phone: 'phone',
     status: 'status',
+    isVip: 'isVip',
     companyId: 'companyId',
     createdAt: 'createdAt'
   };
 
   export type LeadScalarFieldEnum = (typeof LeadScalarFieldEnum)[keyof typeof LeadScalarFieldEnum]
+
+
+  export const LeadNoteScalarFieldEnum: {
+    id: 'id',
+    text: 'text',
+    leadId: 'leadId',
+    createdAt: 'createdAt'
+  };
+
+  export type LeadNoteScalarFieldEnum = (typeof LeadNoteScalarFieldEnum)[keyof typeof LeadNoteScalarFieldEnum]
 
 
   export const TouchScalarFieldEnum: {
@@ -6867,6 +8081,13 @@ export namespace Prisma {
    * Reference to a field of type 'String'
    */
   export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -6935,6 +8156,7 @@ export namespace Prisma {
     name?: StringFilter<"Company"> | string
     address?: StringNullableFilter<"Company"> | string | null
     phone?: StringNullableFilter<"Company"> | string | null
+    isVip?: BoolFilter<"Company"> | boolean
     industryId?: StringFilter<"Company"> | string
     createdAt?: DateTimeFilter<"Company"> | Date | string
     updatedAt?: DateTimeFilter<"Company"> | Date | string
@@ -6948,6 +8170,7 @@ export namespace Prisma {
     name?: SortOrder
     address?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
+    isVip?: SortOrder
     industryId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -6964,6 +8187,7 @@ export namespace Prisma {
     name?: StringFilter<"Company"> | string
     address?: StringNullableFilter<"Company"> | string | null
     phone?: StringNullableFilter<"Company"> | string | null
+    isVip?: BoolFilter<"Company"> | boolean
     industryId?: StringFilter<"Company"> | string
     createdAt?: DateTimeFilter<"Company"> | Date | string
     updatedAt?: DateTimeFilter<"Company"> | Date | string
@@ -6977,6 +8201,7 @@ export namespace Prisma {
     name?: SortOrder
     address?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
+    isVip?: SortOrder
     industryId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -6993,6 +8218,7 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Company"> | string
     address?: StringNullableWithAggregatesFilter<"Company"> | string | null
     phone?: StringNullableWithAggregatesFilter<"Company"> | string | null
+    isVip?: BoolWithAggregatesFilter<"Company"> | boolean
     industryId?: StringWithAggregatesFilter<"Company"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Company"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Company"> | Date | string
@@ -7059,10 +8285,12 @@ export namespace Prisma {
     email?: StringNullableFilter<"Lead"> | string | null
     phone?: StringNullableFilter<"Lead"> | string | null
     status?: StringFilter<"Lead"> | string
+    isVip?: BoolFilter<"Lead"> | boolean
     companyId?: StringFilter<"Lead"> | string
     createdAt?: DateTimeFilter<"Lead"> | Date | string
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     touches?: TouchListRelationFilter
+    notes?: LeadNoteListRelationFilter
   }
 
   export type LeadOrderByWithRelationInput = {
@@ -7073,10 +8301,12 @@ export namespace Prisma {
     email?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     status?: SortOrder
+    isVip?: SortOrder
     companyId?: SortOrder
     createdAt?: SortOrder
     company?: CompanyOrderByWithRelationInput
     touches?: TouchOrderByRelationAggregateInput
+    notes?: LeadNoteOrderByRelationAggregateInput
   }
 
   export type LeadWhereUniqueInput = Prisma.AtLeast<{
@@ -7090,10 +8320,12 @@ export namespace Prisma {
     email?: StringNullableFilter<"Lead"> | string | null
     phone?: StringNullableFilter<"Lead"> | string | null
     status?: StringFilter<"Lead"> | string
+    isVip?: BoolFilter<"Lead"> | boolean
     companyId?: StringFilter<"Lead"> | string
     createdAt?: DateTimeFilter<"Lead"> | Date | string
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     touches?: TouchListRelationFilter
+    notes?: LeadNoteListRelationFilter
   }, "id">
 
   export type LeadOrderByWithAggregationInput = {
@@ -7104,6 +8336,7 @@ export namespace Prisma {
     email?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     status?: SortOrder
+    isVip?: SortOrder
     companyId?: SortOrder
     createdAt?: SortOrder
     _count?: LeadCountOrderByAggregateInput
@@ -7122,8 +8355,59 @@ export namespace Prisma {
     email?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     phone?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     status?: StringWithAggregatesFilter<"Lead"> | string
+    isVip?: BoolWithAggregatesFilter<"Lead"> | boolean
     companyId?: StringWithAggregatesFilter<"Lead"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Lead"> | Date | string
+  }
+
+  export type LeadNoteWhereInput = {
+    AND?: LeadNoteWhereInput | LeadNoteWhereInput[]
+    OR?: LeadNoteWhereInput[]
+    NOT?: LeadNoteWhereInput | LeadNoteWhereInput[]
+    id?: StringFilter<"LeadNote"> | string
+    text?: StringFilter<"LeadNote"> | string
+    leadId?: StringFilter<"LeadNote"> | string
+    createdAt?: DateTimeFilter<"LeadNote"> | Date | string
+    lead?: XOR<LeadScalarRelationFilter, LeadWhereInput>
+  }
+
+  export type LeadNoteOrderByWithRelationInput = {
+    id?: SortOrder
+    text?: SortOrder
+    leadId?: SortOrder
+    createdAt?: SortOrder
+    lead?: LeadOrderByWithRelationInput
+  }
+
+  export type LeadNoteWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: LeadNoteWhereInput | LeadNoteWhereInput[]
+    OR?: LeadNoteWhereInput[]
+    NOT?: LeadNoteWhereInput | LeadNoteWhereInput[]
+    text?: StringFilter<"LeadNote"> | string
+    leadId?: StringFilter<"LeadNote"> | string
+    createdAt?: DateTimeFilter<"LeadNote"> | Date | string
+    lead?: XOR<LeadScalarRelationFilter, LeadWhereInput>
+  }, "id">
+
+  export type LeadNoteOrderByWithAggregationInput = {
+    id?: SortOrder
+    text?: SortOrder
+    leadId?: SortOrder
+    createdAt?: SortOrder
+    _count?: LeadNoteCountOrderByAggregateInput
+    _max?: LeadNoteMaxOrderByAggregateInput
+    _min?: LeadNoteMinOrderByAggregateInput
+  }
+
+  export type LeadNoteScalarWhereWithAggregatesInput = {
+    AND?: LeadNoteScalarWhereWithAggregatesInput | LeadNoteScalarWhereWithAggregatesInput[]
+    OR?: LeadNoteScalarWhereWithAggregatesInput[]
+    NOT?: LeadNoteScalarWhereWithAggregatesInput | LeadNoteScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"LeadNote"> | string
+    text?: StringWithAggregatesFilter<"LeadNote"> | string
+    leadId?: StringWithAggregatesFilter<"LeadNote"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"LeadNote"> | Date | string
   }
 
   export type TouchWhereInput = {
@@ -7225,6 +8509,7 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    isVip?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     industry: IndustryCreateNestedOneWithoutCompaniesInput
@@ -7237,6 +8522,7 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    isVip?: boolean
     industryId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7249,6 +8535,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     industry?: IndustryUpdateOneRequiredWithoutCompaniesNestedInput
@@ -7261,6 +8548,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     industryId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7273,6 +8561,7 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    isVip?: boolean
     industryId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7283,6 +8572,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -7292,6 +8582,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     industryId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7353,9 +8644,11 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     status?: string
+    isVip?: boolean
     createdAt?: Date | string
     company: CompanyCreateNestedOneWithoutLeadsInput
     touches?: TouchCreateNestedManyWithoutLeadInput
+    notes?: LeadNoteCreateNestedManyWithoutLeadInput
   }
 
   export type LeadUncheckedCreateInput = {
@@ -7366,9 +8659,11 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     status?: string
+    isVip?: boolean
     companyId: string
     createdAt?: Date | string
     touches?: TouchUncheckedCreateNestedManyWithoutLeadInput
+    notes?: LeadNoteUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadUpdateInput = {
@@ -7379,9 +8674,11 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     company?: CompanyUpdateOneRequiredWithoutLeadsNestedInput
     touches?: TouchUpdateManyWithoutLeadNestedInput
+    notes?: LeadNoteUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateInput = {
@@ -7392,9 +8689,11 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     companyId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     touches?: TouchUncheckedUpdateManyWithoutLeadNestedInput
+    notes?: LeadNoteUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadCreateManyInput = {
@@ -7405,6 +8704,7 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     status?: string
+    isVip?: boolean
     companyId: string
     createdAt?: Date | string
   }
@@ -7417,6 +8717,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -7428,7 +8729,56 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     companyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LeadNoteCreateInput = {
+    id?: string
+    text: string
+    createdAt?: Date | string
+    lead: LeadCreateNestedOneWithoutNotesInput
+  }
+
+  export type LeadNoteUncheckedCreateInput = {
+    id?: string
+    text: string
+    leadId: string
+    createdAt?: Date | string
+  }
+
+  export type LeadNoteUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lead?: LeadUpdateOneRequiredWithoutNotesNestedInput
+  }
+
+  export type LeadNoteUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    leadId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LeadNoteCreateManyInput = {
+    id?: string
+    text: string
+    leadId: string
+    createdAt?: Date | string
+  }
+
+  export type LeadNoteUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LeadNoteUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    leadId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -7557,6 +8907,11 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[]
@@ -7603,6 +8958,7 @@ export namespace Prisma {
     name?: SortOrder
     address?: SortOrder
     phone?: SortOrder
+    isVip?: SortOrder
     industryId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7613,6 +8969,7 @@ export namespace Prisma {
     name?: SortOrder
     address?: SortOrder
     phone?: SortOrder
+    isVip?: SortOrder
     industryId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7623,6 +8980,7 @@ export namespace Prisma {
     name?: SortOrder
     address?: SortOrder
     phone?: SortOrder
+    isVip?: SortOrder
     industryId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7643,6 +9001,14 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -7691,7 +9057,17 @@ export namespace Prisma {
     none?: TouchWhereInput
   }
 
+  export type LeadNoteListRelationFilter = {
+    every?: LeadNoteWhereInput
+    some?: LeadNoteWhereInput
+    none?: LeadNoteWhereInput
+  }
+
   export type TouchOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type LeadNoteOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -7703,6 +9079,7 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     status?: SortOrder
+    isVip?: SortOrder
     companyId?: SortOrder
     createdAt?: SortOrder
   }
@@ -7715,6 +9092,7 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     status?: SortOrder
+    isVip?: SortOrder
     companyId?: SortOrder
     createdAt?: SortOrder
   }
@@ -7727,6 +9105,7 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     status?: SortOrder
+    isVip?: SortOrder
     companyId?: SortOrder
     createdAt?: SortOrder
   }
@@ -7734,6 +9113,27 @@ export namespace Prisma {
   export type LeadScalarRelationFilter = {
     is?: LeadWhereInput
     isNot?: LeadWhereInput
+  }
+
+  export type LeadNoteCountOrderByAggregateInput = {
+    id?: SortOrder
+    text?: SortOrder
+    leadId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LeadNoteMaxOrderByAggregateInput = {
+    id?: SortOrder
+    text?: SortOrder
+    leadId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LeadNoteMinOrderByAggregateInput = {
+    id?: SortOrder
+    text?: SortOrder
+    leadId?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type TouchCountOrderByAggregateInput = {
@@ -7844,6 +9244,10 @@ export namespace Prisma {
     set?: string | null
   }
 
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
   }
@@ -7939,11 +9343,25 @@ export namespace Prisma {
     connect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
   }
 
+  export type LeadNoteCreateNestedManyWithoutLeadInput = {
+    create?: XOR<LeadNoteCreateWithoutLeadInput, LeadNoteUncheckedCreateWithoutLeadInput> | LeadNoteCreateWithoutLeadInput[] | LeadNoteUncheckedCreateWithoutLeadInput[]
+    connectOrCreate?: LeadNoteCreateOrConnectWithoutLeadInput | LeadNoteCreateOrConnectWithoutLeadInput[]
+    createMany?: LeadNoteCreateManyLeadInputEnvelope
+    connect?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
+  }
+
   export type TouchUncheckedCreateNestedManyWithoutLeadInput = {
     create?: XOR<TouchCreateWithoutLeadInput, TouchUncheckedCreateWithoutLeadInput> | TouchCreateWithoutLeadInput[] | TouchUncheckedCreateWithoutLeadInput[]
     connectOrCreate?: TouchCreateOrConnectWithoutLeadInput | TouchCreateOrConnectWithoutLeadInput[]
     createMany?: TouchCreateManyLeadInputEnvelope
     connect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+  }
+
+  export type LeadNoteUncheckedCreateNestedManyWithoutLeadInput = {
+    create?: XOR<LeadNoteCreateWithoutLeadInput, LeadNoteUncheckedCreateWithoutLeadInput> | LeadNoteCreateWithoutLeadInput[] | LeadNoteUncheckedCreateWithoutLeadInput[]
+    connectOrCreate?: LeadNoteCreateOrConnectWithoutLeadInput | LeadNoteCreateOrConnectWithoutLeadInput[]
+    createMany?: LeadNoteCreateManyLeadInputEnvelope
+    connect?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
   }
 
   export type CompanyUpdateOneRequiredWithoutLeadsNestedInput = {
@@ -7968,6 +9386,20 @@ export namespace Prisma {
     deleteMany?: TouchScalarWhereInput | TouchScalarWhereInput[]
   }
 
+  export type LeadNoteUpdateManyWithoutLeadNestedInput = {
+    create?: XOR<LeadNoteCreateWithoutLeadInput, LeadNoteUncheckedCreateWithoutLeadInput> | LeadNoteCreateWithoutLeadInput[] | LeadNoteUncheckedCreateWithoutLeadInput[]
+    connectOrCreate?: LeadNoteCreateOrConnectWithoutLeadInput | LeadNoteCreateOrConnectWithoutLeadInput[]
+    upsert?: LeadNoteUpsertWithWhereUniqueWithoutLeadInput | LeadNoteUpsertWithWhereUniqueWithoutLeadInput[]
+    createMany?: LeadNoteCreateManyLeadInputEnvelope
+    set?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
+    disconnect?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
+    delete?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
+    connect?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
+    update?: LeadNoteUpdateWithWhereUniqueWithoutLeadInput | LeadNoteUpdateWithWhereUniqueWithoutLeadInput[]
+    updateMany?: LeadNoteUpdateManyWithWhereWithoutLeadInput | LeadNoteUpdateManyWithWhereWithoutLeadInput[]
+    deleteMany?: LeadNoteScalarWhereInput | LeadNoteScalarWhereInput[]
+  }
+
   export type TouchUncheckedUpdateManyWithoutLeadNestedInput = {
     create?: XOR<TouchCreateWithoutLeadInput, TouchUncheckedCreateWithoutLeadInput> | TouchCreateWithoutLeadInput[] | TouchUncheckedCreateWithoutLeadInput[]
     connectOrCreate?: TouchCreateOrConnectWithoutLeadInput | TouchCreateOrConnectWithoutLeadInput[]
@@ -7980,6 +9412,34 @@ export namespace Prisma {
     update?: TouchUpdateWithWhereUniqueWithoutLeadInput | TouchUpdateWithWhereUniqueWithoutLeadInput[]
     updateMany?: TouchUpdateManyWithWhereWithoutLeadInput | TouchUpdateManyWithWhereWithoutLeadInput[]
     deleteMany?: TouchScalarWhereInput | TouchScalarWhereInput[]
+  }
+
+  export type LeadNoteUncheckedUpdateManyWithoutLeadNestedInput = {
+    create?: XOR<LeadNoteCreateWithoutLeadInput, LeadNoteUncheckedCreateWithoutLeadInput> | LeadNoteCreateWithoutLeadInput[] | LeadNoteUncheckedCreateWithoutLeadInput[]
+    connectOrCreate?: LeadNoteCreateOrConnectWithoutLeadInput | LeadNoteCreateOrConnectWithoutLeadInput[]
+    upsert?: LeadNoteUpsertWithWhereUniqueWithoutLeadInput | LeadNoteUpsertWithWhereUniqueWithoutLeadInput[]
+    createMany?: LeadNoteCreateManyLeadInputEnvelope
+    set?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
+    disconnect?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
+    delete?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
+    connect?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
+    update?: LeadNoteUpdateWithWhereUniqueWithoutLeadInput | LeadNoteUpdateWithWhereUniqueWithoutLeadInput[]
+    updateMany?: LeadNoteUpdateManyWithWhereWithoutLeadInput | LeadNoteUpdateManyWithWhereWithoutLeadInput[]
+    deleteMany?: LeadNoteScalarWhereInput | LeadNoteScalarWhereInput[]
+  }
+
+  export type LeadCreateNestedOneWithoutNotesInput = {
+    create?: XOR<LeadCreateWithoutNotesInput, LeadUncheckedCreateWithoutNotesInput>
+    connectOrCreate?: LeadCreateOrConnectWithoutNotesInput
+    connect?: LeadWhereUniqueInput
+  }
+
+  export type LeadUpdateOneRequiredWithoutNotesNestedInput = {
+    create?: XOR<LeadCreateWithoutNotesInput, LeadUncheckedCreateWithoutNotesInput>
+    connectOrCreate?: LeadCreateOrConnectWithoutNotesInput
+    upsert?: LeadUpsertWithoutNotesInput
+    connect?: LeadWhereUniqueInput
+    update?: XOR<XOR<LeadUpdateToOneWithWhereWithoutNotesInput, LeadUpdateWithoutNotesInput>, LeadUncheckedUpdateWithoutNotesInput>
   }
 
   export type LeadCreateNestedOneWithoutTouchesInput = {
@@ -8052,6 +9512,11 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[]
@@ -8091,6 +9556,14 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[]
@@ -8110,6 +9583,7 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    isVip?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     leads?: LeadCreateNestedManyWithoutCompanyInput
@@ -8121,6 +9595,7 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    isVip?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     leads?: LeadUncheckedCreateNestedManyWithoutCompanyInput
@@ -8160,6 +9635,7 @@ export namespace Prisma {
     name?: StringFilter<"Company"> | string
     address?: StringNullableFilter<"Company"> | string | null
     phone?: StringNullableFilter<"Company"> | string | null
+    isVip?: BoolFilter<"Company"> | boolean
     industryId?: StringFilter<"Company"> | string
     createdAt?: DateTimeFilter<"Company"> | Date | string
     updatedAt?: DateTimeFilter<"Company"> | Date | string
@@ -8188,8 +9664,10 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     status?: string
+    isVip?: boolean
     createdAt?: Date | string
     touches?: TouchCreateNestedManyWithoutLeadInput
+    notes?: LeadNoteCreateNestedManyWithoutLeadInput
   }
 
   export type LeadUncheckedCreateWithoutCompanyInput = {
@@ -8200,8 +9678,10 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     status?: string
+    isVip?: boolean
     createdAt?: Date | string
     touches?: TouchUncheckedCreateNestedManyWithoutLeadInput
+    notes?: LeadNoteUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutCompanyInput = {
@@ -8282,6 +9762,7 @@ export namespace Prisma {
     email?: StringNullableFilter<"Lead"> | string | null
     phone?: StringNullableFilter<"Lead"> | string | null
     status?: StringFilter<"Lead"> | string
+    isVip?: BoolFilter<"Lead"> | boolean
     companyId?: StringFilter<"Lead"> | string
     createdAt?: DateTimeFilter<"Lead"> | Date | string
   }
@@ -8317,6 +9798,7 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    isVip?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     industry: IndustryCreateNestedOneWithoutCompaniesInput
@@ -8328,6 +9810,7 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    isVip?: boolean
     industryId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8355,6 +9838,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     industry?: IndustryUpdateOneRequiredWithoutCompaniesNestedInput
@@ -8366,6 +9850,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     industryId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8377,6 +9862,7 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    isVip?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     industry: IndustryCreateNestedOneWithoutCompaniesInput
@@ -8388,6 +9874,7 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    isVip?: boolean
     industryId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8422,6 +9909,27 @@ export namespace Prisma {
     data: TouchCreateManyLeadInput | TouchCreateManyLeadInput[]
   }
 
+  export type LeadNoteCreateWithoutLeadInput = {
+    id?: string
+    text: string
+    createdAt?: Date | string
+  }
+
+  export type LeadNoteUncheckedCreateWithoutLeadInput = {
+    id?: string
+    text: string
+    createdAt?: Date | string
+  }
+
+  export type LeadNoteCreateOrConnectWithoutLeadInput = {
+    where: LeadNoteWhereUniqueInput
+    create: XOR<LeadNoteCreateWithoutLeadInput, LeadNoteUncheckedCreateWithoutLeadInput>
+  }
+
+  export type LeadNoteCreateManyLeadInputEnvelope = {
+    data: LeadNoteCreateManyLeadInput | LeadNoteCreateManyLeadInput[]
+  }
+
   export type CompanyUpsertWithoutLeadsInput = {
     update: XOR<CompanyUpdateWithoutLeadsInput, CompanyUncheckedUpdateWithoutLeadsInput>
     create: XOR<CompanyCreateWithoutLeadsInput, CompanyUncheckedCreateWithoutLeadsInput>
@@ -8438,6 +9946,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     industry?: IndustryUpdateOneRequiredWithoutCompaniesNestedInput
@@ -8449,6 +9958,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     industryId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8482,6 +9992,104 @@ export namespace Prisma {
     leadId?: StringFilter<"Touch"> | string
   }
 
+  export type LeadNoteUpsertWithWhereUniqueWithoutLeadInput = {
+    where: LeadNoteWhereUniqueInput
+    update: XOR<LeadNoteUpdateWithoutLeadInput, LeadNoteUncheckedUpdateWithoutLeadInput>
+    create: XOR<LeadNoteCreateWithoutLeadInput, LeadNoteUncheckedCreateWithoutLeadInput>
+  }
+
+  export type LeadNoteUpdateWithWhereUniqueWithoutLeadInput = {
+    where: LeadNoteWhereUniqueInput
+    data: XOR<LeadNoteUpdateWithoutLeadInput, LeadNoteUncheckedUpdateWithoutLeadInput>
+  }
+
+  export type LeadNoteUpdateManyWithWhereWithoutLeadInput = {
+    where: LeadNoteScalarWhereInput
+    data: XOR<LeadNoteUpdateManyMutationInput, LeadNoteUncheckedUpdateManyWithoutLeadInput>
+  }
+
+  export type LeadNoteScalarWhereInput = {
+    AND?: LeadNoteScalarWhereInput | LeadNoteScalarWhereInput[]
+    OR?: LeadNoteScalarWhereInput[]
+    NOT?: LeadNoteScalarWhereInput | LeadNoteScalarWhereInput[]
+    id?: StringFilter<"LeadNote"> | string
+    text?: StringFilter<"LeadNote"> | string
+    leadId?: StringFilter<"LeadNote"> | string
+    createdAt?: DateTimeFilter<"LeadNote"> | Date | string
+  }
+
+  export type LeadCreateWithoutNotesInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    title?: string | null
+    email?: string | null
+    phone?: string | null
+    status?: string
+    isVip?: boolean
+    createdAt?: Date | string
+    company: CompanyCreateNestedOneWithoutLeadsInput
+    touches?: TouchCreateNestedManyWithoutLeadInput
+  }
+
+  export type LeadUncheckedCreateWithoutNotesInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    title?: string | null
+    email?: string | null
+    phone?: string | null
+    status?: string
+    isVip?: boolean
+    companyId: string
+    createdAt?: Date | string
+    touches?: TouchUncheckedCreateNestedManyWithoutLeadInput
+  }
+
+  export type LeadCreateOrConnectWithoutNotesInput = {
+    where: LeadWhereUniqueInput
+    create: XOR<LeadCreateWithoutNotesInput, LeadUncheckedCreateWithoutNotesInput>
+  }
+
+  export type LeadUpsertWithoutNotesInput = {
+    update: XOR<LeadUpdateWithoutNotesInput, LeadUncheckedUpdateWithoutNotesInput>
+    create: XOR<LeadCreateWithoutNotesInput, LeadUncheckedCreateWithoutNotesInput>
+    where?: LeadWhereInput
+  }
+
+  export type LeadUpdateToOneWithWhereWithoutNotesInput = {
+    where?: LeadWhereInput
+    data: XOR<LeadUpdateWithoutNotesInput, LeadUncheckedUpdateWithoutNotesInput>
+  }
+
+  export type LeadUpdateWithoutNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutLeadsNestedInput
+    touches?: TouchUpdateManyWithoutLeadNestedInput
+  }
+
+  export type LeadUncheckedUpdateWithoutNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    companyId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    touches?: TouchUncheckedUpdateManyWithoutLeadNestedInput
+  }
+
   export type LeadCreateWithoutTouchesInput = {
     id?: string
     firstName: string
@@ -8490,8 +10098,10 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     status?: string
+    isVip?: boolean
     createdAt?: Date | string
     company: CompanyCreateNestedOneWithoutLeadsInput
+    notes?: LeadNoteCreateNestedManyWithoutLeadInput
   }
 
   export type LeadUncheckedCreateWithoutTouchesInput = {
@@ -8502,8 +10112,10 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     status?: string
+    isVip?: boolean
     companyId: string
     createdAt?: Date | string
+    notes?: LeadNoteUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutTouchesInput = {
@@ -8530,8 +10142,10 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     company?: CompanyUpdateOneRequiredWithoutLeadsNestedInput
+    notes?: LeadNoteUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateWithoutTouchesInput = {
@@ -8542,8 +10156,10 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     companyId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: LeadNoteUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type CompanyCreateManyIndustryInput = {
@@ -8551,6 +10167,7 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    isVip?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8560,6 +10177,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     leads?: LeadUpdateManyWithoutCompanyNestedInput
@@ -8571,6 +10189,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     leads?: LeadUncheckedUpdateManyWithoutCompanyNestedInput
@@ -8582,6 +10201,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8594,6 +10214,7 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     status?: string
+    isVip?: boolean
     createdAt?: Date | string
   }
 
@@ -8611,8 +10232,10 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     touches?: TouchUpdateManyWithoutLeadNestedInput
+    notes?: LeadNoteUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateWithoutCompanyInput = {
@@ -8623,8 +10246,10 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     touches?: TouchUncheckedUpdateManyWithoutLeadNestedInput
+    notes?: LeadNoteUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateManyWithoutCompanyInput = {
@@ -8635,6 +10260,7 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -8663,6 +10289,12 @@ export namespace Prisma {
     notes: string
   }
 
+  export type LeadNoteCreateManyLeadInput = {
+    id?: string
+    text: string
+    createdAt?: Date | string
+  }
+
   export type TouchUpdateWithoutLeadInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8682,6 +10314,24 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type LeadNoteUpdateWithoutLeadInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LeadNoteUncheckedUpdateWithoutLeadInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LeadNoteUncheckedUpdateManyWithoutLeadInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

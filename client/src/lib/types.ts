@@ -1,16 +1,24 @@
 export type LeadStatus = "NEW" | "CONTACTED" | "QUALIFIED" | "NURTURING" | "LOST" | string
 
+export type EntityNote = {
+  id: string
+  text: string
+  createdAt: string
+}
+
 export type Company = {
   id: string
   name: string
   address: string | null
   phone: string | null
+  isVip: boolean
   createdAt: string
   updatedAt?: string
   industry: {
     id: string
     name: string
   }
+  notes?: EntityNote[]
 }
 
 export type Lead = {
@@ -21,11 +29,14 @@ export type Lead = {
   email: string | null
   phone: string | null
   status: LeadStatus
+  isVip: boolean
   company: {
     id: string
     name: string
+    isVip?: boolean
   }
   createdAt?: string
+  notes?: EntityNote[]
 }
 
 export const MOCK_COMPANIES: Company[] = [
@@ -34,6 +45,7 @@ export const MOCK_COMPANIES: Company[] = [
     name: "Northwind Labs",
     address: "120 Market St, Austin, TX",
     phone: "555-0100",
+    isVip: true,
     createdAt: "2026-07-18T16:00:00.000Z",
     industry: { id: "i1", name: "Commercial Real Estate" },
   },
@@ -42,6 +54,7 @@ export const MOCK_COMPANIES: Company[] = [
     name: "Acme Co",
     address: "88 Industrial Blvd, Dallas, TX",
     phone: "555-0142",
+    isVip: false,
     createdAt: "2026-07-17T12:00:00.000Z",
     industry: { id: "i2", name: "Manufacturing" },
   },
@@ -50,6 +63,7 @@ export const MOCK_COMPANIES: Company[] = [
     name: "Brightline Health",
     address: "400 Clinic Way, Houston, TX",
     phone: "555-0199",
+    isVip: false,
     createdAt: "2026-07-16T09:30:00.000Z",
     industry: { id: "i3", name: "Healthcare" },
   },
@@ -58,6 +72,7 @@ export const MOCK_COMPANIES: Company[] = [
     name: "Harbor Property",
     address: "12 Lakeview Dr, Seattle, WA",
     phone: null,
+    isVip: true,
     createdAt: "2026-07-15T18:20:00.000Z",
     industry: { id: "i4", name: "Apartments/Property Management" },
   },
@@ -66,6 +81,7 @@ export const MOCK_COMPANIES: Company[] = [
     name: "Summit Build",
     address: "900 Crane Ave, Denver, CO",
     phone: "555-0177",
+    isVip: false,
     createdAt: "2026-07-14T11:10:00.000Z",
     industry: { id: "i5", name: "Construction" },
   },
@@ -80,6 +96,7 @@ export const MOCK_LEADS: Lead[] = [
     email: "alex@northwind.io",
     phone: null,
     status: "NEW",
+    isVip: true,
     company: { id: "c1", name: "Northwind Labs" },
     createdAt: "2026-07-18T16:12:00.000Z",
   },
@@ -91,6 +108,7 @@ export const MOCK_LEADS: Lead[] = [
     email: "jordan@acme.co",
     phone: null,
     status: "CONTACTED",
+    isVip: false,
     company: { id: "c2", name: "Acme Co" },
     createdAt: "2026-07-18T14:40:00.000Z",
   },
@@ -102,6 +120,7 @@ export const MOCK_LEADS: Lead[] = [
     email: "sam@brightline.com",
     phone: null,
     status: "QUALIFIED",
+    isVip: true,
     company: { id: "c3", name: "Brightline" },
     createdAt: "2026-07-17T21:05:00.000Z",
   },
@@ -113,6 +132,7 @@ export const MOCK_LEADS: Lead[] = [
     email: "casey@harborpm.com",
     phone: null,
     status: "NURTURING",
+    isVip: false,
     company: { id: "c4", name: "Harbor Property" },
     createdAt: "2026-07-17T18:22:00.000Z",
   },
@@ -124,6 +144,7 @@ export const MOCK_LEADS: Lead[] = [
     email: "riley@summitbuild.com",
     phone: null,
     status: "NEW",
+    isVip: false,
     company: { id: "c5", name: "Summit Build" },
     createdAt: "2026-07-16T12:10:00.000Z",
   },
@@ -135,6 +156,7 @@ export const MOCK_LEADS: Lead[] = [
     email: "taylor@oakcrest.edu",
     phone: null,
     status: "CONTACTED",
+    isVip: false,
     company: { id: "c6", name: "Oakcrest Schools" },
     createdAt: "2026-07-16T09:45:00.000Z",
   },
@@ -146,6 +168,7 @@ export const MOCK_LEADS: Lead[] = [
     email: "morgan@retailnorth.com",
     phone: null,
     status: "LOST",
+    isVip: false,
     company: { id: "c7", name: "Retail North" },
     createdAt: "2026-07-15T20:00:00.000Z",
   },
@@ -157,6 +180,7 @@ export const MOCK_LEADS: Lead[] = [
     email: "avery@faithhall.org",
     phone: null,
     status: "NEW",
+    isVip: false,
     company: { id: "c8", name: "Faith Hall" },
     createdAt: "2026-07-15T15:30:00.000Z",
   },
@@ -168,6 +192,7 @@ export const MOCK_LEADS: Lead[] = [
     email: "quinn@forgeworks.com",
     phone: null,
     status: "QUALIFIED",
+    isVip: true,
     company: { id: "c9", name: "Forgeworks" },
     createdAt: "2026-07-14T11:18:00.000Z",
   },
@@ -179,6 +204,7 @@ export const MOCK_LEADS: Lead[] = [
     email: "jamie@crestmed.com",
     phone: null,
     status: "NURTURING",
+    isVip: false,
     company: { id: "c10", name: "Crest Medical" },
     createdAt: "2026-07-14T08:05:00.000Z",
   },

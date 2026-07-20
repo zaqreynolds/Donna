@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom"
 import { Badge } from "@/components/ui/badge"
+import { VipStarToggle } from "@/components/VipStarToggle"
 import { formatLeadDate, formatLeadName } from "@/lib/api"
 import type { Lead } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -7,26 +8,31 @@ import { cn } from "@/lib/utils"
 type RecentLeadsPanelProps = {
   leads: Lead[]
   source: "api" | "mock"
+  onVipToggle: (leadId: string, next: boolean) => void | Promise<void>
 }
 
 function statusTone(status: string): string {
   switch (status) {
     case "NEW":
-      return "border-sky-500/30 bg-sky-500/10 text-sky-300"
+      return "border-sky-500/30 bg-sky-500/10 text-sky-700"
     case "CONTACTED":
-      return "border-amber-500/30 bg-amber-500/10 text-amber-300"
+      return "border-amber-500/30 bg-amber-500/10 text-amber-700"
     case "QUALIFIED":
-      return "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
+      return "border-emerald-500/30 bg-emerald-500/10 text-emerald-700"
     case "NURTURING":
-      return "border-violet-500/30 bg-violet-500/10 text-violet-300"
+      return "border-violet-500/30 bg-violet-500/10 text-violet-700"
     case "LOST":
-      return "border-rose-500/30 bg-rose-500/10 text-rose-300"
+      return "border-rose-500/30 bg-rose-500/10 text-rose-700"
     default:
       return ""
   }
 }
 
-export function RecentLeadsPanel({ leads, source }: RecentLeadsPanelProps) {
+export function RecentLeadsPanel({
+  leads,
+  source,
+  onVipToggle,
+}: RecentLeadsPanelProps) {
   const recent = [...leads]
     .sort((a, b) => {
       const aTime = a.createdAt ? Date.parse(a.createdAt) : 0
@@ -59,9 +65,16 @@ export function RecentLeadsPanel({ leads, source }: RecentLeadsPanelProps) {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex min-w-0 flex-col gap-1">
-                    <span className="truncate text-sm font-medium">
-                      {formatLeadName(lead)}
-                    </span>
+                    <div className="flex min-w-0 items-center gap-1.5">
+                      <VipStarToggle
+                        isVip={Boolean(lead.isVip)}
+                        onToggle={(next) => onVipToggle(lead.id, next)}
+                        label={`Toggle VIP for ${formatLeadName(lead)}`}
+                      />
+                      <span className="truncate text-sm font-medium">
+                        {formatLeadName(lead)}
+                      </span>
+                    </div>
                     <Link
                       to="/companies"
                       className="truncate text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
@@ -71,7 +84,7 @@ export function RecentLeadsPanel({ leads, source }: RecentLeadsPanelProps) {
                   </div>
                   <Badge
                     variant="outline"
-                    className={cn("shrink-0 capitalize", statusTone(lead.status))}
+                    className={cn("shrink-0", statusTone(lead.status))}
                   >
                     {lead.status}
                   </Badge>

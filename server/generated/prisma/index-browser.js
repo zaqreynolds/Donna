@@ -127,6 +127,7 @@ exports.Prisma.CompanyScalarFieldEnum = {
   name: 'name',
   address: 'address',
   phone: 'phone',
+  isVip: 'isVip',
   industryId: 'industryId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -147,7 +148,15 @@ exports.Prisma.LeadScalarFieldEnum = {
   email: 'email',
   phone: 'phone',
   status: 'status',
+  isVip: 'isVip',
   companyId: 'companyId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.LeadNoteScalarFieldEnum = {
+  id: 'id',
+  text: 'text',
+  leadId: 'leadId',
   createdAt: 'createdAt'
 };
 
@@ -175,6 +184,7 @@ exports.Prisma.ModelName = {
   Company: 'Company',
   CompanyNote: 'CompanyNote',
   Lead: 'Lead',
+  LeadNote: 'LeadNote',
   Touch: 'Touch'
 };
 

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
 import { MetricSummary } from "@/components/dashboard/MetricSummary"
 import { RecentLeadsPanel } from "@/components/dashboard/RecentLeadsPanel"
-import { fetchLeads } from "@/lib/api"
+import { fetchLeads, updateLeadVip } from "@/lib/api"
 import type { Lead } from "@/lib/types"
 
 export function DashboardView() {
   const [leads, setLeads] = useState<Lead[]>([])
+  const [touchCount, setTouchCount] = useState(0)
   const [source, setSource] = useState<"api" | "mock">("mock")
   const [loading, setLoading] = useState(true)
 
@@ -17,6 +18,7 @@ export function DashboardView() {
       const result = await fetchLeads()
       if (!cancelled) {
         setLeads(result.leads)
+        setTouchCount(result.touchCount)
         setSource(result.source)
         setLoading(false)
       }
@@ -29,8 +31,26 @@ export function DashboardView() {
     }
   }, [])
 
-  const qualifiedCount = leads.filter((lead) => lead.status === "QUALIFIED").length
-  const activeTouches = Math.max(leads.length * 2, qualifiedCount * 3)
+  async function handleVipToggle(leadId: string, next: boolean) {
+    const previous = leads
+    setLeads((current) =>
+      current.map((lead) =>
+        lead.id === leadId ? { ...lead, isVip: next } : lead,
+      ),
+    )
+
+    try {
+      if (source === "api") {
+        await updateLeadVip(leadId, next)
+      }
+    } catch {
+      setLeads(previous)
+    }
+  }
+
+  const qualifiedCount = leads.filter(
+    (lead) => String(lead.status).toUpperCase() === "QUALIFIED",
+  ).length
   const pipelineValue = `$${(qualifiedCount * 12500 + leads.length * 1800).toLocaleString()}`
 
   return (
@@ -41,13 +61,17 @@ export function DashboardView() {
         ) : (
           <MetricSummary
             totalLeads={leads.length}
-            activeTouches={activeTouches}
+            activeTouches={touchCount}
             pipelineValue={pipelineValue}
           />
         )}
       </div>
 
-      <RecentLeadsPanel leads={leads} source={source} />
+      <RecentLeadsPanel
+        leads={leads}
+        source={source}
+        onVipToggle={handleVipToggle}
+      />
     </div>
   )
 }
