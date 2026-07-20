@@ -1,20 +1,82 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
+  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "sqlite"
 }
 
-model Lead {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
-  company   String?
-  status    String   @default("new")
+/// Core industry taxonomy used when creating companies.
+/// Seeded values: Commercial Real Estate, Apartments/Property Management,
+/// Construction, Healthcare, Education, Retail, Manufacturing, Religious, Other.
+model Industry {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  companies Company[]
+}
+
+model Company {
+  id         String        @id @default(uuid())
+  name       String
+  address    String?
+  phone      String?
+  industryId String
+  industry   Industry      @relation(fields: [industryId], references: [id], onDelete: Restrict)
+  leads      Lead[]
+  notes      CompanyNote[]
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@index([industryId])
+  @@index([name])
+}
+
+model CompanyNote {
+  id        String   @id @default(uuid())
+  text      String
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+}
+
+model Lead {
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
+  title     String?
+  email     String?
+  phone     String?
+  /// Pipeline stage.
+  /// Allowed values: "NEW" | "CONTACTED" | "QUALIFIED" | "NURTURING" | "LOST"
+  status    String   @default("NEW")
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  touches   Touch[]
+  createdAt DateTime @default(now())
+
+  @@index([companyId])
+  @@index([lastName, firstName])
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Touch {
+  id     String   @id @default(uuid())
+  date   DateTime @default(now())
+  /// Outreach channel.
+  /// Allowed values: "Phone" | "Email" | "Networking" | "Canvassing" | "Cold Call" |
+  /// "Face to Face" | "LinkedIn" | "Retreva" | "Text" | "Voicemail" | "Video Message" |
+  /// "Post Card" | "Social Media" | "Estimate" | "Invoice"
+  type   String
+  notes  String
+  leadId String
+  lead   Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+  @@index([date])
+  @@index([type])
 }
