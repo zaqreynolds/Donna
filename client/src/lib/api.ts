@@ -72,26 +72,46 @@ function normalizeLead(raw: Record<string, unknown>): Lead {
   }
 
   const companyRaw = raw.company
-  const company =
-    typeof companyRaw === "string"
-      ? { id: "", name: companyRaw }
-      : companyRaw &&
-          typeof companyRaw === "object" &&
-          "name" in companyRaw &&
-          typeof (companyRaw as { name: unknown }).name === "string"
+  let company: Lead["company"] = { id: "", name: "—" }
+
+  if (typeof companyRaw === "string") {
+    company = { id: "", name: companyRaw }
+  } else if (
+    companyRaw &&
+    typeof companyRaw === "object" &&
+    "name" in companyRaw &&
+    typeof (companyRaw as { name: unknown }).name === "string"
+  ) {
+    const industryRaw = (companyRaw as { industry?: unknown }).industry
+    const industry =
+      industryRaw &&
+      typeof industryRaw === "object" &&
+      "name" in industryRaw &&
+      typeof (industryRaw as { name: unknown }).name === "string"
         ? {
             id:
-              "id" in companyRaw &&
-              typeof (companyRaw as { id: unknown }).id === "string"
-                ? (companyRaw as { id: string }).id
+              "id" in industryRaw &&
+              typeof (industryRaw as { id: unknown }).id === "string"
+                ? (industryRaw as { id: string }).id
                 : "",
-            name: (companyRaw as { name: string }).name,
-            isVip:
-              "isVip" in companyRaw
-                ? Boolean((companyRaw as { isVip: unknown }).isVip)
-                : undefined,
+            name: (industryRaw as { name: string }).name,
           }
-        : { id: "", name: "—" }
+        : null
+
+    company = {
+      id:
+        "id" in companyRaw &&
+        typeof (companyRaw as { id: unknown }).id === "string"
+          ? (companyRaw as { id: string }).id
+          : "",
+      name: (companyRaw as { name: string }).name,
+      isVip:
+        "isVip" in companyRaw
+          ? Boolean((companyRaw as { isVip: unknown }).isVip)
+          : undefined,
+      industry,
+    }
+  }
 
   return {
     id: typeof raw.id === "string" ? raw.id : "",

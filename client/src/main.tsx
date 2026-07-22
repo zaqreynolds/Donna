@@ -5,6 +5,7 @@ import "./index.css"
 import App from "./App.tsx"
 import { ToastProvider } from "@/components/ToastProvider"
 import { CrmFormsProvider } from "@/components/forms/CrmFormsProvider"
+import { LeadHealthSettingsProvider } from "@/components/LeadHealthSettingsProvider"
 
 document.documentElement.classList.remove("dark")
 
@@ -12,9 +13,11 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <ToastProvider>
-        <CrmFormsProvider>
-          <App />
-        </CrmFormsProvider>
+        <LeadHealthSettingsProvider>
+          <CrmFormsProvider>
+            <App />
+          </CrmFormsProvider>
+        </LeadHealthSettingsProvider>
       </ToastProvider>
     </BrowserRouter>
   </StrictMode>,

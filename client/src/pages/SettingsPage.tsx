@@ -3,6 +3,7 @@ import { Factory, Handshake, Lock, Pencil, Trash2, X } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { SettingsView } from "@/components/SettingsView"
 import {
   createIndustry,
   createTouchType,
@@ -310,13 +311,22 @@ export function SettingsPage() {
         <div className="flex flex-col gap-1">
           <h2 className="text-xl font-semibold tracking-tight">Settings</h2>
           <p className="text-sm text-muted-foreground">
+            Configure lead heat thresholds, industries, and touch types.
+          </p>
+        </div>
+
+        <SettingsView />
+
+        <div className="flex flex-col gap-1">
+          <h3 className="text-sm font-semibold tracking-tight">Catalogs</h3>
+          <p className="text-sm text-muted-foreground">
             Built-in industries and touch types are locked. Custom ones you add
             can be renamed or deleted.
           </p>
         </div>
 
         {loading ? (
-          <p className="text-sm text-muted-foreground">Loading settings…</p>
+          <p className="text-sm text-muted-foreground">Loading catalogs…</p>
         ) : (
           <>
             <CatalogSection

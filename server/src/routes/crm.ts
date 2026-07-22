@@ -541,7 +541,14 @@ router.get("/leads", async (_req, res) => {
     const [leads, touchCount] = await Promise.all([
       prisma.lead.findMany({
         include: {
-          company: { select: { id: true, name: true, isVip: true } },
+          company: {
+            select: {
+              id: true,
+              name: true,
+              isVip: true,
+              industry: { select: { id: true, name: true } },
+            },
+          },
           touches: {
             select: { id: true, type: true, date: true, notes: true },
             orderBy: { date: "desc" },
@@ -568,7 +575,14 @@ router.get("/leads/:id", async (req, res) => {
     const lead = await prisma.lead.findUnique({
       where: { id: leadId },
       include: {
-        company: { select: { id: true, name: true, isVip: true } },
+        company: {
+          select: {
+            id: true,
+            name: true,
+            isVip: true,
+            industry: { select: { id: true, name: true } },
+          },
+        },
         notes: { orderBy: { createdAt: "desc" } },
         touches: { orderBy: { date: "desc" } },
       },
@@ -646,7 +660,14 @@ router.post("/leads", async (req, res) => {
           companyId,
         },
         include: {
-          company: { select: { id: true, name: true, isVip: true } },
+          company: {
+          select: {
+            id: true,
+            name: true,
+            isVip: true,
+            industry: { select: { id: true, name: true } },
+          },
+        },
         },
       })
       return res.status(201).json({ lead })
@@ -677,7 +698,14 @@ router.post("/leads", async (req, res) => {
         },
       },
       include: {
-        company: { select: { id: true, name: true, isVip: true } },
+        company: {
+          select: {
+            id: true,
+            name: true,
+            isVip: true,
+            industry: { select: { id: true, name: true } },
+          },
+        },
       },
     })
 
@@ -774,7 +802,14 @@ router.patch("/leads/:id", async (req, res) => {
           ...(nextCompanyId !== undefined ? { companyId: nextCompanyId } : {}),
         },
         include: {
-          company: { select: { id: true, name: true, isVip: true } },
+          company: {
+          select: {
+            id: true,
+            name: true,
+            isVip: true,
+            industry: { select: { id: true, name: true } },
+          },
+        },
         },
       })
     })
@@ -870,7 +905,14 @@ router.put("/leads/:id", async (req, res) => {
           ...(isVip !== undefined ? { isVip } : {}),
         },
         include: {
-          company: { select: { id: true, name: true, isVip: true } },
+          company: {
+          select: {
+            id: true,
+            name: true,
+            isVip: true,
+            industry: { select: { id: true, name: true } },
+          },
+        },
         },
       })
     })

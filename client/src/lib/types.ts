@@ -41,6 +41,10 @@ export type Lead = {
     id: string
     name: string
     isVip?: boolean
+    industry?: {
+      id: string
+      name: string
+    } | null
   }
   createdAt?: string
   notes?: EntityNote[]

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import {
   ArrowUpDown,
   Building2,
+  Factory,
   Filter,
   Mail,
   Pencil,
@@ -23,6 +24,10 @@ import {
 } from "@/components/ui/select"
 import { NotesPanel } from "@/components/NotesPanel"
 import {
+  leadHealthRowClass,
+} from "@/components/LeadHealthIndicator"
+import { useLeadHealthSettings } from "@/components/LeadHealthSettingsProvider"
+import {
   TouchesPanel,
   type CreateTouchInput,
   type UpdateTouchInput,
@@ -42,10 +47,12 @@ import {
   updateLeadTouch,
   updateLeadVip,
 } from "@/lib/api"
+import { daysSinceLastTouch, resolveLeadHealth } from "@/lib/leadHealth"
 import type { EntityNote, Lead, LeadStatus, LeadTouch } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 type SortKey =
+  | "heat-oldest"
   | "name-asc"
   | "name-desc"
   | "company-asc"
@@ -56,6 +63,7 @@ type SortKey =
   | "date-oldest"
 
 const ALL_STATUSES = "all"
+const ALL_INDUSTRIES = "all"
 
 const STATUS_OPTIONS = [
   "NEW",
@@ -66,6 +74,7 @@ const STATUS_OPTIONS = [
 ] as const satisfies readonly LeadStatus[]
 
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+  { value: "heat-oldest", label: "Heat / Inactivity (oldest first)" },
   { value: "name-asc", label: "Name (A–Z)" },
   { value: "name-desc", label: "Name (Z–A)" },
   { value: "company-asc", label: "Company (A–Z)" },
@@ -170,6 +179,13 @@ function sortLeads(leads: Lead[], sort: SortKey): Lead[] {
         return Date.parse(b.createdAt ?? "") - Date.parse(a.createdAt ?? "")
       case "date-oldest":
         return Date.parse(a.createdAt ?? "") - Date.parse(b.createdAt ?? "")
+      case "heat-oldest": {
+        const inactivity =
+          daysSinceLastTouch(b.touches) - daysSinceLastTouch(a.touches)
+        return (
+          inactivity || compareText(formatLeadName(a), formatLeadName(b))
+        )
+      }
       default:
         return 0
     }
@@ -188,6 +204,7 @@ function matchesSearch(lead: Lead, query: string): boolean {
     lead.phone,
     lead.status,
     lead.company?.name,
+    lead.company?.industry?.name,
     ...(lead.touches?.map((touch) => touch.type) ?? []),
   ]
     .filter(Boolean)
@@ -199,12 +216,14 @@ function matchesSearch(lead: Lead, query: string): boolean {
 
 export function LeadsPage() {
   const { openEditLead, subscribe } = useCrmForms()
+  const { settings: healthSettings } = useLeadHealthSettings()
   const [leads, setLeads] = useState<Lead[]>([])
   const [source, setSource] = useState<"api" | "mock">("mock")
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState(ALL_STATUSES)
-  const [sort, setSort] = useState<SortKey>("name-asc")
+  const [industryFilter, setIndustryFilter] = useState(ALL_INDUSTRIES)
+  const [sort, setSort] = useState<SortKey>("heat-oldest")
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [selectedNotes, setSelectedNotes] = useState<EntityNote[]>([])
   const [selectedTouches, setSelectedTouches] = useState<LeadTouch[]>([])
@@ -282,15 +301,30 @@ export function LeadsPage() {
     }
   }, [selectedId, source])
 
+  const industryOptions = useMemo(() => {
+    const byId = new Map<string, string>()
+    for (const lead of leads) {
+      if (lead.company?.industry?.id && lead.company.industry.name) {
+        byId.set(lead.company.industry.id, lead.company.industry.name)
+      }
+    }
+    return [...byId.entries()]
+      .map(([id, name]) => ({ id, name }))
+      .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }))
+  }, [leads])
+
   const visibleLeads = useMemo(() => {
     const query = deferredSearch.trim().toLowerCase()
     const filtered = leads.filter((lead) => {
       const matchesStatus =
         statusFilter === ALL_STATUSES || lead.status === statusFilter
-      return matchesStatus && matchesSearch(lead, query)
+      const matchesIndustry =
+        industryFilter === ALL_INDUSTRIES ||
+        lead.company?.industry?.id === industryFilter
+      return matchesStatus && matchesIndustry && matchesSearch(lead, query)
     })
     return sortLeads(filtered, sort)
-  }, [leads, deferredSearch, statusFilter, sort])
+  }, [leads, deferredSearch, statusFilter, industryFilter, sort])
 
   const selectedLead = useMemo(
     () => leads.find((lead) => lead.id === selectedId) ?? null,
@@ -463,7 +497,7 @@ export function LeadsPage() {
               <Input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search name, company, email, status…"
+                placeholder="Search name, company, industry, email, status…"
                 className="pl-8"
                 aria-label="Search leads"
               />
@@ -492,24 +526,36 @@ export function LeadsPage() {
             </div>
 
             <div className="flex min-w-[200px] items-center gap-2">
-              <ArrowUpDown className="size-3.5 shrink-0 text-muted-foreground" />
-              <Select
-                value={sort}
-                onValueChange={(value) => {
-                  if (value) setSort(value as SortKey)
-                }}
+              <Factory className="size-3.5 shrink-0 text-muted-foreground" />
+              <select
+                value={industryFilter}
+                onChange={(event) => setIndustryFilter(event.target.value)}
+                aria-label="Filter by industry"
+                className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
               >
-                <SelectTrigger className="w-full" aria-label="Sort leads">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  {SORT_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <option value={ALL_INDUSTRIES}>All industries</option>
+                {industryOptions.map((industry) => (
+                  <option key={industry.id} value={industry.id}>
+                    {industry.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex min-w-[260px] flex-1 items-center gap-2 sm:max-w-xs">
+              <ArrowUpDown className="size-3.5 shrink-0 text-muted-foreground" />
+              <select
+                value={sort}
+                onChange={(event) => setSort(event.target.value as SortKey)}
+                aria-label="Sort leads"
+                className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+              >
+                {SORT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </div>
@@ -523,13 +569,14 @@ export function LeadsPage() {
               <p className="text-sm text-muted-foreground">
                 {leads.length === 0
                   ? "Add a lead to get started."
-                  : "Try a different search, status, or sort."}
+                  : "Try a different search, status, industry, or sort."}
               </p>
             </div>
           ) : (
             <ul className="flex flex-col">
               {visibleLeads.map((lead) => {
                 const selected = lead.id === selectedId
+                const health = resolveLeadHealth(lead, healthSettings)
                 return (
                   <li key={lead.id}>
                     <button
@@ -541,6 +588,7 @@ export function LeadsPage() {
                       }
                       className={cn(
                         "flex w-full items-start justify-between gap-4 border-b border-border/70 px-6 py-4 text-left transition-colors hover:bg-muted/40",
+                        leadHealthRowClass(health),
                         selected && "bg-muted/50",
                       )}
                     >
