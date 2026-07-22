@@ -19,9 +19,13 @@ export function VipStarToggle({
 }: VipStarToggleProps) {
   const [pending, setPending] = useState(false)
 
-  async function handleClick(event: MouseEvent) {
+  function stopRowActivation(event: MouseEvent) {
     event.preventDefault()
     event.stopPropagation()
+  }
+
+  async function handleClick(event: MouseEvent) {
+    stopRowActivation(event)
     if (pending) return
 
     const next = !isVip
@@ -36,13 +40,14 @@ export function VipStarToggle({
   return (
     <button
       type="button"
+      onMouseDown={stopRowActivation}
       onClick={handleClick}
       disabled={pending}
       aria-label={label}
       aria-pressed={isVip}
       title={isVip ? "Remove VIP" : "Mark as VIP"}
       className={cn(
-        "inline-flex shrink-0 items-center justify-center rounded-md transition-colors",
+        "relative z-10 inline-flex shrink-0 items-center justify-center rounded-md transition-colors",
         "hover:bg-amber-500/10 focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:outline-none",
         "disabled:opacity-60",
         size === "sm" ? "size-6" : "size-7",

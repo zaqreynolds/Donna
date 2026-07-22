@@ -1,7 +1,13 @@
 import { useEffect, useState, type FormEvent } from "react"
 import { Handshake, Pencil, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { formatLeadDate, formatNoteDateTime } from "@/lib/api"
+import {
+  formatLeadDate,
+  formatNoteDateTime,
+  touchIsEstimate,
+  touchIsSocialMedia,
+  touchSupportsAmount,
+} from "@/lib/api"
 import type { LeadTouch } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -9,17 +15,24 @@ export type CreateTouchInput = {
   type: string
   notes: string
   date?: string
+  amount?: number | null
+  estimateNumber?: string | null
+  socialPlatform?: string | null
 }
 
 export type UpdateTouchInput = {
   type: string
   notes: string
   date?: string
+  amount?: number | null
+  estimateNumber?: string | null
+  socialPlatform?: string | null
 }
 
 type TouchesPanelProps = {
   touches: LeadTouch[]
   touchTypes: string[]
+  socialPlatforms?: string[]
   loading?: boolean
   disabled?: boolean
   onAdd: (input: CreateTouchInput) => Promise<void>
@@ -53,9 +66,26 @@ function toIsoFromDateInput(value: string): string | undefined {
   return new Date(`${value}T12:00:00`).toISOString()
 }
 
+function parseAmountInput(value: string): number | null {
+  const trimmed = value.trim()
+  if (!trimmed) return null
+  const n = Number(trimmed)
+  return Number.isFinite(n) && n >= 0 ? n : null
+}
+
+function formatAmount(value: number | null | undefined): string {
+  if (value == null || !Number.isFinite(value)) return ""
+  return value.toLocaleString(undefined, {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  })
+}
+
 export function TouchesPanel({
   touches,
   touchTypes,
+  socialPlatforms = [],
   loading = false,
   disabled = false,
   onAdd,
@@ -65,6 +95,9 @@ export function TouchesPanel({
   const [type, setType] = useState("")
   const [notes, setNotes] = useState("")
   const [date, setDate] = useState(todayInputValue)
+  const [amount, setAmount] = useState("")
+  const [estimateNumber, setEstimateNumber] = useState("")
+  const [socialPlatform, setSocialPlatform] = useState("")
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -72,14 +105,51 @@ export function TouchesPanel({
   const [editType, setEditType] = useState("")
   const [editNotes, setEditNotes] = useState("")
   const [editDate, setEditDate] = useState(todayInputValue)
+  const [editAmount, setEditAmount] = useState("")
+  const [editEstimateNumber, setEditEstimateNumber] = useState("")
+  const [editSocialPlatform, setEditSocialPlatform] = useState("")
   const [editSaving, setEditSaving] = useState(false)
   const [editError, setEditError] = useState<string | null>(null)
+
+  const showAmount = touchSupportsAmount(type)
+  const showEstimateNumber = touchIsEstimate(type)
+  const showSocialPlatform = touchIsSocialMedia(type)
+  const showEditAmount = touchSupportsAmount(editType)
+  const showEditEstimateNumber = touchIsEstimate(editType)
+  const showEditSocialPlatform = touchIsSocialMedia(editType)
 
   useEffect(() => {
     if (type && touchTypes.length > 0 && !touchTypes.includes(type)) {
       setType("")
     }
   }, [touchTypes, type])
+
+  useEffect(() => {
+    if (!showAmount) setAmount("")
+  }, [showAmount])
+
+  useEffect(() => {
+    if (!showEstimateNumber) setEstimateNumber("")
+  }, [showEstimateNumber])
+
+  useEffect(() => {
+    if (!showSocialPlatform) setSocialPlatform("")
+  }, [showSocialPlatform])
+
+  useEffect(() => {
+    if (!showEditEstimateNumber) setEditEstimateNumber("")
+  }, [showEditEstimateNumber])
+
+  useEffect(() => {
+    if (
+      editSocialPlatform &&
+      socialPlatforms.length > 0 &&
+      !socialPlatforms.includes(editSocialPlatform) &&
+      !showEditSocialPlatform
+    ) {
+      setEditSocialPlatform("")
+    }
+  }, [editSocialPlatform, socialPlatforms, showEditSocialPlatform])
 
   useEffect(() => {
     if (!editingId) return
@@ -93,6 +163,13 @@ export function TouchesPanel({
     setEditType(touch.type)
     setEditNotes(touch.notes ?? "")
     setEditDate(toDateInputValue(touch.date))
+    setEditAmount(
+      touch.amount != null && Number.isFinite(touch.amount)
+        ? String(touch.amount)
+        : "",
+    )
+    setEditEstimateNumber(touch.estimateNumber ?? "")
+    setEditSocialPlatform(touch.socialPlatform ?? "")
     setEditError(null)
   }
 
@@ -105,6 +182,16 @@ export function TouchesPanel({
     event.preventDefault()
     if (!type || saving || disabled) return
 
+    if (showSocialPlatform && !socialPlatform) {
+      setError("Select a social platform.")
+      return
+    }
+
+    if (showAmount && amount.trim() && parseAmountInput(amount) === null) {
+      setError("Enter a valid dollar amount.")
+      return
+    }
+
     setSaving(true)
     setError(null)
     try {
@@ -112,9 +199,17 @@ export function TouchesPanel({
         type,
         notes: notes.trim(),
         date: toIsoFromDateInput(date),
+        amount: showAmount ? parseAmountInput(amount) : null,
+        estimateNumber: showEstimateNumber
+          ? estimateNumber.trim() || null
+          : null,
+        socialPlatform: showSocialPlatform ? socialPlatform : null,
       })
       setNotes("")
       setType("")
+      setAmount("")
+      setEstimateNumber("")
+      setSocialPlatform("")
       setDate(todayInputValue())
     } catch {
       setError("Couldn’t save touch. Try again.")
@@ -127,6 +222,20 @@ export function TouchesPanel({
     event.preventDefault()
     if (!editingId || !editType || editSaving || disabled) return
 
+    if (showEditSocialPlatform && !editSocialPlatform) {
+      setEditError("Select a social platform.")
+      return
+    }
+
+    if (
+      showEditAmount &&
+      editAmount.trim() &&
+      parseAmountInput(editAmount) === null
+    ) {
+      setEditError("Enter a valid dollar amount.")
+      return
+    }
+
     setEditSaving(true)
     setEditError(null)
     try {
@@ -134,6 +243,11 @@ export function TouchesPanel({
         type: editType,
         notes: editNotes.trim(),
         date: toIsoFromDateInput(editDate),
+        amount: showEditAmount ? parseAmountInput(editAmount) : null,
+        estimateNumber: showEditEstimateNumber
+          ? editEstimateNumber.trim() || null
+          : null,
+        socialPlatform: showEditSocialPlatform ? editSocialPlatform : null,
       })
       setEditingId(null)
     } catch {
@@ -175,6 +289,31 @@ export function TouchesPanel({
           ))}
         </select>
 
+        {showSocialPlatform ? (
+          <label className="flex flex-col gap-1">
+            <span className="text-xs font-medium text-muted-foreground">
+              Platform
+            </span>
+            <select
+              value={socialPlatform}
+              onChange={(event) => setSocialPlatform(event.target.value)}
+              disabled={disabled || saving || socialPlatforms.length === 0}
+              required
+              className={fieldClassName}
+              aria-label="Social media platform"
+            >
+              <option value="" disabled>
+                Select platform…
+              </option>
+              {socialPlatforms.map((platform) => (
+                <option key={platform} value={platform}>
+                  {platform}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
+
         <input
           type="date"
           value={date}
@@ -183,6 +322,45 @@ export function TouchesPanel({
           className={fieldClassName}
           aria-label="Touch date"
         />
+
+        {showEstimateNumber ? (
+          <label className="flex flex-col gap-1">
+            <span className="text-xs font-medium text-muted-foreground">
+              Estimate number
+            </span>
+            <input
+              type="text"
+              value={estimateNumber}
+              onChange={(event) => setEstimateNumber(event.target.value)}
+              placeholder="POS / estimate #"
+              disabled={disabled || saving}
+              className={fieldClassName}
+              aria-label="Estimate number"
+            />
+          </label>
+        ) : null}
+
+        {showAmount ? (
+          <label className="flex flex-col gap-1">
+            <span className="text-xs font-medium text-muted-foreground">
+              {showEstimateNumber
+                ? "Estimate amount ($) — not revenue"
+                : "Sale amount ($)"}
+            </span>
+            <input
+              type="number"
+              min={0}
+              step="0.01"
+              inputMode="decimal"
+              value={amount}
+              onChange={(event) => setAmount(event.target.value)}
+              placeholder="Optional"
+              disabled={disabled || saving}
+              className={fieldClassName}
+              aria-label="Dollar amount"
+            />
+          </label>
+        ) : null}
 
         <textarea
           value={notes}
@@ -205,7 +383,12 @@ export function TouchesPanel({
           <Button
             type="submit"
             size="sm"
-            disabled={disabled || saving || !type}
+            disabled={
+              disabled ||
+              saving ||
+              !type ||
+              (showSocialPlatform && !socialPlatform)
+            }
           >
             {saving ? "Saving…" : "Add touch"}
           </Button>
@@ -247,7 +430,9 @@ export function TouchesPanel({
                       <select
                         value={editType}
                         onChange={(event) => setEditType(event.target.value)}
-                        disabled={disabled || editSaving || touchTypes.length === 0}
+                        disabled={
+                          disabled || editSaving || touchTypes.length === 0
+                        }
                         required
                         className={fieldClassName}
                         aria-label="Edit touch type"
@@ -262,6 +447,43 @@ export function TouchesPanel({
                         ) : null}
                       </select>
 
+                      {showEditSocialPlatform ? (
+                        <label className="flex flex-col gap-1">
+                          <span className="text-xs font-medium text-muted-foreground">
+                            Platform
+                          </span>
+                          <select
+                            value={editSocialPlatform}
+                            onChange={(event) =>
+                              setEditSocialPlatform(event.target.value)
+                            }
+                            disabled={
+                              disabled ||
+                              editSaving ||
+                              socialPlatforms.length === 0
+                            }
+                            required
+                            className={fieldClassName}
+                            aria-label="Edit social media platform"
+                          >
+                            <option value="" disabled>
+                              Select platform…
+                            </option>
+                            {socialPlatforms.map((platform) => (
+                              <option key={platform} value={platform}>
+                                {platform}
+                              </option>
+                            ))}
+                            {editSocialPlatform &&
+                            !socialPlatforms.includes(editSocialPlatform) ? (
+                              <option value={editSocialPlatform}>
+                                {editSocialPlatform}
+                              </option>
+                            ) : null}
+                          </select>
+                        </label>
+                      ) : null}
+
                       <input
                         type="date"
                         value={editDate}
@@ -270,6 +492,49 @@ export function TouchesPanel({
                         className={fieldClassName}
                         aria-label="Edit touch date"
                       />
+
+                      {showEditEstimateNumber ? (
+                        <label className="flex flex-col gap-1">
+                          <span className="text-xs font-medium text-muted-foreground">
+                            Estimate number
+                          </span>
+                          <input
+                            type="text"
+                            value={editEstimateNumber}
+                            onChange={(event) =>
+                              setEditEstimateNumber(event.target.value)
+                            }
+                            placeholder="POS / estimate #"
+                            disabled={disabled || editSaving}
+                            className={fieldClassName}
+                            aria-label="Edit estimate number"
+                          />
+                        </label>
+                      ) : null}
+
+                      {showEditAmount ? (
+                        <label className="flex flex-col gap-1">
+                          <span className="text-xs font-medium text-muted-foreground">
+                            {showEditEstimateNumber
+                              ? "Estimate amount ($) — not revenue"
+                              : "Sale amount ($)"}
+                          </span>
+                          <input
+                            type="number"
+                            min={0}
+                            step="0.01"
+                            inputMode="decimal"
+                            value={editAmount}
+                            onChange={(event) =>
+                              setEditAmount(event.target.value)
+                            }
+                            placeholder="Optional"
+                            disabled={disabled || editSaving}
+                            className={fieldClassName}
+                            aria-label="Edit dollar amount"
+                          />
+                        </label>
+                      ) : null}
 
                       <textarea
                         value={editNotes}
@@ -286,13 +551,18 @@ export function TouchesPanel({
                           <p className="text-xs text-destructive">{editError}</p>
                         ) : (
                           <span className="text-xs text-muted-foreground">
-                            Update type, date, or notes
+                            Update type, date, amount, or notes
                           </span>
                         )}
                         <Button
                           type="submit"
                           size="sm"
-                          disabled={disabled || editSaving || !editType}
+                          disabled={
+                            disabled ||
+                            editSaving ||
+                            !editType ||
+                            (showEditSocialPlatform && !editSocialPlatform)
+                          }
                         >
                           {editSaving ? "Saving…" : "Save"}
                         </Button>
@@ -311,6 +581,11 @@ export function TouchesPanel({
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <span className="text-sm font-medium">{touch.type}</span>
+                        {touch.socialPlatform ? (
+                          <span className="text-xs text-muted-foreground">
+                            · {touch.socialPlatform}
+                          </span>
+                        ) : null}
                         <time
                           dateTime={touch.date}
                           className="text-[11px] font-medium tracking-wide text-muted-foreground uppercase"
@@ -319,6 +594,19 @@ export function TouchesPanel({
                           {formatLeadDate(touch.date)}
                         </time>
                       </div>
+                      {touch.estimateNumber ? (
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          Estimate # {touch.estimateNumber}
+                        </p>
+                      ) : null}
+                      {touch.amount != null ? (
+                        <p className="mt-1 text-xs font-medium text-emerald-700">
+                          {formatAmount(touch.amount)}
+                          {touchIsEstimate(touch.type)
+                            ? " · estimate (not revenue)"
+                            : " · sale"}
+                        </p>
+                      ) : null}
                       {touch.notes ? (
                         <p className="mt-1 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
                           {touch.notes}

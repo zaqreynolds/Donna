@@ -29,6 +29,12 @@ export type Industry = $Result.DefaultSelection<Prisma.$IndustryPayload>
  */
 export type TouchType = $Result.DefaultSelection<Prisma.$TouchTypePayload>
 /**
+ * Model SocialPlatform
+ * Platforms available when Touch.type is "Social Media".
+ * Seeded defaults: Instagram, Facebook, LinkedIn, X, TikTok, YouTube, Nextdoor, Other.
+ */
+export type SocialPlatform = $Result.DefaultSelection<Prisma.$SocialPlatformPayload>
+/**
  * Model Company
  * 
  */
@@ -194,6 +200,16 @@ export class PrismaClient<
     * ```
     */
   get touchType(): Prisma.TouchTypeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.socialPlatform`: Exposes CRUD operations for the **SocialPlatform** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SocialPlatforms
+    * const socialPlatforms = await prisma.socialPlatform.findMany()
+    * ```
+    */
+  get socialPlatform(): Prisma.SocialPlatformDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.company`: Exposes CRUD operations for the **Company** model.
@@ -680,6 +696,7 @@ export namespace Prisma {
   export const ModelName: {
     Industry: 'Industry',
     TouchType: 'TouchType',
+    SocialPlatform: 'SocialPlatform',
     Company: 'Company',
     CompanyNote: 'CompanyNote',
     Lead: 'Lead',
@@ -700,7 +717,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "industry" | "touchType" | "company" | "companyNote" | "lead" | "leadNote" | "touch"
+      modelProps: "industry" | "touchType" | "socialPlatform" | "company" | "companyNote" | "lead" | "leadNote" | "touch"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -849,6 +866,80 @@ export namespace Prisma {
           count: {
             args: Prisma.TouchTypeCountArgs<ExtArgs>
             result: $Utils.Optional<TouchTypeCountAggregateOutputType> | number
+          }
+        }
+      }
+      SocialPlatform: {
+        payload: Prisma.$SocialPlatformPayload<ExtArgs>
+        fields: Prisma.SocialPlatformFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SocialPlatformFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SocialPlatformPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SocialPlatformFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SocialPlatformPayload>
+          }
+          findFirst: {
+            args: Prisma.SocialPlatformFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SocialPlatformPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SocialPlatformFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SocialPlatformPayload>
+          }
+          findMany: {
+            args: Prisma.SocialPlatformFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SocialPlatformPayload>[]
+          }
+          create: {
+            args: Prisma.SocialPlatformCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SocialPlatformPayload>
+          }
+          createMany: {
+            args: Prisma.SocialPlatformCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SocialPlatformCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SocialPlatformPayload>[]
+          }
+          delete: {
+            args: Prisma.SocialPlatformDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SocialPlatformPayload>
+          }
+          update: {
+            args: Prisma.SocialPlatformUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SocialPlatformPayload>
+          }
+          deleteMany: {
+            args: Prisma.SocialPlatformDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SocialPlatformUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SocialPlatformUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SocialPlatformPayload>[]
+          }
+          upsert: {
+            args: Prisma.SocialPlatformUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SocialPlatformPayload>
+          }
+          aggregate: {
+            args: Prisma.SocialPlatformAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSocialPlatform>
+          }
+          groupBy: {
+            args: Prisma.SocialPlatformGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SocialPlatformGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SocialPlatformCountArgs<ExtArgs>
+            result: $Utils.Optional<SocialPlatformCountAggregateOutputType> | number
           }
         }
       }
@@ -1332,6 +1423,7 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     industry?: IndustryOmit
     touchType?: TouchTypeOmit
+    socialPlatform?: SocialPlatformOmit
     company?: CompanyOmit
     companyNote?: CompanyNoteOmit
     lead?: LeadOmit
@@ -3549,6 +3641,981 @@ export namespace Prisma {
      * Omit specific fields from the TouchType
      */
     omit?: TouchTypeOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SocialPlatform
+   */
+
+  export type AggregateSocialPlatform = {
+    _count: SocialPlatformCountAggregateOutputType | null
+    _min: SocialPlatformMinAggregateOutputType | null
+    _max: SocialPlatformMaxAggregateOutputType | null
+  }
+
+  export type SocialPlatformMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    isSystem: boolean | null
+  }
+
+  export type SocialPlatformMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    isSystem: boolean | null
+  }
+
+  export type SocialPlatformCountAggregateOutputType = {
+    id: number
+    name: number
+    isSystem: number
+    _all: number
+  }
+
+
+  export type SocialPlatformMinAggregateInputType = {
+    id?: true
+    name?: true
+    isSystem?: true
+  }
+
+  export type SocialPlatformMaxAggregateInputType = {
+    id?: true
+    name?: true
+    isSystem?: true
+  }
+
+  export type SocialPlatformCountAggregateInputType = {
+    id?: true
+    name?: true
+    isSystem?: true
+    _all?: true
+  }
+
+  export type SocialPlatformAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SocialPlatform to aggregate.
+     */
+    where?: SocialPlatformWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SocialPlatforms to fetch.
+     */
+    orderBy?: SocialPlatformOrderByWithRelationInput | SocialPlatformOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SocialPlatformWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SocialPlatforms from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SocialPlatforms.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SocialPlatforms
+    **/
+    _count?: true | SocialPlatformCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SocialPlatformMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SocialPlatformMaxAggregateInputType
+  }
+
+  export type GetSocialPlatformAggregateType<T extends SocialPlatformAggregateArgs> = {
+        [P in keyof T & keyof AggregateSocialPlatform]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSocialPlatform[P]>
+      : GetScalarType<T[P], AggregateSocialPlatform[P]>
+  }
+
+
+
+
+  export type SocialPlatformGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SocialPlatformWhereInput
+    orderBy?: SocialPlatformOrderByWithAggregationInput | SocialPlatformOrderByWithAggregationInput[]
+    by: SocialPlatformScalarFieldEnum[] | SocialPlatformScalarFieldEnum
+    having?: SocialPlatformScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SocialPlatformCountAggregateInputType | true
+    _min?: SocialPlatformMinAggregateInputType
+    _max?: SocialPlatformMaxAggregateInputType
+  }
+
+  export type SocialPlatformGroupByOutputType = {
+    id: string
+    name: string
+    isSystem: boolean
+    _count: SocialPlatformCountAggregateOutputType | null
+    _min: SocialPlatformMinAggregateOutputType | null
+    _max: SocialPlatformMaxAggregateOutputType | null
+  }
+
+  type GetSocialPlatformGroupByPayload<T extends SocialPlatformGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SocialPlatformGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SocialPlatformGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SocialPlatformGroupByOutputType[P]>
+            : GetScalarType<T[P], SocialPlatformGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SocialPlatformSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    isSystem?: boolean
+  }, ExtArgs["result"]["socialPlatform"]>
+
+  export type SocialPlatformSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    isSystem?: boolean
+  }, ExtArgs["result"]["socialPlatform"]>
+
+  export type SocialPlatformSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    isSystem?: boolean
+  }, ExtArgs["result"]["socialPlatform"]>
+
+  export type SocialPlatformSelectScalar = {
+    id?: boolean
+    name?: boolean
+    isSystem?: boolean
+  }
+
+  export type SocialPlatformOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isSystem", ExtArgs["result"]["socialPlatform"]>
+
+  export type $SocialPlatformPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SocialPlatform"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      /**
+       * Built-in seeded platforms cannot be renamed or deleted in Settings.
+       */
+      isSystem: boolean
+    }, ExtArgs["result"]["socialPlatform"]>
+    composites: {}
+  }
+
+  type SocialPlatformGetPayload<S extends boolean | null | undefined | SocialPlatformDefaultArgs> = $Result.GetResult<Prisma.$SocialPlatformPayload, S>
+
+  type SocialPlatformCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SocialPlatformFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SocialPlatformCountAggregateInputType | true
+    }
+
+  export interface SocialPlatformDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SocialPlatform'], meta: { name: 'SocialPlatform' } }
+    /**
+     * Find zero or one SocialPlatform that matches the filter.
+     * @param {SocialPlatformFindUniqueArgs} args - Arguments to find a SocialPlatform
+     * @example
+     * // Get one SocialPlatform
+     * const socialPlatform = await prisma.socialPlatform.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SocialPlatformFindUniqueArgs>(args: SelectSubset<T, SocialPlatformFindUniqueArgs<ExtArgs>>): Prisma__SocialPlatformClient<$Result.GetResult<Prisma.$SocialPlatformPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SocialPlatform that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SocialPlatformFindUniqueOrThrowArgs} args - Arguments to find a SocialPlatform
+     * @example
+     * // Get one SocialPlatform
+     * const socialPlatform = await prisma.socialPlatform.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SocialPlatformFindUniqueOrThrowArgs>(args: SelectSubset<T, SocialPlatformFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SocialPlatformClient<$Result.GetResult<Prisma.$SocialPlatformPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SocialPlatform that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SocialPlatformFindFirstArgs} args - Arguments to find a SocialPlatform
+     * @example
+     * // Get one SocialPlatform
+     * const socialPlatform = await prisma.socialPlatform.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SocialPlatformFindFirstArgs>(args?: SelectSubset<T, SocialPlatformFindFirstArgs<ExtArgs>>): Prisma__SocialPlatformClient<$Result.GetResult<Prisma.$SocialPlatformPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SocialPlatform that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SocialPlatformFindFirstOrThrowArgs} args - Arguments to find a SocialPlatform
+     * @example
+     * // Get one SocialPlatform
+     * const socialPlatform = await prisma.socialPlatform.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SocialPlatformFindFirstOrThrowArgs>(args?: SelectSubset<T, SocialPlatformFindFirstOrThrowArgs<ExtArgs>>): Prisma__SocialPlatformClient<$Result.GetResult<Prisma.$SocialPlatformPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SocialPlatforms that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SocialPlatformFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SocialPlatforms
+     * const socialPlatforms = await prisma.socialPlatform.findMany()
+     * 
+     * // Get first 10 SocialPlatforms
+     * const socialPlatforms = await prisma.socialPlatform.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const socialPlatformWithIdOnly = await prisma.socialPlatform.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SocialPlatformFindManyArgs>(args?: SelectSubset<T, SocialPlatformFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SocialPlatformPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SocialPlatform.
+     * @param {SocialPlatformCreateArgs} args - Arguments to create a SocialPlatform.
+     * @example
+     * // Create one SocialPlatform
+     * const SocialPlatform = await prisma.socialPlatform.create({
+     *   data: {
+     *     // ... data to create a SocialPlatform
+     *   }
+     * })
+     * 
+     */
+    create<T extends SocialPlatformCreateArgs>(args: SelectSubset<T, SocialPlatformCreateArgs<ExtArgs>>): Prisma__SocialPlatformClient<$Result.GetResult<Prisma.$SocialPlatformPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SocialPlatforms.
+     * @param {SocialPlatformCreateManyArgs} args - Arguments to create many SocialPlatforms.
+     * @example
+     * // Create many SocialPlatforms
+     * const socialPlatform = await prisma.socialPlatform.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SocialPlatformCreateManyArgs>(args?: SelectSubset<T, SocialPlatformCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SocialPlatforms and returns the data saved in the database.
+     * @param {SocialPlatformCreateManyAndReturnArgs} args - Arguments to create many SocialPlatforms.
+     * @example
+     * // Create many SocialPlatforms
+     * const socialPlatform = await prisma.socialPlatform.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SocialPlatforms and only return the `id`
+     * const socialPlatformWithIdOnly = await prisma.socialPlatform.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SocialPlatformCreateManyAndReturnArgs>(args?: SelectSubset<T, SocialPlatformCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SocialPlatformPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SocialPlatform.
+     * @param {SocialPlatformDeleteArgs} args - Arguments to delete one SocialPlatform.
+     * @example
+     * // Delete one SocialPlatform
+     * const SocialPlatform = await prisma.socialPlatform.delete({
+     *   where: {
+     *     // ... filter to delete one SocialPlatform
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SocialPlatformDeleteArgs>(args: SelectSubset<T, SocialPlatformDeleteArgs<ExtArgs>>): Prisma__SocialPlatformClient<$Result.GetResult<Prisma.$SocialPlatformPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SocialPlatform.
+     * @param {SocialPlatformUpdateArgs} args - Arguments to update one SocialPlatform.
+     * @example
+     * // Update one SocialPlatform
+     * const socialPlatform = await prisma.socialPlatform.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SocialPlatformUpdateArgs>(args: SelectSubset<T, SocialPlatformUpdateArgs<ExtArgs>>): Prisma__SocialPlatformClient<$Result.GetResult<Prisma.$SocialPlatformPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SocialPlatforms.
+     * @param {SocialPlatformDeleteManyArgs} args - Arguments to filter SocialPlatforms to delete.
+     * @example
+     * // Delete a few SocialPlatforms
+     * const { count } = await prisma.socialPlatform.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SocialPlatformDeleteManyArgs>(args?: SelectSubset<T, SocialPlatformDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SocialPlatforms.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SocialPlatformUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SocialPlatforms
+     * const socialPlatform = await prisma.socialPlatform.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SocialPlatformUpdateManyArgs>(args: SelectSubset<T, SocialPlatformUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SocialPlatforms and returns the data updated in the database.
+     * @param {SocialPlatformUpdateManyAndReturnArgs} args - Arguments to update many SocialPlatforms.
+     * @example
+     * // Update many SocialPlatforms
+     * const socialPlatform = await prisma.socialPlatform.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SocialPlatforms and only return the `id`
+     * const socialPlatformWithIdOnly = await prisma.socialPlatform.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SocialPlatformUpdateManyAndReturnArgs>(args: SelectSubset<T, SocialPlatformUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SocialPlatformPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SocialPlatform.
+     * @param {SocialPlatformUpsertArgs} args - Arguments to update or create a SocialPlatform.
+     * @example
+     * // Update or create a SocialPlatform
+     * const socialPlatform = await prisma.socialPlatform.upsert({
+     *   create: {
+     *     // ... data to create a SocialPlatform
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SocialPlatform we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SocialPlatformUpsertArgs>(args: SelectSubset<T, SocialPlatformUpsertArgs<ExtArgs>>): Prisma__SocialPlatformClient<$Result.GetResult<Prisma.$SocialPlatformPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SocialPlatforms.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SocialPlatformCountArgs} args - Arguments to filter SocialPlatforms to count.
+     * @example
+     * // Count the number of SocialPlatforms
+     * const count = await prisma.socialPlatform.count({
+     *   where: {
+     *     // ... the filter for the SocialPlatforms we want to count
+     *   }
+     * })
+    **/
+    count<T extends SocialPlatformCountArgs>(
+      args?: Subset<T, SocialPlatformCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SocialPlatformCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SocialPlatform.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SocialPlatformAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SocialPlatformAggregateArgs>(args: Subset<T, SocialPlatformAggregateArgs>): Prisma.PrismaPromise<GetSocialPlatformAggregateType<T>>
+
+    /**
+     * Group by SocialPlatform.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SocialPlatformGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SocialPlatformGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SocialPlatformGroupByArgs['orderBy'] }
+        : { orderBy?: SocialPlatformGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SocialPlatformGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSocialPlatformGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SocialPlatform model
+   */
+  readonly fields: SocialPlatformFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SocialPlatform.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SocialPlatformClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SocialPlatform model
+   */
+  interface SocialPlatformFieldRefs {
+    readonly id: FieldRef<"SocialPlatform", 'String'>
+    readonly name: FieldRef<"SocialPlatform", 'String'>
+    readonly isSystem: FieldRef<"SocialPlatform", 'Boolean'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SocialPlatform findUnique
+   */
+  export type SocialPlatformFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SocialPlatform
+     */
+    select?: SocialPlatformSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SocialPlatform
+     */
+    omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * Filter, which SocialPlatform to fetch.
+     */
+    where: SocialPlatformWhereUniqueInput
+  }
+
+  /**
+   * SocialPlatform findUniqueOrThrow
+   */
+  export type SocialPlatformFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SocialPlatform
+     */
+    select?: SocialPlatformSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SocialPlatform
+     */
+    omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * Filter, which SocialPlatform to fetch.
+     */
+    where: SocialPlatformWhereUniqueInput
+  }
+
+  /**
+   * SocialPlatform findFirst
+   */
+  export type SocialPlatformFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SocialPlatform
+     */
+    select?: SocialPlatformSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SocialPlatform
+     */
+    omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * Filter, which SocialPlatform to fetch.
+     */
+    where?: SocialPlatformWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SocialPlatforms to fetch.
+     */
+    orderBy?: SocialPlatformOrderByWithRelationInput | SocialPlatformOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SocialPlatforms.
+     */
+    cursor?: SocialPlatformWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SocialPlatforms from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SocialPlatforms.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SocialPlatforms.
+     */
+    distinct?: SocialPlatformScalarFieldEnum | SocialPlatformScalarFieldEnum[]
+  }
+
+  /**
+   * SocialPlatform findFirstOrThrow
+   */
+  export type SocialPlatformFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SocialPlatform
+     */
+    select?: SocialPlatformSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SocialPlatform
+     */
+    omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * Filter, which SocialPlatform to fetch.
+     */
+    where?: SocialPlatformWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SocialPlatforms to fetch.
+     */
+    orderBy?: SocialPlatformOrderByWithRelationInput | SocialPlatformOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SocialPlatforms.
+     */
+    cursor?: SocialPlatformWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SocialPlatforms from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SocialPlatforms.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SocialPlatforms.
+     */
+    distinct?: SocialPlatformScalarFieldEnum | SocialPlatformScalarFieldEnum[]
+  }
+
+  /**
+   * SocialPlatform findMany
+   */
+  export type SocialPlatformFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SocialPlatform
+     */
+    select?: SocialPlatformSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SocialPlatform
+     */
+    omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * Filter, which SocialPlatforms to fetch.
+     */
+    where?: SocialPlatformWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SocialPlatforms to fetch.
+     */
+    orderBy?: SocialPlatformOrderByWithRelationInput | SocialPlatformOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SocialPlatforms.
+     */
+    cursor?: SocialPlatformWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SocialPlatforms from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SocialPlatforms.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SocialPlatforms.
+     */
+    distinct?: SocialPlatformScalarFieldEnum | SocialPlatformScalarFieldEnum[]
+  }
+
+  /**
+   * SocialPlatform create
+   */
+  export type SocialPlatformCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SocialPlatform
+     */
+    select?: SocialPlatformSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SocialPlatform
+     */
+    omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * The data needed to create a SocialPlatform.
+     */
+    data: XOR<SocialPlatformCreateInput, SocialPlatformUncheckedCreateInput>
+  }
+
+  /**
+   * SocialPlatform createMany
+   */
+  export type SocialPlatformCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SocialPlatforms.
+     */
+    data: SocialPlatformCreateManyInput | SocialPlatformCreateManyInput[]
+  }
+
+  /**
+   * SocialPlatform createManyAndReturn
+   */
+  export type SocialPlatformCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SocialPlatform
+     */
+    select?: SocialPlatformSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SocialPlatform
+     */
+    omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * The data used to create many SocialPlatforms.
+     */
+    data: SocialPlatformCreateManyInput | SocialPlatformCreateManyInput[]
+  }
+
+  /**
+   * SocialPlatform update
+   */
+  export type SocialPlatformUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SocialPlatform
+     */
+    select?: SocialPlatformSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SocialPlatform
+     */
+    omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * The data needed to update a SocialPlatform.
+     */
+    data: XOR<SocialPlatformUpdateInput, SocialPlatformUncheckedUpdateInput>
+    /**
+     * Choose, which SocialPlatform to update.
+     */
+    where: SocialPlatformWhereUniqueInput
+  }
+
+  /**
+   * SocialPlatform updateMany
+   */
+  export type SocialPlatformUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SocialPlatforms.
+     */
+    data: XOR<SocialPlatformUpdateManyMutationInput, SocialPlatformUncheckedUpdateManyInput>
+    /**
+     * Filter which SocialPlatforms to update
+     */
+    where?: SocialPlatformWhereInput
+    /**
+     * Limit how many SocialPlatforms to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SocialPlatform updateManyAndReturn
+   */
+  export type SocialPlatformUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SocialPlatform
+     */
+    select?: SocialPlatformSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SocialPlatform
+     */
+    omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * The data used to update SocialPlatforms.
+     */
+    data: XOR<SocialPlatformUpdateManyMutationInput, SocialPlatformUncheckedUpdateManyInput>
+    /**
+     * Filter which SocialPlatforms to update
+     */
+    where?: SocialPlatformWhereInput
+    /**
+     * Limit how many SocialPlatforms to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SocialPlatform upsert
+   */
+  export type SocialPlatformUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SocialPlatform
+     */
+    select?: SocialPlatformSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SocialPlatform
+     */
+    omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * The filter to search for the SocialPlatform to update in case it exists.
+     */
+    where: SocialPlatformWhereUniqueInput
+    /**
+     * In case the SocialPlatform found by the `where` argument doesn't exist, create a new SocialPlatform with this data.
+     */
+    create: XOR<SocialPlatformCreateInput, SocialPlatformUncheckedCreateInput>
+    /**
+     * In case the SocialPlatform was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SocialPlatformUpdateInput, SocialPlatformUncheckedUpdateInput>
+  }
+
+  /**
+   * SocialPlatform delete
+   */
+  export type SocialPlatformDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SocialPlatform
+     */
+    select?: SocialPlatformSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SocialPlatform
+     */
+    omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * Filter which SocialPlatform to delete.
+     */
+    where: SocialPlatformWhereUniqueInput
+  }
+
+  /**
+   * SocialPlatform deleteMany
+   */
+  export type SocialPlatformDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SocialPlatforms to delete
+     */
+    where?: SocialPlatformWhereInput
+    /**
+     * Limit how many SocialPlatforms to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SocialPlatform without action
+   */
+  export type SocialPlatformDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SocialPlatform
+     */
+    select?: SocialPlatformSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SocialPlatform
+     */
+    omit?: SocialPlatformOmit<ExtArgs> | null
   }
 
 
@@ -8000,8 +9067,18 @@ export namespace Prisma {
 
   export type AggregateTouch = {
     _count: TouchCountAggregateOutputType | null
+    _avg: TouchAvgAggregateOutputType | null
+    _sum: TouchSumAggregateOutputType | null
     _min: TouchMinAggregateOutputType | null
     _max: TouchMaxAggregateOutputType | null
+  }
+
+  export type TouchAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type TouchSumAggregateOutputType = {
+    amount: number | null
   }
 
   export type TouchMinAggregateOutputType = {
@@ -8009,6 +9086,9 @@ export namespace Prisma {
     date: Date | null
     type: string | null
     notes: string | null
+    amount: number | null
+    estimateNumber: string | null
+    socialPlatform: string | null
     leadId: string | null
   }
 
@@ -8017,6 +9097,9 @@ export namespace Prisma {
     date: Date | null
     type: string | null
     notes: string | null
+    amount: number | null
+    estimateNumber: string | null
+    socialPlatform: string | null
     leadId: string | null
   }
 
@@ -8025,16 +9108,30 @@ export namespace Prisma {
     date: number
     type: number
     notes: number
+    amount: number
+    estimateNumber: number
+    socialPlatform: number
     leadId: number
     _all: number
   }
 
+
+  export type TouchAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type TouchSumAggregateInputType = {
+    amount?: true
+  }
 
   export type TouchMinAggregateInputType = {
     id?: true
     date?: true
     type?: true
     notes?: true
+    amount?: true
+    estimateNumber?: true
+    socialPlatform?: true
     leadId?: true
   }
 
@@ -8043,6 +9140,9 @@ export namespace Prisma {
     date?: true
     type?: true
     notes?: true
+    amount?: true
+    estimateNumber?: true
+    socialPlatform?: true
     leadId?: true
   }
 
@@ -8051,6 +9151,9 @@ export namespace Prisma {
     date?: true
     type?: true
     notes?: true
+    amount?: true
+    estimateNumber?: true
+    socialPlatform?: true
     leadId?: true
     _all?: true
   }
@@ -8093,6 +9196,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: TouchAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TouchSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: TouchMinAggregateInputType
@@ -8123,6 +9238,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: TouchCountAggregateInputType | true
+    _avg?: TouchAvgAggregateInputType
+    _sum?: TouchSumAggregateInputType
     _min?: TouchMinAggregateInputType
     _max?: TouchMaxAggregateInputType
   }
@@ -8132,8 +9249,13 @@ export namespace Prisma {
     date: Date
     type: string
     notes: string
+    amount: number | null
+    estimateNumber: string | null
+    socialPlatform: string | null
     leadId: string
     _count: TouchCountAggregateOutputType | null
+    _avg: TouchAvgAggregateOutputType | null
+    _sum: TouchSumAggregateOutputType | null
     _min: TouchMinAggregateOutputType | null
     _max: TouchMaxAggregateOutputType | null
   }
@@ -8157,6 +9279,9 @@ export namespace Prisma {
     date?: boolean
     type?: boolean
     notes?: boolean
+    amount?: boolean
+    estimateNumber?: boolean
+    socialPlatform?: boolean
     leadId?: boolean
     lead?: boolean | LeadDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["touch"]>
@@ -8166,6 +9291,9 @@ export namespace Prisma {
     date?: boolean
     type?: boolean
     notes?: boolean
+    amount?: boolean
+    estimateNumber?: boolean
+    socialPlatform?: boolean
     leadId?: boolean
     lead?: boolean | LeadDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["touch"]>
@@ -8175,6 +9303,9 @@ export namespace Prisma {
     date?: boolean
     type?: boolean
     notes?: boolean
+    amount?: boolean
+    estimateNumber?: boolean
+    socialPlatform?: boolean
     leadId?: boolean
     lead?: boolean | LeadDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["touch"]>
@@ -8184,10 +9315,13 @@ export namespace Prisma {
     date?: boolean
     type?: boolean
     notes?: boolean
+    amount?: boolean
+    estimateNumber?: boolean
+    socialPlatform?: boolean
     leadId?: boolean
   }
 
-  export type TouchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "date" | "type" | "notes" | "leadId", ExtArgs["result"]["touch"]>
+  export type TouchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "date" | "type" | "notes" | "amount" | "estimateNumber" | "socialPlatform" | "leadId", ExtArgs["result"]["touch"]>
   export type TouchInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     lead?: boolean | LeadDefaultArgs<ExtArgs>
   }
@@ -8208,9 +9342,24 @@ export namespace Prisma {
       date: Date
       /**
        * Outreach channel — must match a TouchType.name (see Settings).
+       * Scorecard categories map from names like Phone/PHONE, Email/EMAIL,
+       * Meeting/MEETING/Face to Face, Estimate/ESTIMATE, Sale/SALE/DEAL_WON.
        */
       type: string
       notes: string
+      /**
+       * Optional dollar value for Estimate / Sale touches.
+       * Estimate amounts feed estimate pipeline $ only — never revenue.
+       */
+      amount: number | null
+      /**
+       * POS / estimate reference number (Estimate touches only).
+       */
+      estimateNumber: string | null
+      /**
+       * Platform name when type is Social Media (must match SocialPlatform.name).
+       */
+      socialPlatform: string | null
       leadId: string
     }, ExtArgs["result"]["touch"]>
     composites: {}
@@ -8640,6 +9789,9 @@ export namespace Prisma {
     readonly date: FieldRef<"Touch", 'DateTime'>
     readonly type: FieldRef<"Touch", 'String'>
     readonly notes: FieldRef<"Touch", 'String'>
+    readonly amount: FieldRef<"Touch", 'Float'>
+    readonly estimateNumber: FieldRef<"Touch", 'String'>
+    readonly socialPlatform: FieldRef<"Touch", 'String'>
     readonly leadId: FieldRef<"Touch", 'String'>
   }
     
@@ -9087,6 +10239,15 @@ export namespace Prisma {
   export type TouchTypeScalarFieldEnum = (typeof TouchTypeScalarFieldEnum)[keyof typeof TouchTypeScalarFieldEnum]
 
 
+  export const SocialPlatformScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    isSystem: 'isSystem'
+  };
+
+  export type SocialPlatformScalarFieldEnum = (typeof SocialPlatformScalarFieldEnum)[keyof typeof SocialPlatformScalarFieldEnum]
+
+
   export const CompanyScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -9142,6 +10303,9 @@ export namespace Prisma {
     date: 'date',
     type: 'type',
     notes: 'notes',
+    amount: 'amount',
+    estimateNumber: 'estimateNumber',
+    socialPlatform: 'socialPlatform',
     leadId: 'leadId'
   };
 
@@ -9187,6 +10351,13 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
     
 
 
@@ -9285,6 +10456,48 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"TouchType"> | string
     name?: StringWithAggregatesFilter<"TouchType"> | string
     isSystem?: BoolWithAggregatesFilter<"TouchType"> | boolean
+  }
+
+  export type SocialPlatformWhereInput = {
+    AND?: SocialPlatformWhereInput | SocialPlatformWhereInput[]
+    OR?: SocialPlatformWhereInput[]
+    NOT?: SocialPlatformWhereInput | SocialPlatformWhereInput[]
+    id?: StringFilter<"SocialPlatform"> | string
+    name?: StringFilter<"SocialPlatform"> | string
+    isSystem?: BoolFilter<"SocialPlatform"> | boolean
+  }
+
+  export type SocialPlatformOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+  }
+
+  export type SocialPlatformWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    AND?: SocialPlatformWhereInput | SocialPlatformWhereInput[]
+    OR?: SocialPlatformWhereInput[]
+    NOT?: SocialPlatformWhereInput | SocialPlatformWhereInput[]
+    isSystem?: BoolFilter<"SocialPlatform"> | boolean
+  }, "id" | "name">
+
+  export type SocialPlatformOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+    _count?: SocialPlatformCountOrderByAggregateInput
+    _max?: SocialPlatformMaxOrderByAggregateInput
+    _min?: SocialPlatformMinOrderByAggregateInput
+  }
+
+  export type SocialPlatformScalarWhereWithAggregatesInput = {
+    AND?: SocialPlatformScalarWhereWithAggregatesInput | SocialPlatformScalarWhereWithAggregatesInput[]
+    OR?: SocialPlatformScalarWhereWithAggregatesInput[]
+    NOT?: SocialPlatformScalarWhereWithAggregatesInput | SocialPlatformScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SocialPlatform"> | string
+    name?: StringWithAggregatesFilter<"SocialPlatform"> | string
+    isSystem?: BoolWithAggregatesFilter<"SocialPlatform"> | boolean
   }
 
   export type CompanyWhereInput = {
@@ -9557,6 +10770,9 @@ export namespace Prisma {
     date?: DateTimeFilter<"Touch"> | Date | string
     type?: StringFilter<"Touch"> | string
     notes?: StringFilter<"Touch"> | string
+    amount?: FloatNullableFilter<"Touch"> | number | null
+    estimateNumber?: StringNullableFilter<"Touch"> | string | null
+    socialPlatform?: StringNullableFilter<"Touch"> | string | null
     leadId?: StringFilter<"Touch"> | string
     lead?: XOR<LeadScalarRelationFilter, LeadWhereInput>
   }
@@ -9566,6 +10782,9 @@ export namespace Prisma {
     date?: SortOrder
     type?: SortOrder
     notes?: SortOrder
+    amount?: SortOrderInput | SortOrder
+    estimateNumber?: SortOrderInput | SortOrder
+    socialPlatform?: SortOrderInput | SortOrder
     leadId?: SortOrder
     lead?: LeadOrderByWithRelationInput
   }
@@ -9578,6 +10797,9 @@ export namespace Prisma {
     date?: DateTimeFilter<"Touch"> | Date | string
     type?: StringFilter<"Touch"> | string
     notes?: StringFilter<"Touch"> | string
+    amount?: FloatNullableFilter<"Touch"> | number | null
+    estimateNumber?: StringNullableFilter<"Touch"> | string | null
+    socialPlatform?: StringNullableFilter<"Touch"> | string | null
     leadId?: StringFilter<"Touch"> | string
     lead?: XOR<LeadScalarRelationFilter, LeadWhereInput>
   }, "id">
@@ -9587,10 +10809,15 @@ export namespace Prisma {
     date?: SortOrder
     type?: SortOrder
     notes?: SortOrder
+    amount?: SortOrderInput | SortOrder
+    estimateNumber?: SortOrderInput | SortOrder
+    socialPlatform?: SortOrderInput | SortOrder
     leadId?: SortOrder
     _count?: TouchCountOrderByAggregateInput
+    _avg?: TouchAvgOrderByAggregateInput
     _max?: TouchMaxOrderByAggregateInput
     _min?: TouchMinOrderByAggregateInput
+    _sum?: TouchSumOrderByAggregateInput
   }
 
   export type TouchScalarWhereWithAggregatesInput = {
@@ -9601,6 +10828,9 @@ export namespace Prisma {
     date?: DateTimeWithAggregatesFilter<"Touch"> | Date | string
     type?: StringWithAggregatesFilter<"Touch"> | string
     notes?: StringWithAggregatesFilter<"Touch"> | string
+    amount?: FloatNullableWithAggregatesFilter<"Touch"> | number | null
+    estimateNumber?: StringNullableWithAggregatesFilter<"Touch"> | string | null
+    socialPlatform?: StringNullableWithAggregatesFilter<"Touch"> | string | null
     leadId?: StringWithAggregatesFilter<"Touch"> | string
   }
 
@@ -9687,6 +10917,48 @@ export namespace Prisma {
   }
 
   export type TouchTypeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type SocialPlatformCreateInput = {
+    id?: string
+    name: string
+    isSystem?: boolean
+  }
+
+  export type SocialPlatformUncheckedCreateInput = {
+    id?: string
+    name: string
+    isSystem?: boolean
+  }
+
+  export type SocialPlatformUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type SocialPlatformUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type SocialPlatformCreateManyInput = {
+    id?: string
+    name: string
+    isSystem?: boolean
+  }
+
+  export type SocialPlatformUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type SocialPlatformUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     isSystem?: BoolFieldUpdateOperationsInput | boolean
@@ -9975,6 +11247,9 @@ export namespace Prisma {
     date?: Date | string
     type: string
     notes?: string
+    amount?: number | null
+    estimateNumber?: string | null
+    socialPlatform?: string | null
     lead: LeadCreateNestedOneWithoutTouchesInput
   }
 
@@ -9983,6 +11258,9 @@ export namespace Prisma {
     date?: Date | string
     type: string
     notes?: string
+    amount?: number | null
+    estimateNumber?: string | null
+    socialPlatform?: string | null
     leadId: string
   }
 
@@ -9991,6 +11269,9 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+    amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
     lead?: LeadUpdateOneRequiredWithoutTouchesNestedInput
   }
 
@@ -9999,6 +11280,9 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+    amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -10007,6 +11291,9 @@ export namespace Prisma {
     date?: Date | string
     type: string
     notes?: string
+    amount?: number | null
+    estimateNumber?: string | null
+    socialPlatform?: string | null
     leadId: string
   }
 
@@ -10015,6 +11302,9 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+    amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TouchUncheckedUpdateManyInput = {
@@ -10022,6 +11312,9 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+    amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -10110,6 +11403,24 @@ export namespace Prisma {
   }
 
   export type TouchTypeMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+  }
+
+  export type SocialPlatformCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+  }
+
+  export type SocialPlatformMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+  }
+
+  export type SocialPlatformMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     isSystem?: SortOrder
@@ -10345,12 +11656,30 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type TouchCountOrderByAggregateInput = {
     id?: SortOrder
     date?: SortOrder
     type?: SortOrder
     notes?: SortOrder
+    amount?: SortOrder
+    estimateNumber?: SortOrder
+    socialPlatform?: SortOrder
     leadId?: SortOrder
+  }
+
+  export type TouchAvgOrderByAggregateInput = {
+    amount?: SortOrder
   }
 
   export type TouchMaxOrderByAggregateInput = {
@@ -10358,6 +11687,9 @@ export namespace Prisma {
     date?: SortOrder
     type?: SortOrder
     notes?: SortOrder
+    amount?: SortOrder
+    estimateNumber?: SortOrder
+    socialPlatform?: SortOrder
     leadId?: SortOrder
   }
 
@@ -10366,7 +11698,30 @@ export namespace Prisma {
     date?: SortOrder
     type?: SortOrder
     notes?: SortOrder
+    amount?: SortOrder
+    estimateNumber?: SortOrder
+    socialPlatform?: SortOrder
     leadId?: SortOrder
+  }
+
+  export type TouchSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type CompanyCreateNestedManyWithoutIndustryInput = {
@@ -10657,6 +12012,14 @@ export namespace Prisma {
     connect?: LeadWhereUniqueInput
   }
 
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type LeadUpdateOneRequiredWithoutTouchesNestedInput = {
     create?: XOR<LeadCreateWithoutTouchesInput, LeadUncheckedCreateWithoutTouchesInput>
     connectOrCreate?: LeadCreateOrConnectWithoutTouchesInput
@@ -10785,6 +12148,33 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type CompanyCreateWithoutIndustryInput = {
@@ -11104,6 +12494,9 @@ export namespace Prisma {
     date?: Date | string
     type: string
     notes?: string
+    amount?: number | null
+    estimateNumber?: string | null
+    socialPlatform?: string | null
   }
 
   export type TouchUncheckedCreateWithoutLeadInput = {
@@ -11111,6 +12504,9 @@ export namespace Prisma {
     date?: Date | string
     type: string
     notes?: string
+    amount?: number | null
+    estimateNumber?: string | null
+    socialPlatform?: string | null
   }
 
   export type TouchCreateOrConnectWithoutLeadInput = {
@@ -11202,6 +12598,9 @@ export namespace Prisma {
     date?: DateTimeFilter<"Touch"> | Date | string
     type?: StringFilter<"Touch"> | string
     notes?: StringFilter<"Touch"> | string
+    amount?: FloatNullableFilter<"Touch"> | number | null
+    estimateNumber?: StringNullableFilter<"Touch"> | string | null
+    socialPlatform?: StringNullableFilter<"Touch"> | string | null
     leadId?: StringFilter<"Touch"> | string
   }
 
@@ -11500,6 +12899,9 @@ export namespace Prisma {
     date?: Date | string
     type: string
     notes?: string
+    amount?: number | null
+    estimateNumber?: string | null
+    socialPlatform?: string | null
   }
 
   export type LeadNoteCreateManyLeadInput = {
@@ -11513,6 +12915,9 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+    amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TouchUncheckedUpdateWithoutLeadInput = {
@@ -11520,6 +12925,9 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+    amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TouchUncheckedUpdateManyWithoutLeadInput = {
@@ -11527,6 +12935,9 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+    amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type LeadNoteUpdateWithoutLeadInput = {

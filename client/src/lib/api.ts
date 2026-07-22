@@ -45,11 +45,26 @@ function normalizeNotes(value: unknown): EntityNote[] {
 }
 
 function normalizeTouch(raw: Record<string, unknown>): LeadTouch {
+  const amountRaw = raw.amount
+  const amount =
+    typeof amountRaw === "number" && Number.isFinite(amountRaw)
+      ? amountRaw
+      : amountRaw == null
+        ? null
+        : Number.isFinite(Number(amountRaw))
+          ? Number(amountRaw)
+          : null
+
   return {
     id: typeof raw.id === "string" ? raw.id : crypto.randomUUID(),
     type: typeof raw.type === "string" ? raw.type : "Phone",
     notes: typeof raw.notes === "string" ? raw.notes : "",
     date: typeof raw.date === "string" ? raw.date : new Date().toISOString(),
+    amount,
+    estimateNumber:
+      typeof raw.estimateNumber === "string" ? raw.estimateNumber : null,
+    socialPlatform:
+      typeof raw.socialPlatform === "string" ? raw.socialPlatform : null,
   }
 }
 
@@ -334,7 +349,14 @@ export async function createCompanyNote(
 
 export async function createLeadTouch(
   leadId: string,
-  input: { type: string; notes?: string; date?: string },
+  input: {
+    type: string
+    notes?: string
+    date?: string
+    amount?: number | null
+    estimateNumber?: string | null
+    socialPlatform?: string | null
+  },
 ): Promise<LeadTouch> {
   const response = await fetch(`${LEADS_URL}/${leadId}/touches`, {
     method: "POST",
@@ -343,6 +365,13 @@ export async function createLeadTouch(
       type: input.type,
       notes: input.notes ?? "",
       ...(input.date ? { date: input.date } : {}),
+      ...(input.amount !== undefined ? { amount: input.amount } : {}),
+      ...(input.estimateNumber !== undefined
+        ? { estimateNumber: input.estimateNumber }
+        : {}),
+      ...(input.socialPlatform !== undefined
+        ? { socialPlatform: input.socialPlatform }
+        : {}),
     }),
   })
   if (!response.ok) {
@@ -355,7 +384,14 @@ export async function createLeadTouch(
 export async function updateLeadTouch(
   leadId: string,
   touchId: string,
-  input: { type?: string; notes?: string; date?: string },
+  input: {
+    type?: string
+    notes?: string
+    date?: string
+    amount?: number | null
+    estimateNumber?: string | null
+    socialPlatform?: string | null
+  },
 ): Promise<LeadTouch> {
   const response = await fetch(`${LEADS_URL}/${leadId}/touches/${touchId}`, {
     method: "PATCH",
@@ -364,6 +400,13 @@ export async function updateLeadTouch(
       ...(input.type !== undefined ? { type: input.type } : {}),
       ...(input.notes !== undefined ? { notes: input.notes } : {}),
       ...(input.date !== undefined ? { date: input.date } : {}),
+      ...(input.amount !== undefined ? { amount: input.amount } : {}),
+      ...(input.estimateNumber !== undefined
+        ? { estimateNumber: input.estimateNumber }
+        : {}),
+      ...(input.socialPlatform !== undefined
+        ? { socialPlatform: input.socialPlatform }
+        : {}),
     }),
   })
   if (!response.ok) {
@@ -509,6 +552,85 @@ export async function deleteTouchType(id: string): Promise<void> {
   }
 }
 
+const SOCIAL_PLATFORMS_URL = `${API_BASE}/social-platforms`
+
+export async function fetchSocialPlatformCatalog(): Promise<CatalogItem[]> {
+  try {
+    const response = await fetch(SOCIAL_PLATFORMS_URL)
+    if (!response.ok) {
+      throw new Error(`Social platforms request failed (${response.status})`)
+    }
+    const payload = (await response.json()) as { socialPlatforms?: unknown[] }
+    return Array.isArray(payload.socialPlatforms)
+      ? payload.socialPlatforms.map((row) =>
+          normalizeCatalogItem((row ?? {}) as Record<string, unknown>),
+        )
+      : []
+  } catch {
+    return [
+      "Instagram",
+      "Facebook",
+      "LinkedIn",
+      "X",
+      "TikTok",
+      "YouTube",
+      "Nextdoor",
+      "Other",
+    ].map((name, index) => ({
+      id: `mock-sp-${index}`,
+      name,
+      isSystem: true,
+    }))
+  }
+}
+
+export async function fetchSocialPlatforms(): Promise<string[]> {
+  const rows = await fetchSocialPlatformCatalog()
+  return rows.map((row) => row.name)
+}
+
+export async function createSocialPlatform(name: string): Promise<CatalogItem> {
+  const response = await fetch(SOCIAL_PLATFORMS_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name }),
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to create social platform (${response.status})`)
+  }
+  const payload = (await response.json()) as { socialPlatform: unknown }
+  return normalizeCatalogItem(
+    (payload.socialPlatform ?? {}) as Record<string, unknown>,
+  )
+}
+
+export async function updateSocialPlatform(
+  id: string,
+  name: string,
+): Promise<CatalogItem> {
+  const response = await fetch(`${SOCIAL_PLATFORMS_URL}/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name }),
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to update social platform (${response.status})`)
+  }
+  const payload = (await response.json()) as { socialPlatform: unknown }
+  return normalizeCatalogItem(
+    (payload.socialPlatform ?? {}) as Record<string, unknown>,
+  )
+}
+
+export async function deleteSocialPlatform(id: string): Promise<void> {
+  const response = await fetch(`${SOCIAL_PLATFORMS_URL}/${id}`, {
+    method: "DELETE",
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to delete social platform (${response.status})`)
+  }
+}
+
 export async function updateCompanyVip(
   companyId: string,
   isVip: boolean,
@@ -590,4 +712,88 @@ export function uniqueTouchTypes(touches: LeadTouch[] | undefined): string[] {
     if (touch.type) seen.add(touch.type)
   }
   return [...seen]
+}
+
+export function touchSupportsAmount(type: string): boolean {
+  const key = type.trim().toUpperCase().replace(/[\s-]+/g, "_")
+  return key === "ESTIMATE" || key === "SALE" || key === "DEAL_WON"
+}
+
+export function touchIsEstimate(type: string): boolean {
+  const key = type.trim().toUpperCase().replace(/[\s-]+/g, "_")
+  return key === "ESTIMATE"
+}
+
+export function touchIsSocialMedia(type: string): boolean {
+  const key = type.trim().toUpperCase().replace(/[\s-]+/g, "_")
+  return key === "SOCIAL_MEDIA"
+}
+
+export type WeeklyScorecardMetrics = {
+  calls: number
+  emails: number
+  meetings: number
+  estimates: number
+  estimateValue: number
+  revenue: number
+}
+
+export type WeeklyScorecardResult = {
+  range: { start: string; end: string }
+  metrics: WeeklyScorecardMetrics
+  touchCount: number
+  source: "api" | "mock"
+}
+
+export async function fetchWeeklyScorecard(
+  start?: string,
+  end?: string,
+): Promise<WeeklyScorecardResult> {
+  try {
+    const params = new URLSearchParams()
+    if (start) params.set("start", start)
+    if (end) params.set("end", end)
+    const query = params.toString()
+    const response = await fetch(
+      `${API_BASE}/scorecard/weekly${query ? `?${query}` : ""}`,
+    )
+    if (!response.ok) {
+      throw new Error(`Scorecard request failed (${response.status})`)
+    }
+    const payload = (await response.json()) as {
+      range?: { start?: string; end?: string }
+      metrics?: Partial<WeeklyScorecardMetrics>
+      touchCount?: number
+    }
+    return {
+      range: {
+        start: payload.range?.start ?? start ?? "",
+        end: payload.range?.end ?? end ?? "",
+      },
+      metrics: {
+        calls: Number(payload.metrics?.calls ?? 0),
+        emails: Number(payload.metrics?.emails ?? 0),
+        meetings: Number(payload.metrics?.meetings ?? 0),
+        estimates: Number(payload.metrics?.estimates ?? 0),
+        estimateValue: Number(payload.metrics?.estimateValue ?? 0),
+        revenue: Number(payload.metrics?.revenue ?? 0),
+      },
+      touchCount: Number(payload.touchCount ?? 0),
+      source: "api",
+    }
+  } catch {
+    return {
+      range: { start: start ?? "", end: end ?? "" },
+      metrics: {
+        calls: 0,
+        emails: 0,
+        meetings: 0,
+        estimates: 0,
+        estimateValue: 0,
+        revenue: 0,
+      },
+      touchCount: 0,
+      source: "mock",
+    }
+  }
 }

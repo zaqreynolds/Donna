@@ -9,6 +9,7 @@ import {
   Pencil,
   Phone,
   Search,
+  Star,
   User,
   X,
 } from "lucide-react"
@@ -40,6 +41,7 @@ import {
   fetchLeadDetail,
   fetchLeads,
   fetchTouchTypes,
+  fetchSocialPlatforms,
   formatLeadDate,
   formatLeadName,
   uniqueTouchTypes,
@@ -104,6 +106,15 @@ function statusTone(status: string): string {
     default:
       return ""
   }
+}
+
+function isInteractiveRowTarget(target: EventTarget | null): boolean {
+  return (
+    target instanceof Element &&
+    target.closest(
+      "button, a, select, input, textarea, label, [data-no-row-click]",
+    ) != null
+  )
 }
 
 function StatusSelect({
@@ -206,6 +217,8 @@ function matchesSearch(lead: Lead, query: string): boolean {
     lead.company?.name,
     lead.company?.industry?.name,
     ...(lead.touches?.map((touch) => touch.type) ?? []),
+    ...(lead.touches?.map((touch) => touch.estimateNumber) ?? []),
+    ...(lead.touches?.map((touch) => touch.socialPlatform) ?? []),
   ]
     .filter(Boolean)
     .join(" ")
@@ -223,11 +236,14 @@ export function LeadsPage() {
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState(ALL_STATUSES)
   const [industryFilter, setIndustryFilter] = useState(ALL_INDUSTRIES)
+  const [vipOnly, setVipOnly] = useState(false)
+  const [hideLost, setHideLost] = useState(true)
   const [sort, setSort] = useState<SortKey>("heat-oldest")
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [selectedNotes, setSelectedNotes] = useState<EntityNote[]>([])
   const [selectedTouches, setSelectedTouches] = useState<LeadTouch[]>([])
   const [touchTypes, setTouchTypes] = useState<string[]>([])
+  const [socialPlatforms, setSocialPlatforms] = useState<string[]>([])
   const [detailLoading, setDetailLoading] = useState(false)
   const deferredSearch = useDeferredValue(search)
 
@@ -236,14 +252,16 @@ export function LeadsPage() {
 
     async function load() {
       setLoading(true)
-      const [result, types] = await Promise.all([
+      const [result, types, platforms] = await Promise.all([
         fetchLeads(),
         fetchTouchTypes(),
+        fetchSocialPlatforms(),
       ])
       if (!cancelled) {
         setLeads(result.leads)
         setSource(result.source)
         setTouchTypes(types)
+        setSocialPlatforms(platforms)
         setLoading(false)
       }
     }
@@ -316,15 +334,33 @@ export function LeadsPage() {
   const visibleLeads = useMemo(() => {
     const query = deferredSearch.trim().toLowerCase()
     const filtered = leads.filter((lead) => {
+      const isLost = String(lead.status).toUpperCase() === "LOST"
+      // Keep LOST visible when the status filter is explicitly LOST.
+      if (hideLost && isLost && statusFilter !== "LOST") return false
+
       const matchesStatus =
         statusFilter === ALL_STATUSES || lead.status === statusFilter
       const matchesIndustry =
         industryFilter === ALL_INDUSTRIES ||
         lead.company?.industry?.id === industryFilter
-      return matchesStatus && matchesIndustry && matchesSearch(lead, query)
+      const matchesVip = !vipOnly || Boolean(lead.isVip)
+      return (
+        matchesStatus &&
+        matchesIndustry &&
+        matchesVip &&
+        matchesSearch(lead, query)
+      )
     })
     return sortLeads(filtered, sort)
-  }, [leads, deferredSearch, statusFilter, industryFilter, sort])
+  }, [
+    leads,
+    deferredSearch,
+    statusFilter,
+    industryFilter,
+    vipOnly,
+    hideLost,
+    sort,
+  ])
 
   const selectedLead = useMemo(
     () => leads.find((lead) => lead.id === selectedId) ?? null,
@@ -408,6 +444,9 @@ export function LeadsPage() {
       type: input.type,
       notes: input.notes,
       date: input.date ?? new Date().toISOString(),
+      amount: input.amount ?? null,
+      estimateNumber: input.estimateNumber ?? null,
+      socialPlatform: input.socialPlatform ?? null,
     }
     setSelectedTouches((current) => [touch, ...current])
     setLeads((current) =>
@@ -429,6 +468,15 @@ export function LeadsPage() {
             type: input.type,
             notes: input.notes,
             date: input.date ?? touch.date,
+            amount: input.amount !== undefined ? input.amount : touch.amount,
+            estimateNumber:
+              input.estimateNumber !== undefined
+                ? input.estimateNumber
+                : touch.estimateNumber,
+            socialPlatform:
+              input.socialPlatform !== undefined
+                ? input.socialPlatform
+                : touch.socialPlatform,
           }
         : touch
 
@@ -542,6 +590,30 @@ export function LeadsPage() {
               </select>
             </div>
 
+            <button
+              type="button"
+              aria-pressed={vipOnly}
+              aria-label="Show VIP only"
+              title={vipOnly ? "Showing VIP only" : "Show VIP only"}
+              onClick={() => setVipOnly((current) => !current)}
+              className={cn(
+                "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-lg border px-2.5 text-sm font-medium transition-colors",
+                vipOnly
+                  ? "border-amber-500/40 bg-amber-500/10 text-amber-700"
+                  : "border-input text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+              )}
+            >
+              <Star
+                className={cn(
+                  "size-3.5",
+                  vipOnly
+                    ? "fill-amber-400 text-amber-500"
+                    : "fill-transparent text-muted-foreground",
+                )}
+              />
+              VIP
+            </button>
+
             <div className="flex min-w-[260px] flex-1 items-center gap-2 sm:max-w-xs">
               <ArrowUpDown className="size-3.5 shrink-0 text-muted-foreground" />
               <select
@@ -557,6 +629,16 @@ export function LeadsPage() {
                 ))}
               </select>
             </div>
+
+            <label className="inline-flex h-8 shrink-0 cursor-pointer items-center gap-2 rounded-lg border border-input px-2.5 text-sm">
+              <input
+                type="checkbox"
+                checked={hideLost}
+                onChange={(event) => setHideLost(event.target.checked)}
+                className="size-3.5 rounded border-input accent-foreground"
+              />
+              <span className="whitespace-nowrap">Hide lost</span>
+            </label>
           </div>
         </div>
 
@@ -569,7 +651,7 @@ export function LeadsPage() {
               <p className="text-sm text-muted-foreground">
                 {leads.length === 0
                   ? "Add a lead to get started."
-                  : "Try a different search, status, industry, or sort."}
+                  : "Try a different search, status, industry, VIP, or sort."}
               </p>
             </div>
           ) : (
@@ -579,31 +661,26 @@ export function LeadsPage() {
                 const health = resolveLeadHealth(lead, healthSettings)
                 return (
                   <li key={lead.id}>
-                    <button
-                      type="button"
-                      onClick={() =>
+                    <div
+                      onClick={(event) => {
+                        if (isInteractiveRowTarget(event.target)) return
                         setSelectedId((current) =>
                           current === lead.id ? null : lead.id,
                         )
-                      }
+                      }}
                       className={cn(
-                        "flex w-full items-start justify-between gap-4 border-b border-border/70 px-6 py-4 text-left transition-colors hover:bg-muted/40",
+                        "flex w-full cursor-pointer items-start justify-between gap-4 border-b border-border/70 px-6 py-4 text-left transition-colors hover:bg-muted/40",
                         leadHealthRowClass(health),
                         selected && "bg-muted/50",
                       )}
                     >
                       <div className="flex min-w-0 flex-1 flex-col gap-2">
                         <div className="flex min-w-0 flex-wrap items-center gap-2">
-                          <span
-                            onClick={(event) => event.stopPropagation()}
-                            onKeyDown={(event) => event.stopPropagation()}
-                          >
-                            <VipStarToggle
-                              isVip={Boolean(lead.isVip)}
-                              onToggle={(next) => handleVipToggle(lead.id, next)}
-                              label={`Toggle VIP for ${formatLeadName(lead)}`}
-                            />
-                          </span>
+                          <VipStarToggle
+                            isVip={Boolean(lead.isVip)}
+                            onToggle={(next) => handleVipToggle(lead.id, next)}
+                            label={`Toggle VIP for ${formatLeadName(lead)}`}
+                          />
                           <User className="size-4 shrink-0 text-muted-foreground" />
                           <span className="truncate text-sm font-medium">
                             {formatLeadName(lead)}
@@ -665,22 +742,16 @@ export function LeadsPage() {
                           ))}
                         </div>
                       </div>
-                      <span
-                        className="shrink-0"
-                        onClick={(event) => event.stopPropagation()}
-                        onKeyDown={(event) => event.stopPropagation()}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={`Edit ${formatLeadName(lead)}`}
+                        onClick={() => openEditLead(lead.id)}
                       >
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-sm"
-                          aria-label={`Edit ${formatLeadName(lead)}`}
-                          onClick={() => openEditLead(lead.id)}
-                        >
-                          <Pencil className="size-3.5" />
-                        </Button>
-                      </span>
-                    </button>
+                        <Pencil className="size-3.5" />
+                      </Button>
+                    </div>
                   </li>
                 )
               })}
@@ -742,6 +813,7 @@ export function LeadsPage() {
             <TouchesPanel
               touches={selectedTouches}
               touchTypes={touchTypes}
+              socialPlatforms={socialPlatforms}
               loading={detailLoading}
               onAdd={handleAddTouch}
               onUpdate={handleUpdateTouch}

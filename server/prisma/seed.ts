@@ -18,18 +18,19 @@ const INDUSTRIES = [
 const TOUCH_TYPES = [
   "Phone",
   "Email",
+  "Meeting",
+  "Estimate",
+  "Sale",
   "Networking",
   "Canvassing",
   "Cold Call",
   "Face to Face",
-  "LinkedIn",
   "Retreva",
   "Text",
   "Voicemail",
   "Video Message",
   "Post Card",
   "Social Media",
-  "Estimate",
   "Invoice",
 ] as const
 
@@ -239,6 +240,25 @@ async function main() {
     })
   }
 
+  const SOCIAL_PLATFORMS = [
+    "Instagram",
+    "Facebook",
+    "LinkedIn",
+    "X",
+    "TikTok",
+    "YouTube",
+    "Nextdoor",
+    "Other",
+  ] as const
+
+  for (const name of SOCIAL_PLATFORMS) {
+    await prisma.socialPlatform.upsert({
+      where: { name },
+      update: { isSystem: true },
+      create: { name, isSystem: true },
+    })
+  }
+
   const industries = await prisma.industry.findMany()
   const touchTypeCount = await prisma.touchType.count()
   const industryByName = Object.fromEntries(
@@ -286,7 +306,12 @@ async function main() {
   const touchSeeds = [
     { leadIndex: 0, type: "Email", notes: "Intro email sent" },
     { leadIndex: 0, type: "Phone", notes: "Discovery call scheduled" },
-    { leadIndex: 1, type: "LinkedIn", notes: "Connected on LinkedIn" },
+    {
+      leadIndex: 1,
+      type: "Social Media",
+      socialPlatform: "LinkedIn",
+      notes: "Connected on LinkedIn",
+    },
     { leadIndex: 2, type: "Face to Face", notes: "Site walkthrough" },
     { leadIndex: 2, type: "Estimate", notes: "Sent preliminary estimate" },
     { leadIndex: 3, type: "Voicemail", notes: "Left voicemail" },
@@ -302,6 +327,9 @@ async function main() {
         type: touch.type,
         notes: touch.notes,
         leadId: leadIds[touch.leadIndex],
+        ...("socialPlatform" in touch && touch.socialPlatform
+          ? { socialPlatform: touch.socialPlatform }
+          : {}),
       },
     })
   }

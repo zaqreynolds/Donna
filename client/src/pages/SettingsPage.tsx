@@ -1,17 +1,21 @@
 import { useEffect, useState, type FormEvent } from "react"
-import { Factory, Handshake, Lock, Pencil, Trash2, X } from "lucide-react"
+import { Factory, Handshake, Lock, Pencil, Share2, Trash2, X } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { SettingsView } from "@/components/SettingsView"
 import {
   createIndustry,
+  createSocialPlatform,
   createTouchType,
   deleteIndustry,
+  deleteSocialPlatform,
   deleteTouchType,
   fetchIndustries,
+  fetchSocialPlatformCatalog,
   fetchTouchTypeCatalog,
   updateIndustry,
+  updateSocialPlatform,
   updateTouchType,
   type CatalogItem,
 } from "@/lib/api"
@@ -228,26 +232,32 @@ function CatalogSection({
 export function SettingsPage() {
   const [industries, setIndustries] = useState<CatalogItem[]>([])
   const [touchTypes, setTouchTypes] = useState<CatalogItem[]>([])
+  const [socialPlatforms, setSocialPlatforms] = useState<CatalogItem[]>([])
   const [industryDraft, setIndustryDraft] = useState("")
   const [touchDraft, setTouchDraft] = useState("")
+  const [platformDraft, setPlatformDraft] = useState("")
   const [loading, setLoading] = useState(true)
   const [industryError, setIndustryError] = useState<string | null>(null)
   const [touchError, setTouchError] = useState<string | null>(null)
+  const [platformError, setPlatformError] = useState<string | null>(null)
   const [savingIndustry, setSavingIndustry] = useState(false)
   const [savingTouch, setSavingTouch] = useState(false)
+  const [savingPlatform, setSavingPlatform] = useState(false)
 
   useEffect(() => {
     let cancelled = false
 
     async function load() {
       setLoading(true)
-      const [industryRows, touchRows] = await Promise.all([
+      const [industryRows, touchRows, platformRows] = await Promise.all([
         fetchIndustries(),
         fetchTouchTypeCatalog(),
+        fetchSocialPlatformCatalog(),
       ])
       if (!cancelled) {
         setIndustries(industryRows)
         setTouchTypes(touchRows)
+        setSocialPlatforms(platformRows)
         setLoading(false)
       }
     }
@@ -302,6 +312,29 @@ export function SettingsPage() {
       setTouchError("Couldn’t add touch type. It may already exist.")
     } finally {
       setSavingTouch(false)
+    }
+  }
+
+  async function handleAddSocialPlatform(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const name = platformDraft.trim()
+    if (!name || savingPlatform) return
+
+    setSavingPlatform(true)
+    setPlatformError(null)
+    try {
+      const platform = await createSocialPlatform(name)
+      setSocialPlatforms((current) =>
+        [...current, platform].sort((a, b) => {
+          if (a.isSystem !== b.isSystem) return a.isSystem ? -1 : 1
+          return a.name.localeCompare(b.name)
+        }),
+      )
+      setPlatformDraft("")
+    } catch {
+      setPlatformError("Couldn’t add platform. It may already exist.")
+    } finally {
+      setSavingPlatform(false)
     }
   }
 
@@ -372,6 +405,30 @@ export function SettingsPage() {
               onDelete={async (id) => {
                 await deleteTouchType(id)
                 setTouchTypes((current) =>
+                  current.filter((row) => row.id !== id),
+                )
+              }}
+            />
+
+            <CatalogSection
+              title="Social platforms"
+              icon={Share2}
+              items={socialPlatforms}
+              draft={platformDraft}
+              onDraftChange={setPlatformDraft}
+              placeholder="Add platform…"
+              error={platformError}
+              saving={savingPlatform}
+              onAdd={handleAddSocialPlatform}
+              onRename={async (id, name) => {
+                const updated = await updateSocialPlatform(id, name)
+                setSocialPlatforms((current) =>
+                  current.map((row) => (row.id === id ? updated : row)),
+                )
+              }}
+              onDelete={async (id) => {
+                await deleteSocialPlatform(id)
+                setSocialPlatforms((current) =>
                   current.filter((row) => row.id !== id),
                 )
               }}

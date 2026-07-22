@@ -29,20 +29,125 @@ export const DEFAULT_INDUSTRIES = [
 export const DEFAULT_TOUCH_TYPES = [
   "Phone",
   "Email",
+  "Meeting",
+  "Estimate",
+  "Sale",
   "Networking",
   "Canvassing",
   "Cold Call",
   "Face to Face",
-  "LinkedIn",
   "Retreva",
   "Text",
   "Voicemail",
   "Video Message",
   "Post Card",
   "Social Media",
-  "Estimate",
   "Invoice",
 ] as const
+
+export const DEFAULT_SOCIAL_PLATFORMS = [
+  "Instagram",
+  "Facebook",
+  "LinkedIn",
+  "X",
+  "TikTok",
+  "YouTube",
+  "Nextdoor",
+  "Other",
+] as const
+
+export type ScorecardMetricKey =
+  | "calls"
+  | "emails"
+  | "meetings"
+  | "estimates"
+  | "estimateValue"
+  | "revenue"
+
+export function touchSupportsAmount(type: string): boolean {
+  const key = type.trim().toUpperCase().replace(/[\s-]+/g, "_")
+  return key === "ESTIMATE" || key === "SALE" || key === "DEAL_WON"
+}
+
+export function touchIsEstimate(type: string): boolean {
+  const key = type.trim().toUpperCase().replace(/[\s-]+/g, "_")
+  return key === "ESTIMATE"
+}
+
+export function touchIsSocialMedia(type: string): boolean {
+  const key = type.trim().toUpperCase().replace(/[\s-]+/g, "_")
+  return key === "SOCIAL_MEDIA"
+}
+
+export function scorecardCategory(
+  type: string,
+): Exclude<ScorecardMetricKey, "revenue" | "estimateValue"> | "sale" | null {
+  const key = type.trim().toUpperCase().replace(/[\s-]+/g, "_")
+  if (
+    key === "PHONE" ||
+    key === "COLD_CALL" ||
+    key === "VOICEMAIL"
+  ) {
+    return "calls"
+  }
+  if (key === "EMAIL") return "emails"
+  if (key === "MEETING" || key === "FACE_TO_FACE") return "meetings"
+  if (key === "ESTIMATE") return "estimates"
+  if (key === "SALE" || key === "DEAL_WON") return "sale"
+  return null
+}
+
+export function parseOptionalAmount(value: unknown): number | null | undefined {
+  if (value === undefined) return undefined
+  if (value === null || value === "") return null
+  const n = typeof value === "number" ? value : Number(value)
+  if (!Number.isFinite(n) || n < 0) return undefined
+  return n
+}
+
+function startOfLocalDay(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0)
+}
+
+function endOfLocalDay(date: Date): Date {
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    23,
+    59,
+    59,
+    999,
+  )
+}
+
+/** Monday 00:00 → Sunday 23:59:59.999 of the week containing `anchor`. */
+export function getWeekRange(anchor = new Date()): { start: Date; end: Date } {
+  const day = anchor.getDay() // 0 Sun … 6 Sat
+  const daysFromMonday = day === 0 ? 6 : day - 1
+  const monday = new Date(anchor)
+  monday.setDate(anchor.getDate() - daysFromMonday)
+  const sunday = new Date(monday)
+  sunday.setDate(monday.getDate() + 6)
+  return { start: startOfLocalDay(monday), end: endOfLocalDay(sunday) }
+}
+
+export function parseDayBound(value: string, edge: "start" | "end"): Date | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim())
+  if (!match) return null
+  const year = Number(match[1])
+  const month = Number(match[2]) - 1
+  const day = Number(match[3])
+  const date = new Date(year, month, day)
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month ||
+    date.getDate() !== day
+  ) {
+    return null
+  }
+  return edge === "start" ? startOfLocalDay(date) : endOfLocalDay(date)
+}
 
 type LeadStatus = (typeof LEAD_STATUSES)[number]
 
@@ -71,6 +176,39 @@ async function isKnownTouchType(value: unknown): Promise<boolean> {
   if (typeof value !== "string" || !value.trim()) return false
   const names = await getTouchTypeNames()
   return names.includes(value.trim())
+}
+
+async function getSocialPlatformNames(): Promise<string[]> {
+  const rows = await prisma.socialPlatform.findMany({
+    select: { name: true },
+  })
+  const names = rows.map((row) => row.name)
+  if (names.length === 0) {
+    return [...DEFAULT_SOCIAL_PLATFORMS]
+  }
+
+  const defaultSet = new Set<string>(DEFAULT_SOCIAL_PLATFORMS)
+  const orderedDefaults = DEFAULT_SOCIAL_PLATFORMS.filter((name) =>
+    names.includes(name),
+  )
+  const custom = names
+    .filter((name) => !defaultSet.has(name))
+    .sort((a, b) => a.localeCompare(b))
+  return [...orderedDefaults, ...custom]
+}
+
+async function isKnownSocialPlatform(value: unknown): Promise<boolean> {
+  if (typeof value !== "string" || !value.trim()) return false
+  const names = await getSocialPlatformNames()
+  return names.includes(value.trim())
+}
+
+async function ensureSocialPlatformsSeeded(): Promise<void> {
+  const count = await prisma.socialPlatform.count()
+  if (count > 0) return
+  await prisma.socialPlatform.createMany({
+    data: DEFAULT_SOCIAL_PLATFORMS.map((name) => ({ name, isSystem: true })),
+  })
 }
 
 function parseDate(value: unknown): Date | null {
@@ -321,6 +459,118 @@ router.delete("/touch-types/:id", async (req, res) => {
     return res.status(204).send()
   } catch (error) {
     return handlePrismaError(error, res, "Failed to delete touch type")
+  }
+})
+
+router.get("/social-platforms", async (_req, res) => {
+  try {
+    await ensureSocialPlatformsSeeded()
+    let socialPlatforms = await prisma.socialPlatform.findMany()
+    const names = await getSocialPlatformNames()
+    const byName = Object.fromEntries(
+      socialPlatforms.map((row) => [row.name, row]),
+    )
+    return res.json({
+      socialPlatforms: names.map((name) => byName[name]).filter(Boolean),
+    })
+  } catch (error) {
+    return handlePrismaError(error, res, "Failed to fetch social platforms")
+  }
+})
+
+router.post("/social-platforms", async (req, res) => {
+  try {
+    await ensureSocialPlatformsSeeded()
+    const name = requireString(req.body?.name)
+    if (!name) {
+      return res.status(400).json({ error: "name is required" })
+    }
+
+    const socialPlatform = await prisma.socialPlatform.create({
+      data: { name, isSystem: false },
+    })
+    return res.status(201).json({ socialPlatform })
+  } catch (error) {
+    return handlePrismaError(error, res, "Failed to create social platform")
+  }
+})
+
+router.patch("/social-platforms/:id", async (req, res) => {
+  try {
+    const platformId = routeParam(req, "id")
+    if (!platformId) {
+      return res.status(400).json({ error: "social platform id is required" })
+    }
+
+    const name = requireString(req.body?.name)
+    if (!name) {
+      return res.status(400).json({ error: "name is required" })
+    }
+
+    const existing = await prisma.socialPlatform.findUnique({
+      where: { id: platformId },
+    })
+    if (!existing) {
+      return res.status(404).json({ error: "Social platform not found" })
+    }
+    if (existing.isSystem) {
+      return res
+        .status(403)
+        .json({ error: "Built-in social platforms cannot be edited" })
+    }
+
+    const socialPlatform = await prisma.$transaction(async (tx) => {
+      const updated = await tx.socialPlatform.update({
+        where: { id: platformId },
+        data: { name },
+      })
+      if (existing.name !== name) {
+        await tx.touch.updateMany({
+          where: { socialPlatform: existing.name },
+          data: { socialPlatform: name },
+        })
+      }
+      return updated
+    })
+
+    return res.json({ socialPlatform })
+  } catch (error) {
+    return handlePrismaError(error, res, "Failed to update social platform")
+  }
+})
+
+router.delete("/social-platforms/:id", async (req, res) => {
+  try {
+    const platformId = routeParam(req, "id")
+    if (!platformId) {
+      return res.status(400).json({ error: "social platform id is required" })
+    }
+
+    const existing = await prisma.socialPlatform.findUnique({
+      where: { id: platformId },
+    })
+    if (!existing) {
+      return res.status(404).json({ error: "Social platform not found" })
+    }
+    if (existing.isSystem) {
+      return res
+        .status(403)
+        .json({ error: "Built-in social platforms cannot be deleted" })
+    }
+
+    const inUse = await prisma.touch.count({
+      where: { socialPlatform: existing.name },
+    })
+    if (inUse > 0) {
+      return res.status(409).json({
+        error: "Social platform is in use by one or more touches",
+      })
+    }
+
+    await prisma.socialPlatform.delete({ where: { id: platformId } })
+    return res.status(204).send()
+  } catch (error) {
+    return handlePrismaError(error, res, "Failed to delete social platform")
   }
 })
 
@@ -965,6 +1215,9 @@ router.post("/leads/:id/touches", async (req, res) => {
     const notes =
       typeof notesRaw === "string" ? notesRaw.trim() : notesRaw == null ? "" : null
     const date = req.body?.date as string | undefined
+    const amountParsed = parseOptionalAmount(req.body?.amount)
+    const estimateNumberRaw = asOptionalString(req.body?.estimateNumber)
+    const socialPlatformRaw = asOptionalString(req.body?.socialPlatform)
 
     if (!type || !(await isKnownTouchType(type))) {
       const touchTypes = await getTouchTypeNames()
@@ -975,6 +1228,20 @@ router.post("/leads/:id/touches", async (req, res) => {
     }
     if (notes === null) {
       return res.status(400).json({ error: "notes must be a string when provided" })
+    }
+    if (amountParsed === undefined && req.body?.amount !== undefined) {
+      return res.status(400).json({ error: "amount must be a non-negative number" })
+    }
+
+    if (touchIsSocialMedia(type)) {
+      await ensureSocialPlatformsSeeded()
+      if (!socialPlatformRaw || !(await isKnownSocialPlatform(socialPlatformRaw))) {
+        const socialPlatforms = await getSocialPlatformNames()
+        return res.status(400).json({
+          error: "socialPlatform is required for Social Media touches",
+          socialPlatforms,
+        })
+      }
     }
 
     const parsedDate = date !== undefined ? parseDate(date) : null
@@ -987,11 +1254,27 @@ router.post("/leads/:id/touches", async (req, res) => {
       return res.status(404).json({ error: "Lead not found" })
     }
 
+    const amount =
+      touchSupportsAmount(type)
+        ? amountParsed === undefined
+          ? null
+          : amountParsed
+        : null
+    const estimateNumber = touchIsEstimate(type)
+      ? estimateNumberRaw?.trim() || null
+      : null
+    const socialPlatform = touchIsSocialMedia(type)
+      ? socialPlatformRaw!.trim()
+      : null
+
     const touch = await prisma.touch.create({
       data: {
         type,
         notes,
         leadId,
+        amount,
+        estimateNumber,
+        socialPlatform,
         ...(parsedDate ? { date: parsedDate } : {}),
       },
     })
@@ -1025,8 +1308,36 @@ router.patch("/leads/:id/touches/:touchId", async (req, res) => {
       : undefined
     const dateProvided = Object.prototype.hasOwnProperty.call(req.body ?? {}, "date")
     const date = req.body?.date as string | undefined
+    const amountProvided = Object.prototype.hasOwnProperty.call(
+      req.body ?? {},
+      "amount",
+    )
+    const amountParsed = amountProvided
+      ? parseOptionalAmount(req.body?.amount)
+      : undefined
+    const estimateNumberProvided = Object.prototype.hasOwnProperty.call(
+      req.body ?? {},
+      "estimateNumber",
+    )
+    const estimateNumberRaw = estimateNumberProvided
+      ? asOptionalString(req.body?.estimateNumber)
+      : undefined
+    const socialPlatformProvided = Object.prototype.hasOwnProperty.call(
+      req.body ?? {},
+      "socialPlatform",
+    )
+    const socialPlatformRaw = socialPlatformProvided
+      ? asOptionalString(req.body?.socialPlatform)
+      : undefined
 
-    if (type === undefined && notes === undefined && !dateProvided) {
+    if (
+      type === undefined &&
+      notes === undefined &&
+      !dateProvided &&
+      !amountProvided &&
+      !estimateNumberProvided &&
+      !socialPlatformProvided
+    ) {
       return res.status(400).json({ error: "No fields to update" })
     }
 
@@ -1039,6 +1350,9 @@ router.patch("/leads/:id/touches/:touchId", async (req, res) => {
     }
     if (notes === null) {
       return res.status(400).json({ error: "notes must be a string when provided" })
+    }
+    if (amountProvided && amountParsed === undefined) {
+      return res.status(400).json({ error: "amount must be a non-negative number" })
     }
 
     const parsedDate = dateProvided ? parseDate(date) : undefined
@@ -1053,18 +1367,143 @@ router.patch("/leads/:id/touches/:touchId", async (req, res) => {
       return res.status(404).json({ error: "Touch not found" })
     }
 
+    const nextType = type ?? existing.type
+    const amountUpdate = !touchSupportsAmount(nextType)
+      ? null
+      : amountProvided
+        ? (amountParsed ?? null)
+        : undefined
+    const estimateNumberUpdate = !touchIsEstimate(nextType)
+      ? null
+      : estimateNumberProvided
+        ? estimateNumberRaw?.trim() || null
+        : undefined
+
+    let socialPlatformUpdate: string | null | undefined
+    if (!touchIsSocialMedia(nextType)) {
+      socialPlatformUpdate = null
+    } else if (socialPlatformProvided || type !== undefined) {
+      const candidate =
+        socialPlatformRaw?.trim() ||
+        (touchIsSocialMedia(existing.type) ? existing.socialPlatform : null)
+      if (!candidate || !(await isKnownSocialPlatform(candidate))) {
+        await ensureSocialPlatformsSeeded()
+        const socialPlatforms = await getSocialPlatformNames()
+        return res.status(400).json({
+          error: "socialPlatform is required for Social Media touches",
+          socialPlatforms,
+        })
+      }
+      socialPlatformUpdate = candidate
+    }
+
     const touch = await prisma.touch.update({
       where: { id: touchId },
       data: {
         ...(type !== undefined ? { type } : {}),
         ...(notes !== undefined ? { notes } : {}),
         ...(parsedDate ? { date: parsedDate } : {}),
+        ...(amountUpdate !== undefined ? { amount: amountUpdate } : {}),
+        ...(estimateNumberUpdate !== undefined
+          ? { estimateNumber: estimateNumberUpdate }
+          : {}),
+        ...(socialPlatformUpdate !== undefined
+          ? { socialPlatform: socialPlatformUpdate }
+          : {}),
       },
     })
 
     return res.json({ touch })
   } catch (error) {
     return handlePrismaError(error, res, "Failed to update touch")
+  }
+})
+
+router.get("/scorecard/weekly", async (req, res) => {
+  try {
+    const startParam =
+      typeof req.query.start === "string" ? req.query.start : undefined
+    const endParam = typeof req.query.end === "string" ? req.query.end : undefined
+
+    let start: Date
+    let end: Date
+
+    if (startParam || endParam) {
+      const parsedStart = startParam ? parseDayBound(startParam, "start") : null
+      const parsedEnd = endParam ? parseDayBound(endParam, "end") : null
+      if (!parsedStart || !parsedEnd) {
+        return res.status(400).json({
+          error: "start and end must be YYYY-MM-DD when provided",
+        })
+      }
+      if (parsedStart.getTime() > parsedEnd.getTime()) {
+        return res.status(400).json({ error: "start must be on or before end" })
+      }
+      start = parsedStart
+      end = parsedEnd
+    } else {
+      ;({ start, end } = getWeekRange())
+    }
+
+    const touches = await prisma.touch.findMany({
+      where: {
+        date: {
+          gte: start,
+          lte: end,
+        },
+      },
+      select: {
+        type: true,
+        amount: true,
+      },
+    })
+
+    const metrics = {
+      calls: 0,
+      emails: 0,
+      meetings: 0,
+      estimates: 0,
+      estimateValue: 0,
+      revenue: 0,
+    }
+
+    for (const touch of touches) {
+      const category = scorecardCategory(touch.type)
+      if (category === "calls") metrics.calls += 1
+      else if (category === "emails") metrics.emails += 1
+      else if (category === "meetings") metrics.meetings += 1
+      else if (category === "estimates") {
+        metrics.estimates += 1
+        // Pipeline $ only — never counted as booked revenue.
+        if (typeof touch.amount === "number") {
+          metrics.estimateValue += touch.amount
+        }
+      } else if (category === "sale") {
+        // Booked revenue from Sale / DEAL_WON only.
+        if (typeof touch.amount === "number") {
+          metrics.revenue += touch.amount
+        }
+      }
+    }
+
+    const toDateKey = (date: Date) => {
+      const y = date.getFullYear()
+      const m = String(date.getMonth() + 1).padStart(2, "0")
+      const d = String(date.getDate()).padStart(2, "0")
+      return `${y}-${m}-${d}`
+    }
+
+    return res.json({
+      range: {
+        start: toDateKey(start),
+        end: toDateKey(end),
+      },
+      metrics,
+      touchCount: touches.length,
+    })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ error: "Failed to load weekly scorecard" })
   }
 })
 

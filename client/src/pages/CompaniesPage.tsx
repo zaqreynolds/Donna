@@ -6,6 +6,7 @@ import {
   Pencil,
   Phone,
   Search,
+  Star,
   X,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
@@ -40,6 +41,15 @@ type SortKey =
   | "date-oldest"
 
 const ALL_INDUSTRIES = "all"
+
+function isInteractiveRowTarget(target: EventTarget | null): boolean {
+  return (
+    target instanceof Element &&
+    target.closest(
+      "button, a, select, input, textarea, label, [data-no-row-click]",
+    ) != null
+  )
+}
 
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: "name-asc", label: "Name (A–Z)" },
@@ -107,6 +117,7 @@ export function CompaniesPage() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [industryFilter, setIndustryFilter] = useState(ALL_INDUSTRIES)
+  const [vipOnly, setVipOnly] = useState(false)
   const [sort, setSort] = useState<SortKey>("name-asc")
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [selectedNotes, setSelectedNotes] = useState<EntityNote[]>([])
@@ -193,10 +204,11 @@ export function CompaniesPage() {
       const matchesIndustry =
         industryFilter === ALL_INDUSTRIES ||
         company.industry?.id === industryFilter
-      return matchesIndustry && matchesSearch(company, query)
+      const matchesVip = !vipOnly || Boolean(company.isVip)
+      return matchesIndustry && matchesVip && matchesSearch(company, query)
     })
     return sortCompanies(filtered, sort)
-  }, [companies, deferredSearch, industryFilter, sort])
+  }, [companies, deferredSearch, industryFilter, vipOnly, sort])
 
   const selectedCompany = useMemo(
     () => companies.find((company) => company.id === selectedId) ?? null,
@@ -289,6 +301,30 @@ export function CompaniesPage() {
               </Select>
             </div>
 
+            <button
+              type="button"
+              aria-pressed={vipOnly}
+              aria-label="Show VIP only"
+              title={vipOnly ? "Showing VIP only" : "Show VIP only"}
+              onClick={() => setVipOnly((current) => !current)}
+              className={cn(
+                "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-lg border px-2.5 text-sm font-medium transition-colors",
+                vipOnly
+                  ? "border-amber-500/40 bg-amber-500/10 text-amber-700"
+                  : "border-input text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+              )}
+            >
+              <Star
+                className={cn(
+                  "size-3.5",
+                  vipOnly
+                    ? "fill-amber-400 text-amber-500"
+                    : "fill-transparent text-muted-foreground",
+                )}
+              />
+              VIP
+            </button>
+
             <div className="flex min-w-[200px] items-center gap-2">
               <ArrowUpDown className="size-3.5 shrink-0 text-muted-foreground" />
               <Select
@@ -323,7 +359,7 @@ export function CompaniesPage() {
               <p className="text-sm text-muted-foreground">
                 {companies.length === 0
                   ? "Add a company to get started."
-                  : "Try a different search, industry, or sort."}
+                  : "Try a different search, industry, VIP, or sort."}
               </p>
             </div>
           ) : (
@@ -332,32 +368,27 @@ export function CompaniesPage() {
                 const selected = company.id === selectedId
                 return (
                   <li key={company.id}>
-                    <button
-                      type="button"
-                      onClick={() =>
+                    <div
+                      onClick={(event) => {
+                        if (isInteractiveRowTarget(event.target)) return
                         setSelectedId((current) =>
                           current === company.id ? null : company.id,
                         )
-                      }
+                      }}
                       className={cn(
-                        "flex w-full items-start justify-between gap-4 border-b border-border/70 px-6 py-4 text-left transition-colors hover:bg-muted/40",
+                        "flex w-full cursor-pointer items-start justify-between gap-4 border-b border-border/70 px-6 py-4 text-left transition-colors hover:bg-muted/40",
                         selected && "bg-muted/50",
                       )}
                     >
                       <div className="flex min-w-0 flex-1 flex-col gap-2">
                         <div className="flex min-w-0 flex-wrap items-center gap-2">
-                          <span
-                            onClick={(event) => event.stopPropagation()}
-                            onKeyDown={(event) => event.stopPropagation()}
-                          >
-                            <VipStarToggle
-                              isVip={Boolean(company.isVip)}
-                              onToggle={(next) =>
-                                handleVipToggle(company.id, next)
-                              }
-                              label={`Toggle VIP for ${company.name}`}
-                            />
-                          </span>
+                          <VipStarToggle
+                            isVip={Boolean(company.isVip)}
+                            onToggle={(next) =>
+                              handleVipToggle(company.id, next)
+                            }
+                            label={`Toggle VIP for ${company.name}`}
+                          />
                           <Building2 className="size-4 shrink-0 text-muted-foreground" />
                           <span className="truncate text-sm font-medium">
                             {company.name}
@@ -380,22 +411,16 @@ export function CompaniesPage() {
                           <span>Added {formatLeadDate(company.createdAt)}</span>
                         </div>
                       </div>
-                      <span
-                        className="shrink-0"
-                        onClick={(event) => event.stopPropagation()}
-                        onKeyDown={(event) => event.stopPropagation()}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={`Edit ${company.name}`}
+                        onClick={() => openEditCompany(company.id)}
                       >
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-sm"
-                          aria-label={`Edit ${company.name}`}
-                          onClick={() => openEditCompany(company.id)}
-                        >
-                          <Pencil className="size-3.5" />
-                        </Button>
-                      </span>
-                    </button>
+                        <Pencil className="size-3.5" />
+                      </Button>
+                    </div>
                   </li>
                 )
               })}

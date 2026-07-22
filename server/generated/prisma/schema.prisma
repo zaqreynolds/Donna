@@ -31,6 +31,17 @@ model TouchType {
   @@index([name])
 }
 
+/// Platforms available when Touch.type is "Social Media".
+/// Seeded defaults: Instagram, Facebook, LinkedIn, X, TikTok, YouTube, Nextdoor, Other.
+model SocialPlatform {
+  id       String  @id @default(uuid())
+  name     String  @unique
+  /// Built-in seeded platforms cannot be renamed or deleted in Settings.
+  isSystem Boolean @default(false)
+
+  @@index([name])
+}
+
 model Company {
   id         String        @id @default(uuid())
   name       String
@@ -96,15 +107,26 @@ model LeadNote {
 }
 
 model Touch {
-  id     String   @id @default(uuid())
-  date   DateTime @default(now())
+  id             String   @id @default(uuid())
+  date           DateTime @default(now())
   /// Outreach channel — must match a TouchType.name (see Settings).
-  type   String
-  notes  String   @default("")
-  leadId String
-  lead   Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  /// Scorecard categories map from names like Phone/PHONE, Email/EMAIL,
+  /// Meeting/MEETING/Face to Face, Estimate/ESTIMATE, Sale/SALE/DEAL_WON.
+  type           String
+  notes          String   @default("")
+  /// Optional dollar value for Estimate / Sale touches.
+  /// Estimate amounts feed estimate pipeline $ only — never revenue.
+  amount         Float?
+  /// POS / estimate reference number (Estimate touches only).
+  estimateNumber String?
+  /// Platform name when type is Social Media (must match SocialPlatform.name).
+  socialPlatform String?
+  leadId         String
+  lead           Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@index([leadId])
   @@index([date])
   @@index([type])
+  @@index([estimateNumber])
+  @@index([socialPlatform])
 }

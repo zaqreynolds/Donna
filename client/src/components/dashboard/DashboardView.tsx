@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { MetricSummary } from "@/components/dashboard/MetricSummary"
 import { RecentLeadsPanel } from "@/components/dashboard/RecentLeadsPanel"
+import { ScorecardView } from "@/components/dashboard/ScorecardView"
 import { fetchLeads, updateLeadVip } from "@/lib/api"
 import type { Lead } from "@/lib/types"
 
@@ -80,7 +81,7 @@ export function DashboardView() {
 
   return (
     <div className="flex min-h-0 flex-1 overflow-hidden">
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto p-6">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-8 overflow-y-auto p-6">
         {loading ? (
           <p className="text-sm text-muted-foreground">Loading dashboard…</p>
         ) : (
@@ -90,6 +91,7 @@ export function DashboardView() {
             needsFollowUp={metrics.needsFollowUp}
           />
         )}
+        <ScorecardView />
       </div>
 
       <RecentLeadsPanel

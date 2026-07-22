@@ -11,6 +11,9 @@ export type LeadTouch = {
   type: string
   notes: string
   date: string
+  amount?: number | null
+  estimateNumber?: string | null
+  socialPlatform?: string | null
 }
 
 export type Company = {
@@ -54,18 +57,19 @@ export type Lead = {
 export const DEFAULT_TOUCH_TYPES = [
   "Phone",
   "Email",
+  "Meeting",
+  "Estimate",
+  "Sale",
   "Networking",
   "Canvassing",
   "Cold Call",
   "Face to Face",
-  "LinkedIn",
   "Retreva",
   "Text",
   "Voicemail",
   "Video Message",
   "Post Card",
   "Social Media",
-  "Estimate",
   "Invoice",
 ] as const
 

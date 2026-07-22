@@ -129,6 +129,12 @@ exports.Prisma.TouchTypeScalarFieldEnum = {
   isSystem: 'isSystem'
 };
 
+exports.Prisma.SocialPlatformScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  isSystem: 'isSystem'
+};
+
 exports.Prisma.CompanyScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -172,6 +178,9 @@ exports.Prisma.TouchScalarFieldEnum = {
   date: 'date',
   type: 'type',
   notes: 'notes',
+  amount: 'amount',
+  estimateNumber: 'estimateNumber',
+  socialPlatform: 'socialPlatform',
   leadId: 'leadId'
 };
 
@@ -189,6 +198,7 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   Industry: 'Industry',
   TouchType: 'TouchType',
+  SocialPlatform: 'SocialPlatform',
   Company: 'Company',
   CompanyNote: 'CompanyNote',
   Lead: 'Lead',
