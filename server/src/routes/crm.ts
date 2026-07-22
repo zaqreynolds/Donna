@@ -433,6 +433,51 @@ router.patch("/companies/:id", async (req, res) => {
   }
 })
 
+router.put("/companies/:id", async (req, res) => {
+  try {
+    const companyId = routeParam(req, "id")
+    if (!companyId) {
+      return res.status(400).json({ error: "company id is required" })
+    }
+
+    const name = requireString(req.body?.name)
+    const industryId = requireString(req.body?.industryId)
+    const address = asOptionalString(req.body?.address)
+    const phone = asOptionalString(req.body?.phone)
+    const isVip = asOptionalBoolean(req.body?.isVip)
+
+    if (!name) {
+      return res.status(400).json({ error: "name is required" })
+    }
+    if (!industryId) {
+      return res.status(400).json({ error: "industryId is required" })
+    }
+
+    const industry = await prisma.industry.findUnique({ where: { id: industryId } })
+    if (!industry) {
+      return res.status(400).json({ error: "industryId does not match an industry" })
+    }
+
+    const company = await prisma.company.update({
+      where: { id: companyId },
+      data: {
+        name,
+        industryId,
+        address: address ?? null,
+        phone: phone ?? null,
+        ...(isVip !== undefined ? { isVip } : {}),
+      },
+      include: {
+        industry: { select: { id: true, name: true } },
+      },
+    })
+
+    return res.json({ company })
+  } catch (error) {
+    return handlePrismaError(error, res, "Failed to update company")
+  }
+})
+
 router.get("/companies/:id", async (req, res) => {
   try {
     const companyId = routeParam(req, "id")
@@ -584,7 +629,8 @@ router.post("/leads", async (req, res) => {
       title: title ?? null,
       email: email ?? null,
       phone: phone ?? null,
-      ...(status !== undefined ? { status } : {}),
+      // New leads always start as NEW unless an explicit valid status is provided.
+      status: status !== undefined ? status : "NEW",
       ...(isVip !== undefined ? { isVip } : {}),
     }
 
@@ -656,6 +702,8 @@ router.patch("/leads/:id", async (req, res) => {
     const status = req.body?.status as string | undefined
     const isVip = asOptionalBoolean(req.body?.isVip)
     const companyId = asOptionalString(req.body?.companyId) ?? undefined
+    const companyName = asOptionalString(req.body?.companyName) ?? undefined
+    const industryId = asOptionalString(req.body?.industryId) ?? undefined
 
     if (status !== undefined && !isLeadStatus(status)) {
       return res.status(400).json({
@@ -663,6 +711,8 @@ router.patch("/leads/:id", async (req, res) => {
         leadStatuses: LEAD_STATUSES,
       })
     }
+
+    const creatingCompany = Boolean(companyName && industryId)
 
     if (
       firstName === undefined &&
@@ -672,9 +722,16 @@ router.patch("/leads/:id", async (req, res) => {
       phone === undefined &&
       status === undefined &&
       isVip === undefined &&
-      companyId === undefined
+      companyId === undefined &&
+      !creatingCompany
     ) {
       return res.status(400).json({ error: "No fields to update" })
+    }
+
+    if (companyId && creatingCompany) {
+      return res.status(400).json({
+        error: "Provide either companyId or companyName + industryId, not both",
+      })
     }
 
     if (companyId) {
@@ -684,21 +741,138 @@ router.patch("/leads/:id", async (req, res) => {
       }
     }
 
-    const lead = await prisma.lead.update({
-      where: { id: leadId },
-      data: {
-        ...(firstName !== undefined ? { firstName: firstName ?? undefined } : {}),
-        ...(lastName !== undefined ? { lastName: lastName ?? undefined } : {}),
-        ...(title !== undefined ? { title } : {}),
-        ...(email !== undefined ? { email } : {}),
-        ...(phone !== undefined ? { phone } : {}),
-        ...(status !== undefined ? { status } : {}),
-        ...(isVip !== undefined ? { isVip } : {}),
-        ...(companyId !== undefined ? { companyId } : {}),
-      },
-      include: {
-        company: { select: { id: true, name: true, isVip: true } },
-      },
+    if (creatingCompany) {
+      const industry = await prisma.industry.findUnique({ where: { id: industryId } })
+      if (!industry) {
+        return res.status(400).json({ error: "industryId does not match an industry" })
+      }
+    }
+
+    const lead = await prisma.$transaction(async (tx) => {
+      let nextCompanyId = companyId
+
+      if (creatingCompany && companyName && industryId) {
+        const company = await tx.company.create({
+          data: {
+            name: companyName,
+            industryId,
+          },
+        })
+        nextCompanyId = company.id
+      }
+
+      return tx.lead.update({
+        where: { id: leadId },
+        data: {
+          ...(firstName !== undefined ? { firstName: firstName ?? undefined } : {}),
+          ...(lastName !== undefined ? { lastName: lastName ?? undefined } : {}),
+          ...(title !== undefined ? { title } : {}),
+          ...(email !== undefined ? { email } : {}),
+          ...(phone !== undefined ? { phone } : {}),
+          ...(status !== undefined ? { status } : {}),
+          ...(isVip !== undefined ? { isVip } : {}),
+          ...(nextCompanyId !== undefined ? { companyId: nextCompanyId } : {}),
+        },
+        include: {
+          company: { select: { id: true, name: true, isVip: true } },
+        },
+      })
+    })
+
+    return res.json({ lead })
+  } catch (error) {
+    return handlePrismaError(error, res, "Failed to update lead")
+  }
+})
+
+router.put("/leads/:id", async (req, res) => {
+  try {
+    const leadId = routeParam(req, "id")
+    if (!leadId) {
+      return res.status(400).json({ error: "lead id is required" })
+    }
+
+    const firstName = requireString(req.body?.firstName)
+    const lastName = requireString(req.body?.lastName)
+    const title = asOptionalString(req.body?.title)
+    const email = asOptionalString(req.body?.email)
+    const phone = asOptionalString(req.body?.phone)
+    const status = (req.body?.status as string | undefined) ?? "NEW"
+    const isVip = asOptionalBoolean(req.body?.isVip)
+    const companyId = asOptionalString(req.body?.companyId) ?? undefined
+    const companyName = asOptionalString(req.body?.companyName) ?? undefined
+    const industryId = asOptionalString(req.body?.industryId) ?? undefined
+
+    if (!firstName) {
+      return res.status(400).json({ error: "firstName is required" })
+    }
+    if (!lastName) {
+      return res.status(400).json({ error: "lastName is required" })
+    }
+    if (!isLeadStatus(status)) {
+      return res.status(400).json({
+        error: "status must be one of the standard pipeline values",
+        leadStatuses: LEAD_STATUSES,
+      })
+    }
+
+    const hasExistingCompany = Boolean(companyId)
+    const hasNewCompany = Boolean(companyName && industryId)
+
+    if (hasExistingCompany === hasNewCompany) {
+      return res.status(400).json({
+        error:
+          "Provide either companyId (existing company) or companyName + industryId (create company)",
+      })
+    }
+
+    if (companyId) {
+      const company = await prisma.company.findUnique({ where: { id: companyId } })
+      if (!company) {
+        return res.status(400).json({ error: "companyId does not match a company" })
+      }
+    }
+
+    if (hasNewCompany && industryId) {
+      const industry = await prisma.industry.findUnique({ where: { id: industryId } })
+      if (!industry) {
+        return res.status(400).json({ error: "industryId does not match an industry" })
+      }
+    }
+
+    const lead = await prisma.$transaction(async (tx) => {
+      let nextCompanyId = companyId
+
+      if (hasNewCompany && companyName && industryId) {
+        const company = await tx.company.create({
+          data: {
+            name: companyName,
+            industryId,
+          },
+        })
+        nextCompanyId = company.id
+      }
+
+      if (!nextCompanyId) {
+        throw new Error("companyId is required")
+      }
+
+      return tx.lead.update({
+        where: { id: leadId },
+        data: {
+          firstName,
+          lastName,
+          title: title ?? null,
+          email: email ?? null,
+          phone: phone ?? null,
+          status,
+          companyId: nextCompanyId,
+          ...(isVip !== undefined ? { isVip } : {}),
+        },
+        include: {
+          company: { select: { id: true, name: true, isVip: true } },
+        },
+      })
     })
 
     return res.json({ lead })

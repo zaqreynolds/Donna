@@ -1,7 +1,7 @@
 import {
-  Activity,
-  DollarSign,
-  Users,
+  AlertCircle,
+  Inbox,
+  Target,
   type LucideIcon,
 } from "lucide-react"
 import {
@@ -19,34 +19,34 @@ type Metric = {
 }
 
 type MetricSummaryProps = {
-  totalLeads: number
-  activeTouches: number
-  pipelineValue: string
+  newUncontacted: number
+  qualifiedPipeline: number
+  needsFollowUp: number
 }
 
 export function MetricSummary({
-  totalLeads,
-  activeTouches,
-  pipelineValue,
+  newUncontacted,
+  qualifiedPipeline,
+  needsFollowUp,
 }: MetricSummaryProps) {
   const metrics: Metric[] = [
     {
-      label: "Total Leads",
-      value: String(totalLeads),
-      hint: "People in the CRM",
-      icon: Users,
+      label: "New / Uncontacted",
+      value: String(newUncontacted),
+      hint: "Leads still marked NEW",
+      icon: Inbox,
     },
     {
-      label: "Active Touches",
-      value: String(activeTouches),
-      hint: "Recent outreach volume",
-      icon: Activity,
+      label: "Qualified Pipeline",
+      value: String(qualifiedPipeline),
+      hint: "Qualified or VIP leads",
+      icon: Target,
     },
     {
-      label: "Pipeline Value",
-      value: pipelineValue,
-      hint: "Qualified opportunity estimate",
-      icon: DollarSign,
+      label: "Needs Follow-Up",
+      value: String(needsFollowUp),
+      hint: "Contacted or quiet 14+ days",
+      icon: AlertCircle,
     },
   ]
 
@@ -55,7 +55,7 @@ export function MetricSummary({
       <div className="flex flex-col gap-1">
         <h2 className="text-xl font-semibold tracking-tight">Overview</h2>
         <p className="text-sm text-muted-foreground">
-          High-level sales health across your pipeline.
+          Actionable lead counts across your pipeline.
         </p>
       </div>
 

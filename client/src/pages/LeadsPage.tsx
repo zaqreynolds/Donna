@@ -5,6 +5,7 @@ import {
   Building2,
   Filter,
   Mail,
+  Pencil,
   Phone,
   Search,
   User,
@@ -27,6 +28,7 @@ import {
   type UpdateTouchInput,
 } from "@/components/TouchesPanel"
 import { VipStarToggle } from "@/components/VipStarToggle"
+import { useCrmForms } from "@/components/forms/CrmFormsProvider"
 import {
   createLeadNote,
   createLeadTouch,
@@ -36,10 +38,11 @@ import {
   formatLeadDate,
   formatLeadName,
   uniqueTouchTypes,
+  updateLeadStatus,
   updateLeadTouch,
   updateLeadVip,
 } from "@/lib/api"
-import type { EntityNote, Lead, LeadTouch } from "@/lib/types"
+import type { EntityNote, Lead, LeadStatus, LeadTouch } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 type SortKey =
@@ -60,7 +63,7 @@ const STATUS_OPTIONS = [
   "QUALIFIED",
   "NURTURING",
   "LOST",
-] as const
+] as const satisfies readonly LeadStatus[]
 
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: "name-asc", label: "Name (A–Z)" },
@@ -92,6 +95,46 @@ function statusTone(status: string): string {
     default:
       return ""
   }
+}
+
+function StatusSelect({
+  value,
+  disabled,
+  onChange,
+  className,
+  "aria-label": ariaLabel = "Lead status",
+}: {
+  value: string
+  disabled?: boolean
+  onChange: (status: string) => void
+  className?: string
+  "aria-label"?: string
+}) {
+  return (
+    <select
+      value={value}
+      disabled={disabled}
+      aria-label={ariaLabel}
+      onClick={(event) => event.stopPropagation()}
+      onMouseDown={(event) => event.stopPropagation()}
+      onChange={(event) => onChange(event.target.value)}
+      className={cn(
+        "h-7 shrink-0 rounded-md border px-2 text-xs font-medium outline-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50",
+        statusTone(value),
+        className,
+      )}
+    >
+      {STATUS_OPTIONS.map((status) => (
+        <option key={status} value={status}>
+          {status}
+        </option>
+      ))}
+      {!STATUS_OPTIONS.includes(value as (typeof STATUS_OPTIONS)[number]) &&
+      value ? (
+        <option value={value}>{value}</option>
+      ) : null}
+    </select>
+  )
 }
 
 function sortLeads(leads: Lead[], sort: SortKey): Lead[] {
@@ -155,6 +198,7 @@ function matchesSearch(lead: Lead, query: string): boolean {
 }
 
 export function LeadsPage() {
+  const { openEditLead, subscribe } = useCrmForms()
   const [leads, setLeads] = useState<Lead[]>([])
   const [source, setSource] = useState<"api" | "mock">("mock")
   const [loading, setLoading] = useState(true)
@@ -186,11 +230,15 @@ export function LeadsPage() {
     }
 
     void load()
+    const unsubscribe = subscribe(() => {
+      void load()
+    })
 
     return () => {
       cancelled = true
+      unsubscribe()
     }
-  }, [])
+  }, [subscribe])
 
   useEffect(() => {
     if (!selectedId) {
@@ -260,6 +308,26 @@ export function LeadsPage() {
     try {
       if (source === "api") {
         await updateLeadVip(leadId, next)
+      }
+    } catch {
+      setLeads(previous)
+    }
+  }
+
+  async function handleStatusChange(leadId: string, status: string) {
+    const previous = leads
+    setLeads((current) =>
+      current.map((lead) =>
+        lead.id === leadId ? { ...lead, status } : lead,
+      ),
+    )
+
+    try {
+      if (source === "api") {
+        const updated = await updateLeadStatus(leadId, status)
+        setLeads((current) =>
+          current.map((lead) => (lead.id === leadId ? { ...lead, ...updated } : lead)),
+        )
       }
     } catch {
       setLeads(previous)
@@ -497,12 +565,13 @@ export function LeadsPage() {
                               {lead.title}
                             </span>
                           ) : null}
-                          <Badge
-                            variant="outline"
-                            className={cn("shrink-0", statusTone(lead.status))}
-                          >
-                            {lead.status}
-                          </Badge>
+                          <StatusSelect
+                            value={lead.status}
+                            onChange={(status) =>
+                              void handleStatusChange(lead.id, status)
+                            }
+                            aria-label={`Status for ${formatLeadName(lead)}`}
+                          />
                         </div>
 
                         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
@@ -548,6 +617,21 @@ export function LeadsPage() {
                           ))}
                         </div>
                       </div>
+                      <span
+                        className="shrink-0"
+                        onClick={(event) => event.stopPropagation()}
+                        onKeyDown={(event) => event.stopPropagation()}
+                      >
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          aria-label={`Edit ${formatLeadName(lead)}`}
+                          onClick={() => openEditLead(lead.id)}
+                        >
+                          <Pencil className="size-3.5" />
+                        </Button>
+                      </span>
                     </button>
                   </li>
                 )
@@ -560,23 +644,51 @@ export function LeadsPage() {
       {selectedLead ? (
         <aside className="flex w-full max-w-md shrink-0 flex-col overflow-hidden border-l border-border bg-background">
           <div className="flex items-start justify-between gap-3 border-b border-border px-4 py-4">
-            <div className="min-w-0 flex flex-col gap-1">
-              <p className="truncate text-sm font-semibold">
-                {formatLeadName(selectedLead)}
-              </p>
-              <p className="truncate text-xs text-muted-foreground">
-                {selectedLead.company?.name ?? "No company"}
-              </p>
+            <div className="min-w-0 flex flex-1 flex-col gap-2">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0 flex flex-col gap-1">
+                  <p className="truncate text-sm font-semibold">
+                    {formatLeadName(selectedLead)}
+                  </p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {selectedLead.company?.name ?? "No company"}
+                  </p>
+                </div>
+                <div className="flex shrink-0 items-center gap-1">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={() => openEditLead(selectedLead.id)}
+                    aria-label={`Edit ${formatLeadName(selectedLead)}`}
+                  >
+                    <Pencil className="size-4" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={() => setSelectedId(null)}
+                    aria-label="Close lead detail"
+                  >
+                    <X className="size-4" />
+                  </Button>
+                </div>
+              </div>
+              <label className="flex flex-col gap-1">
+                <span className="text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
+                  Status
+                </span>
+                <StatusSelect
+                  value={selectedLead.status}
+                  onChange={(status) =>
+                    void handleStatusChange(selectedLead.id, status)
+                  }
+                  aria-label={`Status for ${formatLeadName(selectedLead)}`}
+                  className="h-8 w-full text-sm"
+                />
+              </label>
             </div>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              onClick={() => setSelectedId(null)}
-              aria-label="Close lead detail"
-            >
-              <X className="size-4" />
-            </Button>
           </div>
           <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto p-4">
             <TouchesPanel

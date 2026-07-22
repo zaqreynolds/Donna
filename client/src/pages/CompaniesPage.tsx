@@ -1,5 +1,13 @@
 import { useDeferredValue, useEffect, useMemo, useState } from "react"
-import { ArrowUpDown, Building2, Factory, Phone, Search, X } from "lucide-react"
+import {
+  ArrowUpDown,
+  Building2,
+  Factory,
+  Pencil,
+  Phone,
+  Search,
+  X,
+} from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,6 +20,7 @@ import {
 } from "@/components/ui/select"
 import { NotesPanel } from "@/components/NotesPanel"
 import { VipStarToggle } from "@/components/VipStarToggle"
+import { useCrmForms } from "@/components/forms/CrmFormsProvider"
 import {
   createCompanyNote,
   fetchCompanies,
@@ -92,6 +101,7 @@ function matchesSearch(company: Company, query: string): boolean {
 }
 
 export function CompaniesPage() {
+  const { openEditCompany, subscribe } = useCrmForms()
   const [companies, setCompanies] = useState<Company[]>([])
   const [source, setSource] = useState<"api" | "mock">("mock")
   const [loading, setLoading] = useState(true)
@@ -117,11 +127,15 @@ export function CompaniesPage() {
     }
 
     void load()
+    const unsubscribe = subscribe(() => {
+      void load()
+    })
 
     return () => {
       cancelled = true
+      unsubscribe()
     }
-  }, [])
+  }, [subscribe])
 
   useEffect(() => {
     if (!selectedId) {
@@ -366,6 +380,21 @@ export function CompaniesPage() {
                           <span>Added {formatLeadDate(company.createdAt)}</span>
                         </div>
                       </div>
+                      <span
+                        className="shrink-0"
+                        onClick={(event) => event.stopPropagation()}
+                        onKeyDown={(event) => event.stopPropagation()}
+                      >
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          aria-label={`Edit ${company.name}`}
+                          onClick={() => openEditCompany(company.id)}
+                        >
+                          <Pencil className="size-3.5" />
+                        </Button>
+                      </span>
                     </button>
                   </li>
                 )
@@ -386,15 +415,26 @@ export function CompaniesPage() {
                 {selectedCompany.industry?.name ?? "Uncategorized"}
               </p>
             </div>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              onClick={() => setSelectedId(null)}
-              aria-label="Close notes panel"
-            >
-              <X className="size-4" />
-            </Button>
+            <div className="flex shrink-0 items-center gap-1">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => openEditCompany(selectedCompany.id)}
+                aria-label={`Edit ${selectedCompany.name}`}
+              >
+                <Pencil className="size-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => setSelectedId(null)}
+                aria-label="Close notes panel"
+              >
+                <X className="size-4" />
+              </Button>
+            </div>
           </div>
           <div className="flex min-h-0 flex-1 flex-col p-4">
             <NotesPanel

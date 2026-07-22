@@ -8,6 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useCrmForms } from "@/components/forms/CrmFormsProvider"
 
 type AppHeaderProps = {
   title: string
@@ -15,6 +16,8 @@ type AppHeaderProps = {
 }
 
 export function AppHeader({ title, subtitle }: AppHeaderProps) {
+  const { openCreateLead, openCreateCompany } = useCrmForms()
+
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-border px-6">
       <div className="flex min-w-0 flex-col">
@@ -35,11 +38,11 @@ export function AppHeader({ title, subtitle }: AppHeaderProps) {
         <DropdownMenuContent align="end" className="w-48">
           <DropdownMenuLabel>Create</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={openCreateLead}>
             <UserPlus className="size-4" />
             + New Lead
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={openCreateCompany}>
             <Building2 className="size-4" />
             + New Company
           </DropdownMenuItem>

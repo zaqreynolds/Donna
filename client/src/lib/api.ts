@@ -204,6 +204,82 @@ export async function fetchCompanyDetail(companyId: string): Promise<Company> {
   return normalizeCompany((payload.company ?? {}) as Record<string, unknown>)
 }
 
+export type CompanyInput = {
+  name: string
+  industryId: string
+  phone?: string | null
+  address?: string | null
+  isVip?: boolean
+}
+
+export type LeadInput = {
+  firstName: string
+  lastName: string
+  email?: string | null
+  phone?: string | null
+  title?: string | null
+  status?: string
+  isVip?: boolean
+  companyId?: string
+  companyName?: string
+  industryId?: string
+}
+
+export async function createCompany(input: CompanyInput): Promise<Company> {
+  const response = await fetch(COMPANIES_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to create company (${response.status})`)
+  }
+  const payload = (await response.json()) as { company: unknown }
+  return normalizeCompany((payload.company ?? {}) as Record<string, unknown>)
+}
+
+export async function updateCompany(
+  companyId: string,
+  input: CompanyInput,
+): Promise<Company> {
+  const response = await fetch(`${COMPANIES_URL}/${companyId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to update company (${response.status})`)
+  }
+  const payload = (await response.json()) as { company: unknown }
+  return normalizeCompany((payload.company ?? {}) as Record<string, unknown>)
+}
+
+export async function createLead(input: LeadInput): Promise<Lead> {
+  const response = await fetch(LEADS_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to create lead (${response.status})`)
+  }
+  const payload = (await response.json()) as { lead: unknown }
+  return normalizeLead((payload.lead ?? {}) as Record<string, unknown>)
+}
+
+export async function updateLead(leadId: string, input: LeadInput): Promise<Lead> {
+  const response = await fetch(`${LEADS_URL}/${leadId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to update lead (${response.status})`)
+  }
+  const payload = (await response.json()) as { lead: unknown }
+  return normalizeLead((payload.lead ?? {}) as Record<string, unknown>)
+}
+
 export async function createLeadNote(
   leadId: string,
   text: string,
@@ -437,6 +513,22 @@ export async function updateLeadVip(leadId: string, isVip: boolean): Promise<Lea
   })
   if (!response.ok) {
     throw new Error(`Failed to update lead VIP (${response.status})`)
+  }
+  const payload = (await response.json()) as { lead: unknown }
+  return normalizeLead((payload.lead ?? {}) as Record<string, unknown>)
+}
+
+export async function updateLeadStatus(
+  leadId: string,
+  status: string,
+): Promise<Lead> {
+  const response = await fetch(`${LEADS_URL}/${leadId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status }),
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to update lead status (${response.status})`)
   }
   const payload = (await response.json()) as { lead: unknown }
   return normalizeLead((payload.lead ?? {}) as Record<string, unknown>)
