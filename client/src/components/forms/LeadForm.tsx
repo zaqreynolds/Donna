@@ -73,6 +73,7 @@ export function LeadForm({ leadId, onCancel, onSuccess }: LeadFormProps) {
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
   const [phone, setPhone] = useState("")
+  const [officePhone, setOfficePhone] = useState("")
   const [title, setTitle] = useState("")
   const [status, setStatus] = useState<string>("NEW")
   const [isVip, setIsVip] = useState(false)
@@ -124,6 +125,11 @@ export function LeadForm({ leadId, onCancel, onSuccess }: LeadFormProps) {
           setLastName(lead.lastName)
           setEmail(lead.email ?? "")
           setPhone(lead.phone ?? "")
+          const companyPhone =
+            companyResult.companies.find(
+              (company) => company.id === lead.company?.id,
+            )?.phone ?? null
+          setOfficePhone(lead.officePhone ?? companyPhone ?? "")
           setTitle(lead.title ?? "")
           setStatus(lead.status || "NEW")
           setIsVip(Boolean(lead.isVip))
@@ -140,6 +146,7 @@ export function LeadForm({ leadId, onCancel, onSuccess }: LeadFormProps) {
           setLastName("")
           setEmail("")
           setPhone("")
+          setOfficePhone("")
           setTitle("")
           setStatus("NEW")
           setIsVip(false)
@@ -193,6 +200,9 @@ export function LeadForm({ leadId, onCancel, onSuccess }: LeadFormProps) {
     setDebouncedQuery(company.name)
     setIndustryId("")
     setMenuOpen(false)
+    if (company.phone) {
+      setOfficePhone(company.phone)
+    }
   }
 
   function selectCreateCompany(name: string) {
@@ -275,6 +285,7 @@ export function LeadForm({ leadId, onCancel, onSuccess }: LeadFormProps) {
         lastName: lastName.trim(),
         email: email.trim() || null,
         phone: phone.trim() || null,
+        officePhone: officePhone.trim() || null,
         title: title.trim() || null,
         status: isEdit ? status : status || "NEW",
         isVip,
@@ -379,22 +390,32 @@ export function LeadForm({ leadId, onCancel, onSuccess }: LeadFormProps) {
               />
             </label>
 
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium">Email</span>
+              <Input
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="name@example.com"
+              />
+            </label>
+
             <div className="flex flex-col gap-4 sm:flex-row">
               <label className="flex min-w-0 flex-1 flex-col gap-1.5">
-                <span className="text-sm font-medium">Email</span>
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder="name@example.com"
-                />
-              </label>
-              <label className="flex min-w-0 flex-1 flex-col gap-1.5">
-                <span className="text-sm font-medium">Phone</span>
+                <span className="text-sm font-medium">Cell</span>
                 <Input
                   value={phone}
                   onChange={(event) => setPhone(event.target.value)}
                   placeholder="(555) 555-0123"
+                  inputMode="tel"
+                />
+              </label>
+              <label className="flex min-w-0 flex-1 flex-col gap-1.5">
+                <span className="text-sm font-medium">Office</span>
+                <Input
+                  value={officePhone}
+                  onChange={(event) => setOfficePhone(event.target.value)}
+                  placeholder="(555) 555-0199"
                   inputMode="tel"
                 />
               </label>

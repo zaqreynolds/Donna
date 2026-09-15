@@ -24,8 +24,9 @@ export type Industry = $Result.DefaultSelection<Prisma.$IndustryPayload>
  * Model TouchType
  * Outreach channel labels used by Touch.type.
  * Seeded defaults: Phone, Email, Networking, Canvassing, Cold Call, Face to Face,
- * LinkedIn, Retreva, Text, Voicemail, Video Message, Post Card, Social Media,
+ * Retreva, Text, Voicemail, Video Message, Post Card, Social Media,
  * Estimate, Invoice. Additional types can be added in Settings.
+ * LinkedIn lives under Social Media platforms (not a standalone touch type).
  */
 export type TouchType = $Result.DefaultSelection<Prisma.$TouchTypePayload>
 /**
@@ -39,6 +40,12 @@ export type SocialPlatform = $Result.DefaultSelection<Prisma.$SocialPlatformPayl
  * 
  */
 export type Company = $Result.DefaultSelection<Prisma.$CompanyPayload>
+/**
+ * Model CompanySocialLink
+ * Social profile handles for a company (Instagram, LinkedIn, etc.).
+ * `platform` should match a SocialPlatform.name from Settings.
+ */
+export type CompanySocialLink = $Result.DefaultSelection<Prisma.$CompanySocialLinkPayload>
 /**
  * Model CompanyNote
  * 
@@ -220,6 +227,16 @@ export class PrismaClient<
     * ```
     */
   get company(): Prisma.CompanyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.companySocialLink`: Exposes CRUD operations for the **CompanySocialLink** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CompanySocialLinks
+    * const companySocialLinks = await prisma.companySocialLink.findMany()
+    * ```
+    */
+  get companySocialLink(): Prisma.CompanySocialLinkDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.companyNote`: Exposes CRUD operations for the **CompanyNote** model.
@@ -698,6 +715,7 @@ export namespace Prisma {
     TouchType: 'TouchType',
     SocialPlatform: 'SocialPlatform',
     Company: 'Company',
+    CompanySocialLink: 'CompanySocialLink',
     CompanyNote: 'CompanyNote',
     Lead: 'Lead',
     LeadNote: 'LeadNote',
@@ -717,7 +735,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "industry" | "touchType" | "socialPlatform" | "company" | "companyNote" | "lead" | "leadNote" | "touch"
+      modelProps: "industry" | "touchType" | "socialPlatform" | "company" | "companySocialLink" | "companyNote" | "lead" | "leadNote" | "touch"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1014,6 +1032,80 @@ export namespace Prisma {
           count: {
             args: Prisma.CompanyCountArgs<ExtArgs>
             result: $Utils.Optional<CompanyCountAggregateOutputType> | number
+          }
+        }
+      }
+      CompanySocialLink: {
+        payload: Prisma.$CompanySocialLinkPayload<ExtArgs>
+        fields: Prisma.CompanySocialLinkFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CompanySocialLinkFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CompanySocialLinkFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>
+          }
+          findFirst: {
+            args: Prisma.CompanySocialLinkFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CompanySocialLinkFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>
+          }
+          findMany: {
+            args: Prisma.CompanySocialLinkFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>[]
+          }
+          create: {
+            args: Prisma.CompanySocialLinkCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>
+          }
+          createMany: {
+            args: Prisma.CompanySocialLinkCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CompanySocialLinkCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>[]
+          }
+          delete: {
+            args: Prisma.CompanySocialLinkDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>
+          }
+          update: {
+            args: Prisma.CompanySocialLinkUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>
+          }
+          deleteMany: {
+            args: Prisma.CompanySocialLinkDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CompanySocialLinkUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CompanySocialLinkUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>[]
+          }
+          upsert: {
+            args: Prisma.CompanySocialLinkUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>
+          }
+          aggregate: {
+            args: Prisma.CompanySocialLinkAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCompanySocialLink>
+          }
+          groupBy: {
+            args: Prisma.CompanySocialLinkGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CompanySocialLinkGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CompanySocialLinkCountArgs<ExtArgs>
+            result: $Utils.Optional<CompanySocialLinkCountAggregateOutputType> | number
           }
         }
       }
@@ -1425,6 +1517,7 @@ export namespace Prisma {
     touchType?: TouchTypeOmit
     socialPlatform?: SocialPlatformOmit
     company?: CompanyOmit
+    companySocialLink?: CompanySocialLinkOmit
     companyNote?: CompanyNoteOmit
     lead?: LeadOmit
     leadNote?: LeadNoteOmit
@@ -1542,11 +1635,13 @@ export namespace Prisma {
   export type CompanyCountOutputType = {
     leads: number
     notes: number
+    socials: number
   }
 
   export type CompanyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     leads?: boolean | CompanyCountOutputTypeCountLeadsArgs
     notes?: boolean | CompanyCountOutputTypeCountNotesArgs
+    socials?: boolean | CompanyCountOutputTypeCountSocialsArgs
   }
 
   // Custom InputTypes
@@ -1572,6 +1667,13 @@ export namespace Prisma {
    */
   export type CompanyCountOutputTypeCountNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CompanyNoteWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountSocialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanySocialLinkWhereInput
   }
 
 
@@ -4634,6 +4736,7 @@ export namespace Prisma {
     name: string | null
     address: string | null
     phone: string | null
+    website: string | null
     isVip: boolean | null
     industryId: string | null
     createdAt: Date | null
@@ -4645,6 +4748,7 @@ export namespace Prisma {
     name: string | null
     address: string | null
     phone: string | null
+    website: string | null
     isVip: boolean | null
     industryId: string | null
     createdAt: Date | null
@@ -4656,6 +4760,7 @@ export namespace Prisma {
     name: number
     address: number
     phone: number
+    website: number
     isVip: number
     industryId: number
     createdAt: number
@@ -4669,6 +4774,7 @@ export namespace Prisma {
     name?: true
     address?: true
     phone?: true
+    website?: true
     isVip?: true
     industryId?: true
     createdAt?: true
@@ -4680,6 +4786,7 @@ export namespace Prisma {
     name?: true
     address?: true
     phone?: true
+    website?: true
     isVip?: true
     industryId?: true
     createdAt?: true
@@ -4691,6 +4798,7 @@ export namespace Prisma {
     name?: true
     address?: true
     phone?: true
+    website?: true
     isVip?: true
     industryId?: true
     createdAt?: true
@@ -4775,6 +4883,7 @@ export namespace Prisma {
     name: string
     address: string | null
     phone: string | null
+    website: string | null
     isVip: boolean
     industryId: string
     createdAt: Date
@@ -4803,6 +4912,7 @@ export namespace Prisma {
     name?: boolean
     address?: boolean
     phone?: boolean
+    website?: boolean
     isVip?: boolean
     industryId?: boolean
     createdAt?: boolean
@@ -4810,6 +4920,7 @@ export namespace Prisma {
     industry?: boolean | IndustryDefaultArgs<ExtArgs>
     leads?: boolean | Company$leadsArgs<ExtArgs>
     notes?: boolean | Company$notesArgs<ExtArgs>
+    socials?: boolean | Company$socialsArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["company"]>
 
@@ -4818,6 +4929,7 @@ export namespace Prisma {
     name?: boolean
     address?: boolean
     phone?: boolean
+    website?: boolean
     isVip?: boolean
     industryId?: boolean
     createdAt?: boolean
@@ -4830,6 +4942,7 @@ export namespace Prisma {
     name?: boolean
     address?: boolean
     phone?: boolean
+    website?: boolean
     isVip?: boolean
     industryId?: boolean
     createdAt?: boolean
@@ -4842,17 +4955,19 @@ export namespace Prisma {
     name?: boolean
     address?: boolean
     phone?: boolean
+    website?: boolean
     isVip?: boolean
     industryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type CompanyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "address" | "phone" | "isVip" | "industryId" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
+  export type CompanyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "address" | "phone" | "website" | "isVip" | "industryId" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
   export type CompanyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     industry?: boolean | IndustryDefaultArgs<ExtArgs>
     leads?: boolean | Company$leadsArgs<ExtArgs>
     notes?: boolean | Company$notesArgs<ExtArgs>
+    socials?: boolean | Company$socialsArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CompanyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4868,12 +4983,14 @@ export namespace Prisma {
       industry: Prisma.$IndustryPayload<ExtArgs>
       leads: Prisma.$LeadPayload<ExtArgs>[]
       notes: Prisma.$CompanyNotePayload<ExtArgs>[]
+      socials: Prisma.$CompanySocialLinkPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
       address: string | null
       phone: string | null
+      website: string | null
       isVip: boolean
       industryId: string
       createdAt: Date
@@ -5275,6 +5392,7 @@ export namespace Prisma {
     industry<T extends IndustryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, IndustryDefaultArgs<ExtArgs>>): Prisma__IndustryClient<$Result.GetResult<Prisma.$IndustryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     leads<T extends Company$leadsArgs<ExtArgs> = {}>(args?: Subset<T, Company$leadsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notes<T extends Company$notesArgs<ExtArgs> = {}>(args?: Subset<T, Company$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    socials<T extends Company$socialsArgs<ExtArgs> = {}>(args?: Subset<T, Company$socialsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5308,6 +5426,7 @@ export namespace Prisma {
     readonly name: FieldRef<"Company", 'String'>
     readonly address: FieldRef<"Company", 'String'>
     readonly phone: FieldRef<"Company", 'String'>
+    readonly website: FieldRef<"Company", 'String'>
     readonly isVip: FieldRef<"Company", 'Boolean'>
     readonly industryId: FieldRef<"Company", 'String'>
     readonly createdAt: FieldRef<"Company", 'DateTime'>
@@ -5759,6 +5878,30 @@ export namespace Prisma {
   }
 
   /**
+   * Company.socials
+   */
+  export type Company$socialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySocialLink
+     */
+    select?: CompanySocialLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySocialLink
+     */
+    omit?: CompanySocialLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySocialLinkInclude<ExtArgs> | null
+    where?: CompanySocialLinkWhereInput
+    orderBy?: CompanySocialLinkOrderByWithRelationInput | CompanySocialLinkOrderByWithRelationInput[]
+    cursor?: CompanySocialLinkWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CompanySocialLinkScalarFieldEnum | CompanySocialLinkScalarFieldEnum[]
+  }
+
+  /**
    * Company without action
    */
   export type CompanyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5774,6 +5917,1054 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CompanyInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CompanySocialLink
+   */
+
+  export type AggregateCompanySocialLink = {
+    _count: CompanySocialLinkCountAggregateOutputType | null
+    _min: CompanySocialLinkMinAggregateOutputType | null
+    _max: CompanySocialLinkMaxAggregateOutputType | null
+  }
+
+  export type CompanySocialLinkMinAggregateOutputType = {
+    id: string | null
+    companyId: string | null
+    platform: string | null
+    handle: string | null
+  }
+
+  export type CompanySocialLinkMaxAggregateOutputType = {
+    id: string | null
+    companyId: string | null
+    platform: string | null
+    handle: string | null
+  }
+
+  export type CompanySocialLinkCountAggregateOutputType = {
+    id: number
+    companyId: number
+    platform: number
+    handle: number
+    _all: number
+  }
+
+
+  export type CompanySocialLinkMinAggregateInputType = {
+    id?: true
+    companyId?: true
+    platform?: true
+    handle?: true
+  }
+
+  export type CompanySocialLinkMaxAggregateInputType = {
+    id?: true
+    companyId?: true
+    platform?: true
+    handle?: true
+  }
+
+  export type CompanySocialLinkCountAggregateInputType = {
+    id?: true
+    companyId?: true
+    platform?: true
+    handle?: true
+    _all?: true
+  }
+
+  export type CompanySocialLinkAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CompanySocialLink to aggregate.
+     */
+    where?: CompanySocialLinkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanySocialLinks to fetch.
+     */
+    orderBy?: CompanySocialLinkOrderByWithRelationInput | CompanySocialLinkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CompanySocialLinkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanySocialLinks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanySocialLinks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CompanySocialLinks
+    **/
+    _count?: true | CompanySocialLinkCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CompanySocialLinkMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CompanySocialLinkMaxAggregateInputType
+  }
+
+  export type GetCompanySocialLinkAggregateType<T extends CompanySocialLinkAggregateArgs> = {
+        [P in keyof T & keyof AggregateCompanySocialLink]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCompanySocialLink[P]>
+      : GetScalarType<T[P], AggregateCompanySocialLink[P]>
+  }
+
+
+
+
+  export type CompanySocialLinkGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanySocialLinkWhereInput
+    orderBy?: CompanySocialLinkOrderByWithAggregationInput | CompanySocialLinkOrderByWithAggregationInput[]
+    by: CompanySocialLinkScalarFieldEnum[] | CompanySocialLinkScalarFieldEnum
+    having?: CompanySocialLinkScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CompanySocialLinkCountAggregateInputType | true
+    _min?: CompanySocialLinkMinAggregateInputType
+    _max?: CompanySocialLinkMaxAggregateInputType
+  }
+
+  export type CompanySocialLinkGroupByOutputType = {
+    id: string
+    companyId: string
+    platform: string
+    handle: string
+    _count: CompanySocialLinkCountAggregateOutputType | null
+    _min: CompanySocialLinkMinAggregateOutputType | null
+    _max: CompanySocialLinkMaxAggregateOutputType | null
+  }
+
+  type GetCompanySocialLinkGroupByPayload<T extends CompanySocialLinkGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CompanySocialLinkGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CompanySocialLinkGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CompanySocialLinkGroupByOutputType[P]>
+            : GetScalarType<T[P], CompanySocialLinkGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CompanySocialLinkSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    platform?: boolean
+    handle?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companySocialLink"]>
+
+  export type CompanySocialLinkSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    platform?: boolean
+    handle?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companySocialLink"]>
+
+  export type CompanySocialLinkSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    platform?: boolean
+    handle?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companySocialLink"]>
+
+  export type CompanySocialLinkSelectScalar = {
+    id?: boolean
+    companyId?: boolean
+    platform?: boolean
+    handle?: boolean
+  }
+
+  export type CompanySocialLinkOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "platform" | "handle", ExtArgs["result"]["companySocialLink"]>
+  export type CompanySocialLinkInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+  export type CompanySocialLinkIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+  export type CompanySocialLinkIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+
+  export type $CompanySocialLinkPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CompanySocialLink"
+    objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      companyId: string
+      platform: string
+      handle: string
+    }, ExtArgs["result"]["companySocialLink"]>
+    composites: {}
+  }
+
+  type CompanySocialLinkGetPayload<S extends boolean | null | undefined | CompanySocialLinkDefaultArgs> = $Result.GetResult<Prisma.$CompanySocialLinkPayload, S>
+
+  type CompanySocialLinkCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CompanySocialLinkFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CompanySocialLinkCountAggregateInputType | true
+    }
+
+  export interface CompanySocialLinkDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CompanySocialLink'], meta: { name: 'CompanySocialLink' } }
+    /**
+     * Find zero or one CompanySocialLink that matches the filter.
+     * @param {CompanySocialLinkFindUniqueArgs} args - Arguments to find a CompanySocialLink
+     * @example
+     * // Get one CompanySocialLink
+     * const companySocialLink = await prisma.companySocialLink.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CompanySocialLinkFindUniqueArgs>(args: SelectSubset<T, CompanySocialLinkFindUniqueArgs<ExtArgs>>): Prisma__CompanySocialLinkClient<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CompanySocialLink that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CompanySocialLinkFindUniqueOrThrowArgs} args - Arguments to find a CompanySocialLink
+     * @example
+     * // Get one CompanySocialLink
+     * const companySocialLink = await prisma.companySocialLink.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CompanySocialLinkFindUniqueOrThrowArgs>(args: SelectSubset<T, CompanySocialLinkFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CompanySocialLinkClient<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompanySocialLink that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanySocialLinkFindFirstArgs} args - Arguments to find a CompanySocialLink
+     * @example
+     * // Get one CompanySocialLink
+     * const companySocialLink = await prisma.companySocialLink.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CompanySocialLinkFindFirstArgs>(args?: SelectSubset<T, CompanySocialLinkFindFirstArgs<ExtArgs>>): Prisma__CompanySocialLinkClient<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompanySocialLink that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanySocialLinkFindFirstOrThrowArgs} args - Arguments to find a CompanySocialLink
+     * @example
+     * // Get one CompanySocialLink
+     * const companySocialLink = await prisma.companySocialLink.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CompanySocialLinkFindFirstOrThrowArgs>(args?: SelectSubset<T, CompanySocialLinkFindFirstOrThrowArgs<ExtArgs>>): Prisma__CompanySocialLinkClient<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CompanySocialLinks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanySocialLinkFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CompanySocialLinks
+     * const companySocialLinks = await prisma.companySocialLink.findMany()
+     * 
+     * // Get first 10 CompanySocialLinks
+     * const companySocialLinks = await prisma.companySocialLink.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const companySocialLinkWithIdOnly = await prisma.companySocialLink.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CompanySocialLinkFindManyArgs>(args?: SelectSubset<T, CompanySocialLinkFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CompanySocialLink.
+     * @param {CompanySocialLinkCreateArgs} args - Arguments to create a CompanySocialLink.
+     * @example
+     * // Create one CompanySocialLink
+     * const CompanySocialLink = await prisma.companySocialLink.create({
+     *   data: {
+     *     // ... data to create a CompanySocialLink
+     *   }
+     * })
+     * 
+     */
+    create<T extends CompanySocialLinkCreateArgs>(args: SelectSubset<T, CompanySocialLinkCreateArgs<ExtArgs>>): Prisma__CompanySocialLinkClient<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CompanySocialLinks.
+     * @param {CompanySocialLinkCreateManyArgs} args - Arguments to create many CompanySocialLinks.
+     * @example
+     * // Create many CompanySocialLinks
+     * const companySocialLink = await prisma.companySocialLink.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CompanySocialLinkCreateManyArgs>(args?: SelectSubset<T, CompanySocialLinkCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CompanySocialLinks and returns the data saved in the database.
+     * @param {CompanySocialLinkCreateManyAndReturnArgs} args - Arguments to create many CompanySocialLinks.
+     * @example
+     * // Create many CompanySocialLinks
+     * const companySocialLink = await prisma.companySocialLink.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CompanySocialLinks and only return the `id`
+     * const companySocialLinkWithIdOnly = await prisma.companySocialLink.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CompanySocialLinkCreateManyAndReturnArgs>(args?: SelectSubset<T, CompanySocialLinkCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CompanySocialLink.
+     * @param {CompanySocialLinkDeleteArgs} args - Arguments to delete one CompanySocialLink.
+     * @example
+     * // Delete one CompanySocialLink
+     * const CompanySocialLink = await prisma.companySocialLink.delete({
+     *   where: {
+     *     // ... filter to delete one CompanySocialLink
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CompanySocialLinkDeleteArgs>(args: SelectSubset<T, CompanySocialLinkDeleteArgs<ExtArgs>>): Prisma__CompanySocialLinkClient<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CompanySocialLink.
+     * @param {CompanySocialLinkUpdateArgs} args - Arguments to update one CompanySocialLink.
+     * @example
+     * // Update one CompanySocialLink
+     * const companySocialLink = await prisma.companySocialLink.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CompanySocialLinkUpdateArgs>(args: SelectSubset<T, CompanySocialLinkUpdateArgs<ExtArgs>>): Prisma__CompanySocialLinkClient<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CompanySocialLinks.
+     * @param {CompanySocialLinkDeleteManyArgs} args - Arguments to filter CompanySocialLinks to delete.
+     * @example
+     * // Delete a few CompanySocialLinks
+     * const { count } = await prisma.companySocialLink.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CompanySocialLinkDeleteManyArgs>(args?: SelectSubset<T, CompanySocialLinkDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompanySocialLinks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanySocialLinkUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CompanySocialLinks
+     * const companySocialLink = await prisma.companySocialLink.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CompanySocialLinkUpdateManyArgs>(args: SelectSubset<T, CompanySocialLinkUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompanySocialLinks and returns the data updated in the database.
+     * @param {CompanySocialLinkUpdateManyAndReturnArgs} args - Arguments to update many CompanySocialLinks.
+     * @example
+     * // Update many CompanySocialLinks
+     * const companySocialLink = await prisma.companySocialLink.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CompanySocialLinks and only return the `id`
+     * const companySocialLinkWithIdOnly = await prisma.companySocialLink.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CompanySocialLinkUpdateManyAndReturnArgs>(args: SelectSubset<T, CompanySocialLinkUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CompanySocialLink.
+     * @param {CompanySocialLinkUpsertArgs} args - Arguments to update or create a CompanySocialLink.
+     * @example
+     * // Update or create a CompanySocialLink
+     * const companySocialLink = await prisma.companySocialLink.upsert({
+     *   create: {
+     *     // ... data to create a CompanySocialLink
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CompanySocialLink we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CompanySocialLinkUpsertArgs>(args: SelectSubset<T, CompanySocialLinkUpsertArgs<ExtArgs>>): Prisma__CompanySocialLinkClient<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CompanySocialLinks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanySocialLinkCountArgs} args - Arguments to filter CompanySocialLinks to count.
+     * @example
+     * // Count the number of CompanySocialLinks
+     * const count = await prisma.companySocialLink.count({
+     *   where: {
+     *     // ... the filter for the CompanySocialLinks we want to count
+     *   }
+     * })
+    **/
+    count<T extends CompanySocialLinkCountArgs>(
+      args?: Subset<T, CompanySocialLinkCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CompanySocialLinkCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CompanySocialLink.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanySocialLinkAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CompanySocialLinkAggregateArgs>(args: Subset<T, CompanySocialLinkAggregateArgs>): Prisma.PrismaPromise<GetCompanySocialLinkAggregateType<T>>
+
+    /**
+     * Group by CompanySocialLink.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanySocialLinkGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CompanySocialLinkGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CompanySocialLinkGroupByArgs['orderBy'] }
+        : { orderBy?: CompanySocialLinkGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CompanySocialLinkGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCompanySocialLinkGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CompanySocialLink model
+   */
+  readonly fields: CompanySocialLinkFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CompanySocialLink.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CompanySocialLinkClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CompanySocialLink model
+   */
+  interface CompanySocialLinkFieldRefs {
+    readonly id: FieldRef<"CompanySocialLink", 'String'>
+    readonly companyId: FieldRef<"CompanySocialLink", 'String'>
+    readonly platform: FieldRef<"CompanySocialLink", 'String'>
+    readonly handle: FieldRef<"CompanySocialLink", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CompanySocialLink findUnique
+   */
+  export type CompanySocialLinkFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySocialLink
+     */
+    select?: CompanySocialLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySocialLink
+     */
+    omit?: CompanySocialLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySocialLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanySocialLink to fetch.
+     */
+    where: CompanySocialLinkWhereUniqueInput
+  }
+
+  /**
+   * CompanySocialLink findUniqueOrThrow
+   */
+  export type CompanySocialLinkFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySocialLink
+     */
+    select?: CompanySocialLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySocialLink
+     */
+    omit?: CompanySocialLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySocialLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanySocialLink to fetch.
+     */
+    where: CompanySocialLinkWhereUniqueInput
+  }
+
+  /**
+   * CompanySocialLink findFirst
+   */
+  export type CompanySocialLinkFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySocialLink
+     */
+    select?: CompanySocialLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySocialLink
+     */
+    omit?: CompanySocialLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySocialLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanySocialLink to fetch.
+     */
+    where?: CompanySocialLinkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanySocialLinks to fetch.
+     */
+    orderBy?: CompanySocialLinkOrderByWithRelationInput | CompanySocialLinkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CompanySocialLinks.
+     */
+    cursor?: CompanySocialLinkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanySocialLinks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanySocialLinks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompanySocialLinks.
+     */
+    distinct?: CompanySocialLinkScalarFieldEnum | CompanySocialLinkScalarFieldEnum[]
+  }
+
+  /**
+   * CompanySocialLink findFirstOrThrow
+   */
+  export type CompanySocialLinkFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySocialLink
+     */
+    select?: CompanySocialLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySocialLink
+     */
+    omit?: CompanySocialLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySocialLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanySocialLink to fetch.
+     */
+    where?: CompanySocialLinkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanySocialLinks to fetch.
+     */
+    orderBy?: CompanySocialLinkOrderByWithRelationInput | CompanySocialLinkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CompanySocialLinks.
+     */
+    cursor?: CompanySocialLinkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanySocialLinks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanySocialLinks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompanySocialLinks.
+     */
+    distinct?: CompanySocialLinkScalarFieldEnum | CompanySocialLinkScalarFieldEnum[]
+  }
+
+  /**
+   * CompanySocialLink findMany
+   */
+  export type CompanySocialLinkFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySocialLink
+     */
+    select?: CompanySocialLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySocialLink
+     */
+    omit?: CompanySocialLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySocialLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which CompanySocialLinks to fetch.
+     */
+    where?: CompanySocialLinkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanySocialLinks to fetch.
+     */
+    orderBy?: CompanySocialLinkOrderByWithRelationInput | CompanySocialLinkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CompanySocialLinks.
+     */
+    cursor?: CompanySocialLinkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanySocialLinks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanySocialLinks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompanySocialLinks.
+     */
+    distinct?: CompanySocialLinkScalarFieldEnum | CompanySocialLinkScalarFieldEnum[]
+  }
+
+  /**
+   * CompanySocialLink create
+   */
+  export type CompanySocialLinkCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySocialLink
+     */
+    select?: CompanySocialLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySocialLink
+     */
+    omit?: CompanySocialLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySocialLinkInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CompanySocialLink.
+     */
+    data: XOR<CompanySocialLinkCreateInput, CompanySocialLinkUncheckedCreateInput>
+  }
+
+  /**
+   * CompanySocialLink createMany
+   */
+  export type CompanySocialLinkCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CompanySocialLinks.
+     */
+    data: CompanySocialLinkCreateManyInput | CompanySocialLinkCreateManyInput[]
+  }
+
+  /**
+   * CompanySocialLink createManyAndReturn
+   */
+  export type CompanySocialLinkCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySocialLink
+     */
+    select?: CompanySocialLinkSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySocialLink
+     */
+    omit?: CompanySocialLinkOmit<ExtArgs> | null
+    /**
+     * The data used to create many CompanySocialLinks.
+     */
+    data: CompanySocialLinkCreateManyInput | CompanySocialLinkCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySocialLinkIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CompanySocialLink update
+   */
+  export type CompanySocialLinkUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySocialLink
+     */
+    select?: CompanySocialLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySocialLink
+     */
+    omit?: CompanySocialLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySocialLinkInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CompanySocialLink.
+     */
+    data: XOR<CompanySocialLinkUpdateInput, CompanySocialLinkUncheckedUpdateInput>
+    /**
+     * Choose, which CompanySocialLink to update.
+     */
+    where: CompanySocialLinkWhereUniqueInput
+  }
+
+  /**
+   * CompanySocialLink updateMany
+   */
+  export type CompanySocialLinkUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CompanySocialLinks.
+     */
+    data: XOR<CompanySocialLinkUpdateManyMutationInput, CompanySocialLinkUncheckedUpdateManyInput>
+    /**
+     * Filter which CompanySocialLinks to update
+     */
+    where?: CompanySocialLinkWhereInput
+    /**
+     * Limit how many CompanySocialLinks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CompanySocialLink updateManyAndReturn
+   */
+  export type CompanySocialLinkUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySocialLink
+     */
+    select?: CompanySocialLinkSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySocialLink
+     */
+    omit?: CompanySocialLinkOmit<ExtArgs> | null
+    /**
+     * The data used to update CompanySocialLinks.
+     */
+    data: XOR<CompanySocialLinkUpdateManyMutationInput, CompanySocialLinkUncheckedUpdateManyInput>
+    /**
+     * Filter which CompanySocialLinks to update
+     */
+    where?: CompanySocialLinkWhereInput
+    /**
+     * Limit how many CompanySocialLinks to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySocialLinkIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CompanySocialLink upsert
+   */
+  export type CompanySocialLinkUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySocialLink
+     */
+    select?: CompanySocialLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySocialLink
+     */
+    omit?: CompanySocialLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySocialLinkInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CompanySocialLink to update in case it exists.
+     */
+    where: CompanySocialLinkWhereUniqueInput
+    /**
+     * In case the CompanySocialLink found by the `where` argument doesn't exist, create a new CompanySocialLink with this data.
+     */
+    create: XOR<CompanySocialLinkCreateInput, CompanySocialLinkUncheckedCreateInput>
+    /**
+     * In case the CompanySocialLink was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CompanySocialLinkUpdateInput, CompanySocialLinkUncheckedUpdateInput>
+  }
+
+  /**
+   * CompanySocialLink delete
+   */
+  export type CompanySocialLinkDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySocialLink
+     */
+    select?: CompanySocialLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySocialLink
+     */
+    omit?: CompanySocialLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySocialLinkInclude<ExtArgs> | null
+    /**
+     * Filter which CompanySocialLink to delete.
+     */
+    where: CompanySocialLinkWhereUniqueInput
+  }
+
+  /**
+   * CompanySocialLink deleteMany
+   */
+  export type CompanySocialLinkDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CompanySocialLinks to delete
+     */
+    where?: CompanySocialLinkWhereInput
+    /**
+     * Limit how many CompanySocialLinks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CompanySocialLink without action
+   */
+  export type CompanySocialLinkDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanySocialLink
+     */
+    select?: CompanySocialLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanySocialLink
+     */
+    omit?: CompanySocialLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanySocialLinkInclude<ExtArgs> | null
   }
 
 
@@ -6842,6 +8033,7 @@ export namespace Prisma {
     title: string | null
     email: string | null
     phone: string | null
+    officePhone: string | null
     status: string | null
     isVip: boolean | null
     companyId: string | null
@@ -6855,6 +8047,7 @@ export namespace Prisma {
     title: string | null
     email: string | null
     phone: string | null
+    officePhone: string | null
     status: string | null
     isVip: boolean | null
     companyId: string | null
@@ -6868,6 +8061,7 @@ export namespace Prisma {
     title: number
     email: number
     phone: number
+    officePhone: number
     status: number
     isVip: number
     companyId: number
@@ -6883,6 +8077,7 @@ export namespace Prisma {
     title?: true
     email?: true
     phone?: true
+    officePhone?: true
     status?: true
     isVip?: true
     companyId?: true
@@ -6896,6 +8091,7 @@ export namespace Prisma {
     title?: true
     email?: true
     phone?: true
+    officePhone?: true
     status?: true
     isVip?: true
     companyId?: true
@@ -6909,6 +8105,7 @@ export namespace Prisma {
     title?: true
     email?: true
     phone?: true
+    officePhone?: true
     status?: true
     isVip?: true
     companyId?: true
@@ -6995,6 +8192,7 @@ export namespace Prisma {
     title: string | null
     email: string | null
     phone: string | null
+    officePhone: string | null
     status: string
     isVip: boolean
     companyId: string
@@ -7025,6 +8223,7 @@ export namespace Prisma {
     title?: boolean
     email?: boolean
     phone?: boolean
+    officePhone?: boolean
     status?: boolean
     isVip?: boolean
     companyId?: boolean
@@ -7042,6 +8241,7 @@ export namespace Prisma {
     title?: boolean
     email?: boolean
     phone?: boolean
+    officePhone?: boolean
     status?: boolean
     isVip?: boolean
     companyId?: boolean
@@ -7056,6 +8256,7 @@ export namespace Prisma {
     title?: boolean
     email?: boolean
     phone?: boolean
+    officePhone?: boolean
     status?: boolean
     isVip?: boolean
     companyId?: boolean
@@ -7070,13 +8271,14 @@ export namespace Prisma {
     title?: boolean
     email?: boolean
     phone?: boolean
+    officePhone?: boolean
     status?: boolean
     isVip?: boolean
     companyId?: boolean
     createdAt?: boolean
   }
 
-  export type LeadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "firstName" | "lastName" | "title" | "email" | "phone" | "status" | "isVip" | "companyId" | "createdAt", ExtArgs["result"]["lead"]>
+  export type LeadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "firstName" | "lastName" | "title" | "email" | "phone" | "officePhone" | "status" | "isVip" | "companyId" | "createdAt", ExtArgs["result"]["lead"]>
   export type LeadInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     touches?: boolean | Lead$touchesArgs<ExtArgs>
@@ -7103,7 +8305,14 @@ export namespace Prisma {
       lastName: string
       title: string | null
       email: string | null
+      /**
+       * Cell / mobile number.
+       */
       phone: string | null
+      /**
+       * Office / desk number.
+       */
+      officePhone: string | null
       /**
        * Pipeline stage.
        * Allowed values: "NEW" | "CONTACTED" | "QUALIFIED" | "NURTURING" | "LOST"
@@ -7544,6 +8753,7 @@ export namespace Prisma {
     readonly title: FieldRef<"Lead", 'String'>
     readonly email: FieldRef<"Lead", 'String'>
     readonly phone: FieldRef<"Lead", 'String'>
+    readonly officePhone: FieldRef<"Lead", 'String'>
     readonly status: FieldRef<"Lead", 'String'>
     readonly isVip: FieldRef<"Lead", 'Boolean'>
     readonly companyId: FieldRef<"Lead", 'String'>
@@ -10253,6 +11463,7 @@ export namespace Prisma {
     name: 'name',
     address: 'address',
     phone: 'phone',
+    website: 'website',
     isVip: 'isVip',
     industryId: 'industryId',
     createdAt: 'createdAt',
@@ -10260,6 +11471,16 @@ export namespace Prisma {
   };
 
   export type CompanyScalarFieldEnum = (typeof CompanyScalarFieldEnum)[keyof typeof CompanyScalarFieldEnum]
+
+
+  export const CompanySocialLinkScalarFieldEnum: {
+    id: 'id',
+    companyId: 'companyId',
+    platform: 'platform',
+    handle: 'handle'
+  };
+
+  export type CompanySocialLinkScalarFieldEnum = (typeof CompanySocialLinkScalarFieldEnum)[keyof typeof CompanySocialLinkScalarFieldEnum]
 
 
   export const CompanyNoteScalarFieldEnum: {
@@ -10279,6 +11500,7 @@ export namespace Prisma {
     title: 'title',
     email: 'email',
     phone: 'phone',
+    officePhone: 'officePhone',
     status: 'status',
     isVip: 'isVip',
     companyId: 'companyId',
@@ -10508,6 +11730,7 @@ export namespace Prisma {
     name?: StringFilter<"Company"> | string
     address?: StringNullableFilter<"Company"> | string | null
     phone?: StringNullableFilter<"Company"> | string | null
+    website?: StringNullableFilter<"Company"> | string | null
     isVip?: BoolFilter<"Company"> | boolean
     industryId?: StringFilter<"Company"> | string
     createdAt?: DateTimeFilter<"Company"> | Date | string
@@ -10515,6 +11738,7 @@ export namespace Prisma {
     industry?: XOR<IndustryScalarRelationFilter, IndustryWhereInput>
     leads?: LeadListRelationFilter
     notes?: CompanyNoteListRelationFilter
+    socials?: CompanySocialLinkListRelationFilter
   }
 
   export type CompanyOrderByWithRelationInput = {
@@ -10522,6 +11746,7 @@ export namespace Prisma {
     name?: SortOrder
     address?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
+    website?: SortOrderInput | SortOrder
     isVip?: SortOrder
     industryId?: SortOrder
     createdAt?: SortOrder
@@ -10529,6 +11754,7 @@ export namespace Prisma {
     industry?: IndustryOrderByWithRelationInput
     leads?: LeadOrderByRelationAggregateInput
     notes?: CompanyNoteOrderByRelationAggregateInput
+    socials?: CompanySocialLinkOrderByRelationAggregateInput
   }
 
   export type CompanyWhereUniqueInput = Prisma.AtLeast<{
@@ -10539,6 +11765,7 @@ export namespace Prisma {
     name?: StringFilter<"Company"> | string
     address?: StringNullableFilter<"Company"> | string | null
     phone?: StringNullableFilter<"Company"> | string | null
+    website?: StringNullableFilter<"Company"> | string | null
     isVip?: BoolFilter<"Company"> | boolean
     industryId?: StringFilter<"Company"> | string
     createdAt?: DateTimeFilter<"Company"> | Date | string
@@ -10546,6 +11773,7 @@ export namespace Prisma {
     industry?: XOR<IndustryScalarRelationFilter, IndustryWhereInput>
     leads?: LeadListRelationFilter
     notes?: CompanyNoteListRelationFilter
+    socials?: CompanySocialLinkListRelationFilter
   }, "id">
 
   export type CompanyOrderByWithAggregationInput = {
@@ -10553,6 +11781,7 @@ export namespace Prisma {
     name?: SortOrder
     address?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
+    website?: SortOrderInput | SortOrder
     isVip?: SortOrder
     industryId?: SortOrder
     createdAt?: SortOrder
@@ -10570,10 +11799,62 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Company"> | string
     address?: StringNullableWithAggregatesFilter<"Company"> | string | null
     phone?: StringNullableWithAggregatesFilter<"Company"> | string | null
+    website?: StringNullableWithAggregatesFilter<"Company"> | string | null
     isVip?: BoolWithAggregatesFilter<"Company"> | boolean
     industryId?: StringWithAggregatesFilter<"Company"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Company"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Company"> | Date | string
+  }
+
+  export type CompanySocialLinkWhereInput = {
+    AND?: CompanySocialLinkWhereInput | CompanySocialLinkWhereInput[]
+    OR?: CompanySocialLinkWhereInput[]
+    NOT?: CompanySocialLinkWhereInput | CompanySocialLinkWhereInput[]
+    id?: StringFilter<"CompanySocialLink"> | string
+    companyId?: StringFilter<"CompanySocialLink"> | string
+    platform?: StringFilter<"CompanySocialLink"> | string
+    handle?: StringFilter<"CompanySocialLink"> | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+  }
+
+  export type CompanySocialLinkOrderByWithRelationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    platform?: SortOrder
+    handle?: SortOrder
+    company?: CompanyOrderByWithRelationInput
+  }
+
+  export type CompanySocialLinkWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    companyId_platform?: CompanySocialLinkCompanyIdPlatformCompoundUniqueInput
+    AND?: CompanySocialLinkWhereInput | CompanySocialLinkWhereInput[]
+    OR?: CompanySocialLinkWhereInput[]
+    NOT?: CompanySocialLinkWhereInput | CompanySocialLinkWhereInput[]
+    companyId?: StringFilter<"CompanySocialLink"> | string
+    platform?: StringFilter<"CompanySocialLink"> | string
+    handle?: StringFilter<"CompanySocialLink"> | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+  }, "id" | "companyId_platform">
+
+  export type CompanySocialLinkOrderByWithAggregationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    platform?: SortOrder
+    handle?: SortOrder
+    _count?: CompanySocialLinkCountOrderByAggregateInput
+    _max?: CompanySocialLinkMaxOrderByAggregateInput
+    _min?: CompanySocialLinkMinOrderByAggregateInput
+  }
+
+  export type CompanySocialLinkScalarWhereWithAggregatesInput = {
+    AND?: CompanySocialLinkScalarWhereWithAggregatesInput | CompanySocialLinkScalarWhereWithAggregatesInput[]
+    OR?: CompanySocialLinkScalarWhereWithAggregatesInput[]
+    NOT?: CompanySocialLinkScalarWhereWithAggregatesInput | CompanySocialLinkScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CompanySocialLink"> | string
+    companyId?: StringWithAggregatesFilter<"CompanySocialLink"> | string
+    platform?: StringWithAggregatesFilter<"CompanySocialLink"> | string
+    handle?: StringWithAggregatesFilter<"CompanySocialLink"> | string
   }
 
   export type CompanyNoteWhereInput = {
@@ -10636,6 +11917,7 @@ export namespace Prisma {
     title?: StringNullableFilter<"Lead"> | string | null
     email?: StringNullableFilter<"Lead"> | string | null
     phone?: StringNullableFilter<"Lead"> | string | null
+    officePhone?: StringNullableFilter<"Lead"> | string | null
     status?: StringFilter<"Lead"> | string
     isVip?: BoolFilter<"Lead"> | boolean
     companyId?: StringFilter<"Lead"> | string
@@ -10652,6 +11934,7 @@ export namespace Prisma {
     title?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
+    officePhone?: SortOrderInput | SortOrder
     status?: SortOrder
     isVip?: SortOrder
     companyId?: SortOrder
@@ -10671,6 +11954,7 @@ export namespace Prisma {
     title?: StringNullableFilter<"Lead"> | string | null
     email?: StringNullableFilter<"Lead"> | string | null
     phone?: StringNullableFilter<"Lead"> | string | null
+    officePhone?: StringNullableFilter<"Lead"> | string | null
     status?: StringFilter<"Lead"> | string
     isVip?: BoolFilter<"Lead"> | boolean
     companyId?: StringFilter<"Lead"> | string
@@ -10687,6 +11971,7 @@ export namespace Prisma {
     title?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
+    officePhone?: SortOrderInput | SortOrder
     status?: SortOrder
     isVip?: SortOrder
     companyId?: SortOrder
@@ -10706,6 +11991,7 @@ export namespace Prisma {
     title?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     email?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     phone?: StringNullableWithAggregatesFilter<"Lead"> | string | null
+    officePhone?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     status?: StringWithAggregatesFilter<"Lead"> | string
     isVip?: BoolWithAggregatesFilter<"Lead"> | boolean
     companyId?: StringWithAggregatesFilter<"Lead"> | string
@@ -10969,12 +12255,14 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    website?: string | null
     isVip?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     industry: IndustryCreateNestedOneWithoutCompaniesInput
     leads?: LeadCreateNestedManyWithoutCompanyInput
     notes?: CompanyNoteCreateNestedManyWithoutCompanyInput
+    socials?: CompanySocialLinkCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateInput = {
@@ -10982,12 +12270,14 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    website?: string | null
     isVip?: boolean
     industryId: string
     createdAt?: Date | string
     updatedAt?: Date | string
     leads?: LeadUncheckedCreateNestedManyWithoutCompanyInput
     notes?: CompanyNoteUncheckedCreateNestedManyWithoutCompanyInput
+    socials?: CompanySocialLinkUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUpdateInput = {
@@ -10995,12 +12285,14 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     industry?: IndustryUpdateOneRequiredWithoutCompaniesNestedInput
     leads?: LeadUpdateManyWithoutCompanyNestedInput
     notes?: CompanyNoteUpdateManyWithoutCompanyNestedInput
+    socials?: CompanySocialLinkUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateInput = {
@@ -11008,12 +12300,14 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     isVip?: BoolFieldUpdateOperationsInput | boolean
     industryId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     leads?: LeadUncheckedUpdateManyWithoutCompanyNestedInput
     notes?: CompanyNoteUncheckedUpdateManyWithoutCompanyNestedInput
+    socials?: CompanySocialLinkUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyCreateManyInput = {
@@ -11021,6 +12315,7 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    website?: string | null
     isVip?: boolean
     industryId: string
     createdAt?: Date | string
@@ -11032,6 +12327,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11042,10 +12338,59 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     isVip?: BoolFieldUpdateOperationsInput | boolean
     industryId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanySocialLinkCreateInput = {
+    id?: string
+    platform: string
+    handle: string
+    company: CompanyCreateNestedOneWithoutSocialsInput
+  }
+
+  export type CompanySocialLinkUncheckedCreateInput = {
+    id?: string
+    companyId: string
+    platform: string
+    handle: string
+  }
+
+  export type CompanySocialLinkUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    handle?: StringFieldUpdateOperationsInput | string
+    company?: CompanyUpdateOneRequiredWithoutSocialsNestedInput
+  }
+
+  export type CompanySocialLinkUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    handle?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type CompanySocialLinkCreateManyInput = {
+    id?: string
+    companyId: string
+    platform: string
+    handle: string
+  }
+
+  export type CompanySocialLinkUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    handle?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type CompanySocialLinkUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    handle?: StringFieldUpdateOperationsInput | string
   }
 
   export type CompanyNoteCreateInput = {
@@ -11103,6 +12448,7 @@ export namespace Prisma {
     title?: string | null
     email?: string | null
     phone?: string | null
+    officePhone?: string | null
     status?: string
     isVip?: boolean
     createdAt?: Date | string
@@ -11118,6 +12464,7 @@ export namespace Prisma {
     title?: string | null
     email?: string | null
     phone?: string | null
+    officePhone?: string | null
     status?: string
     isVip?: boolean
     companyId: string
@@ -11133,6 +12480,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11148,6 +12496,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
     companyId?: StringFieldUpdateOperationsInput | string
@@ -11163,6 +12512,7 @@ export namespace Prisma {
     title?: string | null
     email?: string | null
     phone?: string | null
+    officePhone?: string | null
     status?: string
     isVip?: boolean
     companyId: string
@@ -11176,6 +12526,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11188,6 +12539,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
     companyId?: StringFieldUpdateOperationsInput | string
@@ -11468,6 +12820,12 @@ export namespace Prisma {
     none?: CompanyNoteWhereInput
   }
 
+  export type CompanySocialLinkListRelationFilter = {
+    every?: CompanySocialLinkWhereInput
+    some?: CompanySocialLinkWhereInput
+    none?: CompanySocialLinkWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -11481,11 +12839,16 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type CompanySocialLinkOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type CompanyCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     address?: SortOrder
     phone?: SortOrder
+    website?: SortOrder
     isVip?: SortOrder
     industryId?: SortOrder
     createdAt?: SortOrder
@@ -11497,6 +12860,7 @@ export namespace Prisma {
     name?: SortOrder
     address?: SortOrder
     phone?: SortOrder
+    website?: SortOrder
     isVip?: SortOrder
     industryId?: SortOrder
     createdAt?: SortOrder
@@ -11508,6 +12872,7 @@ export namespace Prisma {
     name?: SortOrder
     address?: SortOrder
     phone?: SortOrder
+    website?: SortOrder
     isVip?: SortOrder
     industryId?: SortOrder
     createdAt?: SortOrder
@@ -11548,6 +12913,32 @@ export namespace Prisma {
   export type CompanyScalarRelationFilter = {
     is?: CompanyWhereInput
     isNot?: CompanyWhereInput
+  }
+
+  export type CompanySocialLinkCompanyIdPlatformCompoundUniqueInput = {
+    companyId: string
+    platform: string
+  }
+
+  export type CompanySocialLinkCountOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    platform?: SortOrder
+    handle?: SortOrder
+  }
+
+  export type CompanySocialLinkMaxOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    platform?: SortOrder
+    handle?: SortOrder
+  }
+
+  export type CompanySocialLinkMinOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    platform?: SortOrder
+    handle?: SortOrder
   }
 
   export type CompanyNoteCountOrderByAggregateInput = {
@@ -11598,6 +12989,7 @@ export namespace Prisma {
     title?: SortOrder
     email?: SortOrder
     phone?: SortOrder
+    officePhone?: SortOrder
     status?: SortOrder
     isVip?: SortOrder
     companyId?: SortOrder
@@ -11611,6 +13003,7 @@ export namespace Prisma {
     title?: SortOrder
     email?: SortOrder
     phone?: SortOrder
+    officePhone?: SortOrder
     status?: SortOrder
     isVip?: SortOrder
     companyId?: SortOrder
@@ -11624,6 +13017,7 @@ export namespace Prisma {
     title?: SortOrder
     email?: SortOrder
     phone?: SortOrder
+    officePhone?: SortOrder
     status?: SortOrder
     isVip?: SortOrder
     companyId?: SortOrder
@@ -11794,6 +13188,13 @@ export namespace Prisma {
     connect?: CompanyNoteWhereUniqueInput | CompanyNoteWhereUniqueInput[]
   }
 
+  export type CompanySocialLinkCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<CompanySocialLinkCreateWithoutCompanyInput, CompanySocialLinkUncheckedCreateWithoutCompanyInput> | CompanySocialLinkCreateWithoutCompanyInput[] | CompanySocialLinkUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanySocialLinkCreateOrConnectWithoutCompanyInput | CompanySocialLinkCreateOrConnectWithoutCompanyInput[]
+    createMany?: CompanySocialLinkCreateManyCompanyInputEnvelope
+    connect?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
+  }
+
   export type LeadUncheckedCreateNestedManyWithoutCompanyInput = {
     create?: XOR<LeadCreateWithoutCompanyInput, LeadUncheckedCreateWithoutCompanyInput> | LeadCreateWithoutCompanyInput[] | LeadUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: LeadCreateOrConnectWithoutCompanyInput | LeadCreateOrConnectWithoutCompanyInput[]
@@ -11806,6 +13207,13 @@ export namespace Prisma {
     connectOrCreate?: CompanyNoteCreateOrConnectWithoutCompanyInput | CompanyNoteCreateOrConnectWithoutCompanyInput[]
     createMany?: CompanyNoteCreateManyCompanyInputEnvelope
     connect?: CompanyNoteWhereUniqueInput | CompanyNoteWhereUniqueInput[]
+  }
+
+  export type CompanySocialLinkUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<CompanySocialLinkCreateWithoutCompanyInput, CompanySocialLinkUncheckedCreateWithoutCompanyInput> | CompanySocialLinkCreateWithoutCompanyInput[] | CompanySocialLinkUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanySocialLinkCreateOrConnectWithoutCompanyInput | CompanySocialLinkCreateOrConnectWithoutCompanyInput[]
+    createMany?: CompanySocialLinkCreateManyCompanyInputEnvelope
+    connect?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -11852,6 +13260,20 @@ export namespace Prisma {
     deleteMany?: CompanyNoteScalarWhereInput | CompanyNoteScalarWhereInput[]
   }
 
+  export type CompanySocialLinkUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<CompanySocialLinkCreateWithoutCompanyInput, CompanySocialLinkUncheckedCreateWithoutCompanyInput> | CompanySocialLinkCreateWithoutCompanyInput[] | CompanySocialLinkUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanySocialLinkCreateOrConnectWithoutCompanyInput | CompanySocialLinkCreateOrConnectWithoutCompanyInput[]
+    upsert?: CompanySocialLinkUpsertWithWhereUniqueWithoutCompanyInput | CompanySocialLinkUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: CompanySocialLinkCreateManyCompanyInputEnvelope
+    set?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
+    disconnect?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
+    delete?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
+    connect?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
+    update?: CompanySocialLinkUpdateWithWhereUniqueWithoutCompanyInput | CompanySocialLinkUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: CompanySocialLinkUpdateManyWithWhereWithoutCompanyInput | CompanySocialLinkUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: CompanySocialLinkScalarWhereInput | CompanySocialLinkScalarWhereInput[]
+  }
+
   export type LeadUncheckedUpdateManyWithoutCompanyNestedInput = {
     create?: XOR<LeadCreateWithoutCompanyInput, LeadUncheckedCreateWithoutCompanyInput> | LeadCreateWithoutCompanyInput[] | LeadUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: LeadCreateOrConnectWithoutCompanyInput | LeadCreateOrConnectWithoutCompanyInput[]
@@ -11878,6 +13300,34 @@ export namespace Prisma {
     update?: CompanyNoteUpdateWithWhereUniqueWithoutCompanyInput | CompanyNoteUpdateWithWhereUniqueWithoutCompanyInput[]
     updateMany?: CompanyNoteUpdateManyWithWhereWithoutCompanyInput | CompanyNoteUpdateManyWithWhereWithoutCompanyInput[]
     deleteMany?: CompanyNoteScalarWhereInput | CompanyNoteScalarWhereInput[]
+  }
+
+  export type CompanySocialLinkUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<CompanySocialLinkCreateWithoutCompanyInput, CompanySocialLinkUncheckedCreateWithoutCompanyInput> | CompanySocialLinkCreateWithoutCompanyInput[] | CompanySocialLinkUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanySocialLinkCreateOrConnectWithoutCompanyInput | CompanySocialLinkCreateOrConnectWithoutCompanyInput[]
+    upsert?: CompanySocialLinkUpsertWithWhereUniqueWithoutCompanyInput | CompanySocialLinkUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: CompanySocialLinkCreateManyCompanyInputEnvelope
+    set?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
+    disconnect?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
+    delete?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
+    connect?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
+    update?: CompanySocialLinkUpdateWithWhereUniqueWithoutCompanyInput | CompanySocialLinkUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: CompanySocialLinkUpdateManyWithWhereWithoutCompanyInput | CompanySocialLinkUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: CompanySocialLinkScalarWhereInput | CompanySocialLinkScalarWhereInput[]
+  }
+
+  export type CompanyCreateNestedOneWithoutSocialsInput = {
+    create?: XOR<CompanyCreateWithoutSocialsInput, CompanyUncheckedCreateWithoutSocialsInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutSocialsInput
+    connect?: CompanyWhereUniqueInput
+  }
+
+  export type CompanyUpdateOneRequiredWithoutSocialsNestedInput = {
+    create?: XOR<CompanyCreateWithoutSocialsInput, CompanyUncheckedCreateWithoutSocialsInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutSocialsInput
+    upsert?: CompanyUpsertWithoutSocialsInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutSocialsInput, CompanyUpdateWithoutSocialsInput>, CompanyUncheckedUpdateWithoutSocialsInput>
   }
 
   export type CompanyCreateNestedOneWithoutNotesInput = {
@@ -12182,11 +13632,13 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    website?: string | null
     isVip?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     leads?: LeadCreateNestedManyWithoutCompanyInput
     notes?: CompanyNoteCreateNestedManyWithoutCompanyInput
+    socials?: CompanySocialLinkCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutIndustryInput = {
@@ -12194,11 +13646,13 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    website?: string | null
     isVip?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     leads?: LeadUncheckedCreateNestedManyWithoutCompanyInput
     notes?: CompanyNoteUncheckedCreateNestedManyWithoutCompanyInput
+    socials?: CompanySocialLinkUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutIndustryInput = {
@@ -12234,6 +13688,7 @@ export namespace Prisma {
     name?: StringFilter<"Company"> | string
     address?: StringNullableFilter<"Company"> | string | null
     phone?: StringNullableFilter<"Company"> | string | null
+    website?: StringNullableFilter<"Company"> | string | null
     isVip?: BoolFilter<"Company"> | boolean
     industryId?: StringFilter<"Company"> | string
     createdAt?: DateTimeFilter<"Company"> | Date | string
@@ -12264,6 +13719,7 @@ export namespace Prisma {
     title?: string | null
     email?: string | null
     phone?: string | null
+    officePhone?: string | null
     status?: string
     isVip?: boolean
     createdAt?: Date | string
@@ -12278,6 +13734,7 @@ export namespace Prisma {
     title?: string | null
     email?: string | null
     phone?: string | null
+    officePhone?: string | null
     status?: string
     isVip?: boolean
     createdAt?: Date | string
@@ -12313,6 +13770,27 @@ export namespace Prisma {
 
   export type CompanyNoteCreateManyCompanyInputEnvelope = {
     data: CompanyNoteCreateManyCompanyInput | CompanyNoteCreateManyCompanyInput[]
+  }
+
+  export type CompanySocialLinkCreateWithoutCompanyInput = {
+    id?: string
+    platform: string
+    handle: string
+  }
+
+  export type CompanySocialLinkUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    platform: string
+    handle: string
+  }
+
+  export type CompanySocialLinkCreateOrConnectWithoutCompanyInput = {
+    where: CompanySocialLinkWhereUniqueInput
+    create: XOR<CompanySocialLinkCreateWithoutCompanyInput, CompanySocialLinkUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type CompanySocialLinkCreateManyCompanyInputEnvelope = {
+    data: CompanySocialLinkCreateManyCompanyInput | CompanySocialLinkCreateManyCompanyInput[]
   }
 
   export type IndustryUpsertWithoutCompaniesInput = {
@@ -12364,6 +13842,7 @@ export namespace Prisma {
     title?: StringNullableFilter<"Lead"> | string | null
     email?: StringNullableFilter<"Lead"> | string | null
     phone?: StringNullableFilter<"Lead"> | string | null
+    officePhone?: StringNullableFilter<"Lead"> | string | null
     status?: StringFilter<"Lead"> | string
     isVip?: BoolFilter<"Lead"> | boolean
     companyId?: StringFilter<"Lead"> | string
@@ -12396,16 +13875,116 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"CompanyNote"> | Date | string
   }
 
-  export type CompanyCreateWithoutNotesInput = {
+  export type CompanySocialLinkUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: CompanySocialLinkWhereUniqueInput
+    update: XOR<CompanySocialLinkUpdateWithoutCompanyInput, CompanySocialLinkUncheckedUpdateWithoutCompanyInput>
+    create: XOR<CompanySocialLinkCreateWithoutCompanyInput, CompanySocialLinkUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type CompanySocialLinkUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: CompanySocialLinkWhereUniqueInput
+    data: XOR<CompanySocialLinkUpdateWithoutCompanyInput, CompanySocialLinkUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type CompanySocialLinkUpdateManyWithWhereWithoutCompanyInput = {
+    where: CompanySocialLinkScalarWhereInput
+    data: XOR<CompanySocialLinkUpdateManyMutationInput, CompanySocialLinkUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type CompanySocialLinkScalarWhereInput = {
+    AND?: CompanySocialLinkScalarWhereInput | CompanySocialLinkScalarWhereInput[]
+    OR?: CompanySocialLinkScalarWhereInput[]
+    NOT?: CompanySocialLinkScalarWhereInput | CompanySocialLinkScalarWhereInput[]
+    id?: StringFilter<"CompanySocialLink"> | string
+    companyId?: StringFilter<"CompanySocialLink"> | string
+    platform?: StringFilter<"CompanySocialLink"> | string
+    handle?: StringFilter<"CompanySocialLink"> | string
+  }
+
+  export type CompanyCreateWithoutSocialsInput = {
     id?: string
     name: string
     address?: string | null
     phone?: string | null
+    website?: string | null
     isVip?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     industry: IndustryCreateNestedOneWithoutCompaniesInput
     leads?: LeadCreateNestedManyWithoutCompanyInput
+    notes?: CompanyNoteCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutSocialsInput = {
+    id?: string
+    name: string
+    address?: string | null
+    phone?: string | null
+    website?: string | null
+    isVip?: boolean
+    industryId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    leads?: LeadUncheckedCreateNestedManyWithoutCompanyInput
+    notes?: CompanyNoteUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutSocialsInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutSocialsInput, CompanyUncheckedCreateWithoutSocialsInput>
+  }
+
+  export type CompanyUpsertWithoutSocialsInput = {
+    update: XOR<CompanyUpdateWithoutSocialsInput, CompanyUncheckedUpdateWithoutSocialsInput>
+    create: XOR<CompanyCreateWithoutSocialsInput, CompanyUncheckedCreateWithoutSocialsInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutSocialsInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutSocialsInput, CompanyUncheckedUpdateWithoutSocialsInput>
+  }
+
+  export type CompanyUpdateWithoutSocialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industry?: IndustryUpdateOneRequiredWithoutCompaniesNestedInput
+    leads?: LeadUpdateManyWithoutCompanyNestedInput
+    notes?: CompanyNoteUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutSocialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    industryId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leads?: LeadUncheckedUpdateManyWithoutCompanyNestedInput
+    notes?: CompanyNoteUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyCreateWithoutNotesInput = {
+    id?: string
+    name: string
+    address?: string | null
+    phone?: string | null
+    website?: string | null
+    isVip?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industry: IndustryCreateNestedOneWithoutCompaniesInput
+    leads?: LeadCreateNestedManyWithoutCompanyInput
+    socials?: CompanySocialLinkCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutNotesInput = {
@@ -12413,11 +13992,13 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    website?: string | null
     isVip?: boolean
     industryId: string
     createdAt?: Date | string
     updatedAt?: Date | string
     leads?: LeadUncheckedCreateNestedManyWithoutCompanyInput
+    socials?: CompanySocialLinkUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutNotesInput = {
@@ -12441,11 +14022,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     industry?: IndustryUpdateOneRequiredWithoutCompaniesNestedInput
     leads?: LeadUpdateManyWithoutCompanyNestedInput
+    socials?: CompanySocialLinkUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutNotesInput = {
@@ -12453,11 +14036,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     isVip?: BoolFieldUpdateOperationsInput | boolean
     industryId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     leads?: LeadUncheckedUpdateManyWithoutCompanyNestedInput
+    socials?: CompanySocialLinkUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyCreateWithoutLeadsInput = {
@@ -12465,11 +14050,13 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    website?: string | null
     isVip?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     industry: IndustryCreateNestedOneWithoutCompaniesInput
     notes?: CompanyNoteCreateNestedManyWithoutCompanyInput
+    socials?: CompanySocialLinkCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutLeadsInput = {
@@ -12477,11 +14064,13 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    website?: string | null
     isVip?: boolean
     industryId: string
     createdAt?: Date | string
     updatedAt?: Date | string
     notes?: CompanyNoteUncheckedCreateNestedManyWithoutCompanyInput
+    socials?: CompanySocialLinkUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutLeadsInput = {
@@ -12555,11 +14144,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     industry?: IndustryUpdateOneRequiredWithoutCompaniesNestedInput
     notes?: CompanyNoteUpdateManyWithoutCompanyNestedInput
+    socials?: CompanySocialLinkUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutLeadsInput = {
@@ -12567,11 +14158,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     isVip?: BoolFieldUpdateOperationsInput | boolean
     industryId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: CompanyNoteUncheckedUpdateManyWithoutCompanyNestedInput
+    socials?: CompanySocialLinkUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type TouchUpsertWithWhereUniqueWithoutLeadInput = {
@@ -12637,6 +14230,7 @@ export namespace Prisma {
     title?: string | null
     email?: string | null
     phone?: string | null
+    officePhone?: string | null
     status?: string
     isVip?: boolean
     createdAt?: Date | string
@@ -12651,6 +14245,7 @@ export namespace Prisma {
     title?: string | null
     email?: string | null
     phone?: string | null
+    officePhone?: string | null
     status?: string
     isVip?: boolean
     companyId: string
@@ -12681,6 +14276,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12695,6 +14291,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
     companyId?: StringFieldUpdateOperationsInput | string
@@ -12709,6 +14306,7 @@ export namespace Prisma {
     title?: string | null
     email?: string | null
     phone?: string | null
+    officePhone?: string | null
     status?: string
     isVip?: boolean
     createdAt?: Date | string
@@ -12723,6 +14321,7 @@ export namespace Prisma {
     title?: string | null
     email?: string | null
     phone?: string | null
+    officePhone?: string | null
     status?: string
     isVip?: boolean
     companyId: string
@@ -12753,6 +14352,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12767,6 +14367,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
     companyId?: StringFieldUpdateOperationsInput | string
@@ -12779,6 +14380,7 @@ export namespace Prisma {
     name: string
     address?: string | null
     phone?: string | null
+    website?: string | null
     isVip?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12789,11 +14391,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     leads?: LeadUpdateManyWithoutCompanyNestedInput
     notes?: CompanyNoteUpdateManyWithoutCompanyNestedInput
+    socials?: CompanySocialLinkUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutIndustryInput = {
@@ -12801,11 +14405,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     leads?: LeadUncheckedUpdateManyWithoutCompanyNestedInput
     notes?: CompanyNoteUncheckedUpdateManyWithoutCompanyNestedInput
+    socials?: CompanySocialLinkUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateManyWithoutIndustryInput = {
@@ -12813,6 +14419,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12825,6 +14432,7 @@ export namespace Prisma {
     title?: string | null
     email?: string | null
     phone?: string | null
+    officePhone?: string | null
     status?: string
     isVip?: boolean
     createdAt?: Date | string
@@ -12836,6 +14444,12 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type CompanySocialLinkCreateManyCompanyInput = {
+    id?: string
+    platform: string
+    handle: string
+  }
+
   export type LeadUpdateWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
@@ -12843,6 +14457,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12857,6 +14472,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12871,6 +14487,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12892,6 +14509,24 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanySocialLinkUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    handle?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type CompanySocialLinkUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    handle?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type CompanySocialLinkUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    handle?: StringFieldUpdateOperationsInput | string
   }
 
   export type TouchCreateManyLeadInput = {

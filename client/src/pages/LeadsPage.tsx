@@ -213,6 +213,7 @@ function matchesSearch(lead: Lead, query: string): boolean {
     lead.title,
     lead.email,
     lead.phone,
+    lead.officePhone,
     lead.status,
     lead.company?.name,
     lead.company?.industry?.name,
@@ -716,10 +717,26 @@ export function LeadsPage() {
                               {lead.email}
                             </span>
                           ) : null}
-                          {lead.phone ? (
-                            <span className="inline-flex items-center gap-1">
-                              <Phone className="size-3" />
-                              {lead.phone}
+                          {lead.phone || lead.officePhone ? (
+                            <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1">
+                              {lead.phone ? (
+                                <span className="inline-flex items-center gap-1">
+                                  <Phone className="size-3" />
+                                  <span className="text-[10px] uppercase tracking-wide">
+                                    Cell
+                                  </span>
+                                  {lead.phone}
+                                </span>
+                              ) : null}
+                              {lead.officePhone ? (
+                                <span className="inline-flex items-center gap-1">
+                                  <Phone className="size-3" />
+                                  <span className="text-[10px] uppercase tracking-wide">
+                                    Office
+                                  </span>
+                                  {lead.officePhone}
+                                </span>
+                              ) : null}
                             </span>
                           ) : null}
                           <span>Added {formatLeadDate(lead.createdAt)}</span>

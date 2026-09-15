@@ -20,8 +20,9 @@ model Industry {
 
 /// Outreach channel labels used by Touch.type.
 /// Seeded defaults: Phone, Email, Networking, Canvassing, Cold Call, Face to Face,
-/// LinkedIn, Retreva, Text, Voicemail, Video Message, Post Card, Social Media,
+/// Retreva, Text, Voicemail, Video Message, Post Card, Social Media,
 /// Estimate, Invoice. Additional types can be added in Settings.
+/// LinkedIn lives under Social Media platforms (not a standalone touch type).
 model TouchType {
   id       String  @id @default(uuid())
   name     String  @unique
@@ -43,21 +44,37 @@ model SocialPlatform {
 }
 
 model Company {
-  id         String        @id @default(uuid())
+  id         String              @id @default(uuid())
   name       String
   address    String?
   phone      String?
-  isVip      Boolean       @default(false)
+  website    String?
+  isVip      Boolean             @default(false)
   industryId String
-  industry   Industry      @relation(fields: [industryId], references: [id], onDelete: Restrict)
+  industry   Industry            @relation(fields: [industryId], references: [id], onDelete: Restrict)
   leads      Lead[]
   notes      CompanyNote[]
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+  socials    CompanySocialLink[]
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
 
   @@index([industryId])
   @@index([name])
   @@index([isVip])
+}
+
+/// Social profile handles for a company (Instagram, LinkedIn, etc.).
+/// `platform` should match a SocialPlatform.name from Settings.
+model CompanySocialLink {
+  id        String  @id @default(uuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  platform  String
+  handle    String
+
+  @@unique([companyId, platform])
+  @@index([companyId])
+  @@index([platform])
 }
 
 model CompanyNote {
@@ -71,21 +88,24 @@ model CompanyNote {
 }
 
 model Lead {
-  id        String     @id @default(uuid())
-  firstName String
-  lastName  String
-  title     String?
-  email     String?
-  phone     String?
+  id          String     @id @default(uuid())
+  firstName   String
+  lastName    String
+  title       String?
+  email       String?
+  /// Cell / mobile number.
+  phone       String?
+  /// Office / desk number.
+  officePhone String?
   /// Pipeline stage.
   /// Allowed values: "NEW" | "CONTACTED" | "QUALIFIED" | "NURTURING" | "LOST"
-  status    String     @default("NEW")
-  isVip     Boolean    @default(false)
-  companyId String
-  company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  touches   Touch[]
-  notes     LeadNote[]
-  createdAt DateTime   @default(now())
+  status      String     @default("NEW")
+  isVip       Boolean    @default(false)
+  companyId   String
+  company     Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  touches     Touch[]
+  notes       LeadNote[]
+  createdAt   DateTime   @default(now())
 
   @@index([companyId])
   @@index([lastName, firstName])

@@ -140,10 +140,18 @@ exports.Prisma.CompanyScalarFieldEnum = {
   name: 'name',
   address: 'address',
   phone: 'phone',
+  website: 'website',
   isVip: 'isVip',
   industryId: 'industryId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CompanySocialLinkScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  platform: 'platform',
+  handle: 'handle'
 };
 
 exports.Prisma.CompanyNoteScalarFieldEnum = {
@@ -160,6 +168,7 @@ exports.Prisma.LeadScalarFieldEnum = {
   title: 'title',
   email: 'email',
   phone: 'phone',
+  officePhone: 'officePhone',
   status: 'status',
   isVip: 'isVip',
   companyId: 'companyId',
@@ -200,6 +209,7 @@ exports.Prisma.ModelName = {
   TouchType: 'TouchType',
   SocialPlatform: 'SocialPlatform',
   Company: 'Company',
+  CompanySocialLink: 'CompanySocialLink',
   CompanyNote: 'CompanyNote',
   Lead: 'Lead',
   LeadNote: 'LeadNote',

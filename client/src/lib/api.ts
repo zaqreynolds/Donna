@@ -3,6 +3,7 @@ import {
   MOCK_COMPANIES,
   MOCK_LEADS,
   type Company,
+  type CompanySocialLink,
   type EntityNote,
   type Lead,
   type LeadTouch,
@@ -135,6 +136,7 @@ function normalizeLead(raw: Record<string, unknown>): Lead {
     title: typeof raw.title === "string" ? raw.title : null,
     email: typeof raw.email === "string" ? raw.email : null,
     phone: typeof raw.phone === "string" ? raw.phone : null,
+    officePhone: typeof raw.officePhone === "string" ? raw.officePhone : null,
     status: String(raw.status ?? "NEW").toUpperCase(),
     isVip: Boolean(raw.isVip),
     company,
@@ -142,6 +144,27 @@ function normalizeLead(raw: Record<string, unknown>): Lead {
     notes: normalizeNotes(raw.notes),
     touches: normalizeTouches(raw.touches),
   }
+}
+
+function normalizeCompanySocials(value: unknown): CompanySocialLink[] {
+  if (!Array.isArray(value)) return []
+  const links: CompanySocialLink[] = []
+  for (const row of value) {
+    if (!row || typeof row !== "object") continue
+    const platform = (row as { platform?: unknown }).platform
+    const handle = (row as { handle?: unknown }).handle
+    if (typeof platform !== "string" || typeof handle !== "string") continue
+    const trimmedPlatform = platform.trim()
+    const trimmedHandle = handle.trim()
+    if (!trimmedPlatform || !trimmedHandle) continue
+    const id = (row as { id?: unknown }).id
+    links.push({
+      ...(typeof id === "string" ? { id } : {}),
+      platform: trimmedPlatform,
+      handle: trimmedHandle,
+    })
+  }
+  return links
 }
 
 function normalizeCompany(raw: Record<string, unknown>): Company {
@@ -166,10 +189,12 @@ function normalizeCompany(raw: Record<string, unknown>): Company {
     name: typeof raw.name === "string" ? raw.name : "—",
     address: typeof raw.address === "string" ? raw.address : null,
     phone: typeof raw.phone === "string" ? raw.phone : null,
+    website: typeof raw.website === "string" ? raw.website : null,
     isVip: Boolean(raw.isVip),
     createdAt: typeof raw.createdAt === "string" ? raw.createdAt : "",
     updatedAt: typeof raw.updatedAt === "string" ? raw.updatedAt : undefined,
     industry,
+    socials: normalizeCompanySocials(raw.socials),
     notes: normalizeNotes(raw.notes),
   }
 }
@@ -243,8 +268,10 @@ export type CompanyInput = {
   name: string
   industryId: string
   phone?: string | null
+  website?: string | null
   address?: string | null
   isVip?: boolean
+  socials?: Array<{ platform: string; handle: string }>
 }
 
 export type LeadInput = {
@@ -252,6 +279,7 @@ export type LeadInput = {
   lastName: string
   email?: string | null
   phone?: string | null
+  officePhone?: string | null
   title?: string | null
   status?: string
   isVip?: boolean

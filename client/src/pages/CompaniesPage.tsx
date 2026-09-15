@@ -3,6 +3,7 @@ import {
   ArrowUpDown,
   Building2,
   Factory,
+  Globe,
   Pencil,
   Phone,
   Search,
@@ -101,7 +102,9 @@ function matchesSearch(company: Company, query: string): boolean {
     company.name,
     company.industry?.name,
     company.phone,
+    company.website,
     company.address,
+    ...(company.socials?.map((link) => `${link.platform} ${link.handle}`) ?? []),
   ]
     .filter(Boolean)
     .join(" ")
@@ -405,6 +408,34 @@ export function CompaniesPage() {
                               {company.phone}
                             </span>
                           ) : null}
+                          {company.website ? (
+                            <a
+                              href={
+                                /^https?:\/\//i.test(company.website)
+                                  ? company.website
+                                  : `https://${company.website}`
+                              }
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={(event) => event.stopPropagation()}
+                              className="inline-flex max-w-[220px] items-center gap-1 truncate underline-offset-2 hover:text-foreground hover:underline"
+                            >
+                              <Globe className="size-3 shrink-0" />
+                              {company.website.replace(/^https?:\/\//i, "")}
+                            </a>
+                          ) : null}
+                          {(company.socials ?? []).slice(0, 3).map((link) => (
+                            <span
+                              key={`${company.id}-${link.platform}`}
+                              className="inline-flex items-center gap-1"
+                              title={`${link.platform}: ${link.handle}`}
+                            >
+                              <span className="text-[10px] uppercase tracking-wide">
+                                {link.platform}
+                              </span>
+                              {link.handle}
+                            </span>
+                          ))}
                           {company.address ? (
                             <span className="truncate">{company.address}</span>
                           ) : null}
@@ -461,7 +492,38 @@ export function CompaniesPage() {
               </Button>
             </div>
           </div>
-          <div className="flex min-h-0 flex-1 flex-col p-4">
+          <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4">
+            {(selectedCompany.website ||
+              (selectedCompany.socials ?? []).length > 0) && (
+              <div className="flex flex-col gap-2 rounded-lg border border-border/70 p-3">
+                {selectedCompany.website ? (
+                  <a
+                    href={
+                      /^https?:\/\//i.test(selectedCompany.website)
+                        ? selectedCompany.website
+                        : `https://${selectedCompany.website}`
+                    }
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm underline-offset-2 hover:underline"
+                  >
+                    <Globe className="size-3.5 shrink-0 text-muted-foreground" />
+                    {selectedCompany.website.replace(/^https?:\/\//i, "")}
+                  </a>
+                ) : null}
+                {(selectedCompany.socials ?? []).map((link) => (
+                  <div
+                    key={`${selectedCompany.id}-${link.platform}`}
+                    className="flex items-baseline justify-between gap-2 text-sm"
+                  >
+                    <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                      {link.platform}
+                    </span>
+                    <span className="truncate">{link.handle}</span>
+                  </div>
+                ))}
+              </div>
+            )}
             <NotesPanel
               notes={selectedNotes}
               loading={notesLoading}

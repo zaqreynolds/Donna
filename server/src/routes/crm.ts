@@ -239,6 +239,73 @@ function requireString(value: unknown): string | null {
   return value.trim()
 }
 
+type CompanySocialInput = { platform: string; handle: string }
+
+const companyDetailInclude = {
+  industry: { select: { id: true, name: true } },
+  socials: {
+    select: { id: true, platform: true, handle: true },
+    orderBy: { platform: "asc" as const },
+  },
+} as const
+
+const companyListInclude = {
+  industry: { select: { id: true, name: true } },
+  socials: {
+    select: { id: true, platform: true, handle: true },
+    orderBy: { platform: "asc" as const },
+  },
+} as const
+
+async function parseSocialLinksBody(
+  value: unknown,
+): Promise<
+  | { status: "omit" }
+  | { status: "ok"; links: CompanySocialInput[] }
+  | { status: "error"; error: string; socialPlatforms?: string[] }
+> {
+  if (value === undefined) return { status: "omit" }
+  if (value === null) return { status: "ok", links: [] }
+  if (!Array.isArray(value)) {
+    return { status: "error", error: "socials must be an array" }
+  }
+
+  await ensureSocialPlatformsSeeded()
+  const known = new Set(await getSocialPlatformNames())
+  const byPlatform = new Map<string, string>()
+
+  for (const row of value) {
+    if (!row || typeof row !== "object") {
+      return { status: "error", error: "each social entry must be an object" }
+    }
+    const platform = asOptionalString((row as { platform?: unknown }).platform)
+    const handle = asOptionalString((row as { handle?: unknown }).handle)
+    if (!platform && !handle) continue
+    if (!platform || !handle) {
+      return {
+        status: "error",
+        error: "each social entry needs platform and handle",
+      }
+    }
+    if (!known.has(platform)) {
+      return {
+        status: "error",
+        error: `unknown social platform: ${platform}`,
+        socialPlatforms: [...known],
+      }
+    }
+    byPlatform.set(platform, handle)
+  }
+
+  return {
+    status: "ok",
+    links: [...byPlatform.entries()].map(([platform, handle]) => ({
+      platform,
+      handle,
+    })),
+  }
+}
+
 function routeParam(req: Request, key: string): string | null {
   const value = req.params[key]
   if (typeof value === "string" && value.trim()) {
@@ -579,9 +646,7 @@ router.delete("/social-platforms/:id", async (req, res) => {
 router.get("/companies", async (_req, res) => {
   try {
     const companies = await prisma.company.findMany({
-      include: {
-        industry: { select: { id: true, name: true } },
-      },
+      include: companyListInclude,
       orderBy: { name: "asc" },
     })
     return res.json({ companies })
@@ -596,7 +661,9 @@ router.post("/companies", async (req, res) => {
     const industryId = requireString(req.body?.industryId)
     const address = asOptionalString(req.body?.address)
     const phone = asOptionalString(req.body?.phone)
+    const website = asOptionalString(req.body?.website)
     const isVip = asOptionalBoolean(req.body?.isVip)
+    const socialsParsed = await parseSocialLinksBody(req.body?.socials)
 
     if (!name) {
       return res.status(400).json({ error: "name is required" })
@@ -604,23 +671,40 @@ router.post("/companies", async (req, res) => {
     if (!industryId) {
       return res.status(400).json({ error: "industryId is required" })
     }
+    if (socialsParsed.status === "error") {
+      return res.status(400).json({
+        error: socialsParsed.error,
+        ...(socialsParsed.socialPlatforms
+          ? { socialPlatforms: socialsParsed.socialPlatforms }
+          : {}),
+      })
+    }
 
     const industry = await prisma.industry.findUnique({ where: { id: industryId } })
     if (!industry) {
       return res.status(400).json({ error: "industryId does not match an industry" })
     }
 
+    const socials =
+      socialsParsed.status === "ok" ? socialsParsed.links : []
+
     const company = await prisma.company.create({
       data: {
         name,
         address: address ?? null,
         phone: phone ?? null,
+        website: website ?? null,
         industryId,
         ...(isVip !== undefined ? { isVip } : {}),
+        ...(socials.length > 0
+          ? {
+              socials: {
+                create: socials,
+              },
+            }
+          : {}),
       },
-      include: {
-        industry: { select: { id: true, name: true } },
-      },
+      include: companyListInclude,
     })
 
     return res.status(201).json({ company })
@@ -639,15 +723,28 @@ router.patch("/companies/:id", async (req, res) => {
     const name = asOptionalString(req.body?.name)
     const address = asOptionalString(req.body?.address)
     const phone = asOptionalString(req.body?.phone)
+    const website = asOptionalString(req.body?.website)
     const industryId = asOptionalString(req.body?.industryId) ?? undefined
     const isVip = asOptionalBoolean(req.body?.isVip)
+    const socialsParsed = await parseSocialLinksBody(req.body?.socials)
+
+    if (socialsParsed.status === "error") {
+      return res.status(400).json({
+        error: socialsParsed.error,
+        ...(socialsParsed.socialPlatforms
+          ? { socialPlatforms: socialsParsed.socialPlatforms }
+          : {}),
+      })
+    }
 
     if (
       name === undefined &&
       address === undefined &&
       phone === undefined &&
+      website === undefined &&
       industryId === undefined &&
-      isVip === undefined
+      isVip === undefined &&
+      socialsParsed.status === "omit"
     ) {
       return res.status(400).json({ error: "No fields to update" })
     }
@@ -669,12 +766,19 @@ router.patch("/companies/:id", async (req, res) => {
         ...(typeof name === "string" ? { name } : {}),
         ...(address !== undefined ? { address } : {}),
         ...(phone !== undefined ? { phone } : {}),
+        ...(website !== undefined ? { website } : {}),
         ...(industryId !== undefined ? { industryId } : {}),
         ...(isVip !== undefined ? { isVip } : {}),
+        ...(socialsParsed.status === "ok"
+          ? {
+              socials: {
+                deleteMany: {},
+                create: socialsParsed.links,
+              },
+            }
+          : {}),
       },
-      include: {
-        industry: { select: { id: true, name: true } },
-      },
+      include: companyListInclude,
     })
 
     return res.json({ company })
@@ -694,7 +798,11 @@ router.put("/companies/:id", async (req, res) => {
     const industryId = requireString(req.body?.industryId)
     const address = asOptionalString(req.body?.address)
     const phone = asOptionalString(req.body?.phone)
+    const website = asOptionalString(req.body?.website)
     const isVip = asOptionalBoolean(req.body?.isVip)
+    const socialsParsed = await parseSocialLinksBody(
+      req.body?.socials === undefined ? [] : req.body?.socials,
+    )
 
     if (!name) {
       return res.status(400).json({ error: "name is required" })
@@ -702,11 +810,21 @@ router.put("/companies/:id", async (req, res) => {
     if (!industryId) {
       return res.status(400).json({ error: "industryId is required" })
     }
+    if (socialsParsed.status === "error") {
+      return res.status(400).json({
+        error: socialsParsed.error,
+        ...(socialsParsed.socialPlatforms
+          ? { socialPlatforms: socialsParsed.socialPlatforms }
+          : {}),
+      })
+    }
 
     const industry = await prisma.industry.findUnique({ where: { id: industryId } })
     if (!industry) {
       return res.status(400).json({ error: "industryId does not match an industry" })
     }
+
+    const socials = socialsParsed.status === "ok" ? socialsParsed.links : []
 
     const company = await prisma.company.update({
       where: { id: companyId },
@@ -715,11 +833,14 @@ router.put("/companies/:id", async (req, res) => {
         industryId,
         address: address ?? null,
         phone: phone ?? null,
+        website: website ?? null,
         ...(isVip !== undefined ? { isVip } : {}),
+        socials: {
+          deleteMany: {},
+          create: socials,
+        },
       },
-      include: {
-        industry: { select: { id: true, name: true } },
-      },
+      include: companyListInclude,
     })
 
     return res.json({ company })
@@ -738,7 +859,7 @@ router.get("/companies/:id", async (req, res) => {
     const company = await prisma.company.findUnique({
       where: { id: companyId },
       include: {
-        industry: { select: { id: true, name: true } },
+        ...companyDetailInclude,
         notes: { orderBy: { createdAt: "desc" } },
       },
     })
@@ -855,6 +976,7 @@ router.post("/leads", async (req, res) => {
     const title = asOptionalString(req.body?.title)
     const email = asOptionalString(req.body?.email)
     const phone = asOptionalString(req.body?.phone)
+    const officePhone = asOptionalString(req.body?.officePhone)
     const status = req.body?.status as string | undefined
     const isVip = asOptionalBoolean(req.body?.isVip)
     const companyId = asOptionalString(req.body?.companyId) ?? undefined
@@ -893,6 +1015,7 @@ router.post("/leads", async (req, res) => {
       title: title ?? null,
       email: email ?? null,
       phone: phone ?? null,
+      officePhone: officePhone ?? null,
       // New leads always start as NEW unless an explicit valid status is provided.
       status: status !== undefined ? status : "NEW",
       ...(isVip !== undefined ? { isVip } : {}),
@@ -977,6 +1100,7 @@ router.patch("/leads/:id", async (req, res) => {
     const title = asOptionalString(req.body?.title)
     const email = asOptionalString(req.body?.email)
     const phone = asOptionalString(req.body?.phone)
+    const officePhone = asOptionalString(req.body?.officePhone)
     const status = req.body?.status as string | undefined
     const isVip = asOptionalBoolean(req.body?.isVip)
     const companyId = asOptionalString(req.body?.companyId) ?? undefined
@@ -998,6 +1122,7 @@ router.patch("/leads/:id", async (req, res) => {
       title === undefined &&
       email === undefined &&
       phone === undefined &&
+      officePhone === undefined &&
       status === undefined &&
       isVip === undefined &&
       companyId === undefined &&
@@ -1047,6 +1172,7 @@ router.patch("/leads/:id", async (req, res) => {
           ...(title !== undefined ? { title } : {}),
           ...(email !== undefined ? { email } : {}),
           ...(phone !== undefined ? { phone } : {}),
+          ...(officePhone !== undefined ? { officePhone } : {}),
           ...(status !== undefined ? { status } : {}),
           ...(isVip !== undefined ? { isVip } : {}),
           ...(nextCompanyId !== undefined ? { companyId: nextCompanyId } : {}),
@@ -1082,6 +1208,7 @@ router.put("/leads/:id", async (req, res) => {
     const title = asOptionalString(req.body?.title)
     const email = asOptionalString(req.body?.email)
     const phone = asOptionalString(req.body?.phone)
+    const officePhone = asOptionalString(req.body?.officePhone)
     const status = (req.body?.status as string | undefined) ?? "NEW"
     const isVip = asOptionalBoolean(req.body?.isVip)
     const companyId = asOptionalString(req.body?.companyId) ?? undefined
@@ -1150,6 +1277,7 @@ router.put("/leads/:id", async (req, res) => {
           title: title ?? null,
           email: email ?? null,
           phone: phone ?? null,
+          officePhone: officePhone ?? null,
           status,
           companyId: nextCompanyId,
           ...(isVip !== undefined ? { isVip } : {}),

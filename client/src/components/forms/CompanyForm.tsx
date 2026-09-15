@@ -14,6 +14,7 @@ import {
   createCompany,
   fetchCompanyDetail,
   fetchIndustries,
+  fetchSocialPlatforms,
   updateCompany,
   type CatalogItem,
 } from "@/lib/api"
@@ -39,11 +40,14 @@ export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps
   const [loading, setLoading] = useState(isEdit)
   const [saving, setSaving] = useState(false)
   const [industries, setIndustries] = useState<CatalogItem[]>([])
+  const [platforms, setPlatforms] = useState<string[]>([])
   const [name, setName] = useState("")
   const [industryId, setIndustryId] = useState("")
   const [phone, setPhone] = useState("")
+  const [website, setWebsite] = useState("")
   const [address, setAddress] = useState("")
   const [isVip, setIsVip] = useState(false)
+  const [socialHandles, setSocialHandles] = useState<Record<string, string>>({})
   const [errors, setErrors] = useState<FieldErrors>({})
 
   useEffect(() => {
@@ -52,9 +56,13 @@ export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps
     async function load() {
       setLoading(true)
       try {
-        const industryRows = await fetchIndustries()
+        const [industryRows, platformNames] = await Promise.all([
+          fetchIndustries(),
+          fetchSocialPlatforms(),
+        ])
         if (cancelled) return
         setIndustries(industryRows)
+        setPlatforms(platformNames)
 
         if (companyId) {
           const company = await fetchCompanyDetail(companyId)
@@ -62,14 +70,22 @@ export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps
           setName(company.name)
           setIndustryId(company.industry?.id ?? "")
           setPhone(company.phone ?? "")
+          setWebsite(company.website ?? "")
           setAddress(company.address ?? "")
           setIsVip(Boolean(company.isVip))
+          const handles: Record<string, string> = {}
+          for (const link of company.socials ?? []) {
+            handles[link.platform] = link.handle
+          }
+          setSocialHandles(handles)
         } else {
           setName("")
           setIndustryId("")
           setPhone("")
+          setWebsite("")
           setAddress("")
           setIsVip(false)
+          setSocialHandles({})
         }
       } catch {
         if (!cancelled) {
@@ -101,12 +117,21 @@ export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps
     setSaving(true)
     setErrors({})
     try {
+      const socials = platforms
+        .map((platform) => ({
+          platform,
+          handle: (socialHandles[platform] ?? "").trim(),
+        }))
+        .filter((row) => row.handle.length > 0)
+
       const payload = {
         name: name.trim(),
         industryId,
         phone: phone.trim() || null,
+        website: website.trim() || null,
         address: address.trim() || null,
         isVip,
+        socials,
       }
       const company = isEdit && companyId
         ? await updateCompany(companyId, payload)
@@ -194,12 +219,22 @@ export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps
             </label>
 
             <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-medium">Main phone</span>
+              <span className="text-sm font-medium">Phone</span>
               <Input
                 value={phone}
                 onChange={(event) => setPhone(event.target.value)}
                 placeholder="(555) 555-0123"
                 inputMode="tel"
+              />
+            </label>
+
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium">Website</span>
+              <Input
+                value={website}
+                onChange={(event) => setWebsite(event.target.value)}
+                placeholder="https://example.com"
+                inputMode="url"
               />
             </label>
 
@@ -211,6 +246,32 @@ export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps
                 placeholder="Street, city, state"
               />
             </label>
+
+            <div className="flex flex-col gap-2">
+              <span className="text-sm font-medium">Social media</span>
+              <p className="text-xs text-muted-foreground">
+                Handles or profile URLs for this company.
+              </p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {platforms.map((platform) => (
+                  <label key={platform} className="flex flex-col gap-1">
+                    <span className="text-xs font-medium text-muted-foreground">
+                      {platform}
+                    </span>
+                    <Input
+                      value={socialHandles[platform] ?? ""}
+                      onChange={(event) =>
+                        setSocialHandles((current) => ({
+                          ...current,
+                          [platform]: event.target.value,
+                        }))
+                      }
+                      placeholder={`@${platform.toLowerCase()}`}
+                    />
+                  </label>
+                ))}
+              </div>
+            </div>
 
             {errors.form ? (
               <p className="text-sm text-destructive">{errors.form}</p>
