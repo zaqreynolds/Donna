@@ -7,13 +7,13 @@ const pageMeta: Record<string, { title: string; subtitle: string }> = {
     title: "Dashboard",
     subtitle: "Sales pipeline overview",
   },
-  "/leads": {
-    title: "Leads",
-    subtitle: "People in your pipeline",
+  "/accounts": {
+    title: "Accounts",
+    subtitle: "Prospects, status, and freshness",
   },
-  "/companies": {
-    title: "Companies",
-    subtitle: "Accounts and notes",
+  "/contacts": {
+    title: "Contacts",
+    subtitle: "People on your accounts",
   },
   "/settings": {
     title: "Settings",

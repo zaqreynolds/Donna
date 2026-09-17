@@ -1,4 +1,10 @@
-export type LeadStatus = "NEW" | "CONTACTED" | "QUALIFIED" | "NURTURING" | "LOST" | string
+export type AccountStatus =
+  | "NEW"
+  | "CONTACTED"
+  | "QUALIFIED"
+  | "NURTURING"
+  | "LOST"
+  | string
 
 export type EntityNote = {
   id: string
@@ -6,7 +12,7 @@ export type EntityNote = {
   createdAt: string
 }
 
-export type LeadTouch = {
+export type Touch = {
   id: string
   type: string
   notes: string
@@ -14,53 +20,88 @@ export type LeadTouch = {
   amount?: number | null
   estimateNumber?: string | null
   socialPlatform?: string | null
+  accountId?: string
+  contactId?: string | null
+  outcome?: string | null
+  source?: string | null
+  isAutomated?: boolean
+  createdByUserId?: string | null
 }
 
-export type CompanySocialLink = {
+/** @deprecated Use Touch */
+export type LeadTouch = Touch
+
+export type AccountSocialLink = {
   id?: string
   platform: string
   handle: string
 }
 
-export type Company = {
+export type Account = {
   id: string
+  organizationId?: string
   name: string
   address: string | null
   phone: string | null
   website: string | null
+  status: AccountStatus
   isVip: boolean
-  createdAt: string
-  updatedAt?: string
+  source?: string | null
+  ownerUserId?: string | null
+  createdByUserId?: string | null
+  nextTouchAt?: string | null
+  nextTouchType?: string | null
+  nextTouchNote?: string | null
   industry: {
     id: string
     name: string
   }
-  socials?: CompanySocialLink[]
+  socials?: AccountSocialLink[]
   notes?: EntityNote[]
+  contacts?: ContactSummary[]
+  touches?: Touch[]
+  contactCount?: number
+  createdAt: string
+  updatedAt?: string
 }
 
-export type Lead = {
+/** Lightweight contact row embedded on account detail */
+export type ContactSummary = {
   id: string
   firstName: string
   lastName: string
   title: string | null
   email: string | null
   phone: string | null
-  officePhone: string | null
-  status: LeadStatus
-  isVip: boolean
-  company: {
+  officePhone?: string | null
+  isVip?: boolean
+  touches?: Touch[]
+}
+
+export type Contact = {
+  id: string
+  organizationId?: string
+  accountId: string
+  account: {
     id: string
     name: string
-    isVip?: boolean
     industry?: {
       id: string
       name: string
     } | null
   }
-  createdAt?: string
+  firstName: string
+  lastName: string
+  title: string | null
+  email: string | null
+  phone: string | null
+  officePhone: string | null
+  isVip: boolean
+  source?: string | null
   notes?: EntityNote[]
-  touches?: LeadTouch[]
+  touches?: Touch[]
+  createdAt?: string
+  updatedAt?: string
 }
 
 export const DEFAULT_TOUCH_TYPES = [
@@ -82,7 +123,18 @@ export const DEFAULT_TOUCH_TYPES = [
   "Invoice",
 ] as const
 
-export const MOCK_COMPANIES: Company[] = [
+export const DEFAULT_TOUCH_OUTCOMES = [
+  "Connected",
+  "No answer",
+  "Voicemail",
+  "Busy",
+  "Wrong number",
+  "Not interested",
+  "Follow up later",
+  "Meeting booked",
+] as const
+
+export const MOCK_ACCOUNTS: Account[] = [
   {
     id: "mock-c1",
     name: "Northwind Labs",
@@ -90,9 +142,12 @@ export const MOCK_COMPANIES: Company[] = [
     phone: "555-0100",
     website: null,
     socials: [],
+    status: "NEW",
     isVip: true,
     createdAt: "2026-07-18T16:00:00.000Z",
     industry: { id: "i1", name: "Commercial Real Estate" },
+    contactCount: 1,
+    touches: [{ id: "t1", type: "Phone", notes: "", date: "2026-09-10T12:00:00.000Z" }],
   },
   {
     id: "mock-c2",
@@ -101,9 +156,12 @@ export const MOCK_COMPANIES: Company[] = [
     phone: "555-0142",
     website: null,
     socials: [],
+    status: "CONTACTED",
     isVip: false,
     createdAt: "2026-07-17T12:00:00.000Z",
     industry: { id: "i2", name: "Manufacturing" },
+    contactCount: 1,
+    touches: [{ id: "t2", type: "Email", notes: "", date: "2026-08-01T12:00:00.000Z" }],
   },
   {
     id: "mock-c3",
@@ -112,9 +170,11 @@ export const MOCK_COMPANIES: Company[] = [
     phone: "555-0199",
     website: null,
     socials: [],
+    status: "QUALIFIED",
     isVip: false,
     createdAt: "2026-07-16T09:30:00.000Z",
     industry: { id: "i3", name: "Healthcare" },
+    contactCount: 1,
   },
   {
     id: "mock-c4",
@@ -123,9 +183,11 @@ export const MOCK_COMPANIES: Company[] = [
     phone: null,
     website: null,
     socials: [],
+    status: "NURTURING",
     isVip: true,
     createdAt: "2026-07-15T18:20:00.000Z",
     industry: { id: "i4", name: "Apartments/Property Management" },
+    contactCount: 1,
   },
   {
     id: "mock-c5",
@@ -134,141 +196,78 @@ export const MOCK_COMPANIES: Company[] = [
     phone: "555-0177",
     website: null,
     socials: [],
+    status: "NEW",
     isVip: false,
     createdAt: "2026-07-14T11:10:00.000Z",
     industry: { id: "i5", name: "Construction" },
+    contactCount: 1,
   },
 ]
 
-export const MOCK_LEADS: Lead[] = [
+export const MOCK_CONTACTS: Contact[] = [
   {
     id: "mock-1",
+    accountId: "mock-c1",
     firstName: "Alex",
     lastName: "Morgan",
     title: "VP Sales",
     email: "alex@northwind.io",
     phone: null,
     officePhone: null,
-    status: "NEW",
     isVip: true,
-    company: { id: "c1", name: "Northwind Labs" },
+    account: { id: "mock-c1", name: "Northwind Labs" },
     createdAt: "2026-07-18T16:12:00.000Z",
   },
   {
     id: "mock-2",
+    accountId: "mock-c2",
     firstName: "Jordan",
     lastName: "Lee",
     title: "Director",
     email: "jordan@acme.co",
     phone: null,
     officePhone: null,
-    status: "CONTACTED",
     isVip: false,
-    company: { id: "c2", name: "Acme Co" },
+    account: { id: "mock-c2", name: "Acme Co" },
     createdAt: "2026-07-18T14:40:00.000Z",
   },
   {
     id: "mock-3",
+    accountId: "mock-c3",
     firstName: "Sam",
     lastName: "Rivera",
     title: null,
     email: "sam@brightline.com",
     phone: null,
     officePhone: null,
-    status: "QUALIFIED",
     isVip: true,
-    company: { id: "c3", name: "Brightline" },
+    account: { id: "mock-c3", name: "Brightline Health" },
     createdAt: "2026-07-17T21:05:00.000Z",
   },
   {
     id: "mock-4",
+    accountId: "mock-c4",
     firstName: "Casey",
     lastName: "Nguyen",
     title: "Owner",
     email: "casey@harborpm.com",
     phone: null,
     officePhone: null,
-    status: "NURTURING",
     isVip: false,
-    company: { id: "c4", name: "Harbor Property" },
+    account: { id: "mock-c4", name: "Harbor Property" },
     createdAt: "2026-07-17T18:22:00.000Z",
   },
   {
     id: "mock-5",
+    accountId: "mock-c5",
     firstName: "Riley",
     lastName: "Chen",
     title: "Facilities Lead",
     email: "riley@summitbuild.com",
     phone: null,
     officePhone: null,
-    status: "NEW",
     isVip: false,
-    company: { id: "c5", name: "Summit Build" },
+    account: { id: "mock-c5", name: "Summit Build" },
     createdAt: "2026-07-16T12:10:00.000Z",
-  },
-  {
-    id: "mock-6",
-    firstName: "Taylor",
-    lastName: "Brooks",
-    title: null,
-    email: "taylor@oakcrest.edu",
-    phone: null,
-    officePhone: null,
-    status: "CONTACTED",
-    isVip: false,
-    company: { id: "c6", name: "Oakcrest Schools" },
-    createdAt: "2026-07-16T09:45:00.000Z",
-  },
-  {
-    id: "mock-7",
-    firstName: "Morgan",
-    lastName: "Patel",
-    title: "Buyer",
-    email: "morgan@retailnorth.com",
-    phone: null,
-    officePhone: null,
-    status: "LOST",
-    isVip: false,
-    company: { id: "c7", name: "Retail North" },
-    createdAt: "2026-07-15T20:00:00.000Z",
-  },
-  {
-    id: "mock-8",
-    firstName: "Avery",
-    lastName: "Kim",
-    title: "Coordinator",
-    email: "avery@faithhall.org",
-    phone: null,
-    officePhone: null,
-    status: "NEW",
-    isVip: false,
-    company: { id: "c8", name: "Faith Hall" },
-    createdAt: "2026-07-15T15:30:00.000Z",
-  },
-  {
-    id: "mock-9",
-    firstName: "Quinn",
-    lastName: "Foster",
-    title: "Ops Manager",
-    email: "quinn@forgeworks.com",
-    phone: null,
-    officePhone: null,
-    status: "QUALIFIED",
-    isVip: true,
-    company: { id: "c9", name: "Forgeworks" },
-    createdAt: "2026-07-14T11:18:00.000Z",
-  },
-  {
-    id: "mock-10",
-    firstName: "Jamie",
-    lastName: "Ortiz",
-    title: null,
-    email: "jamie@crestmed.com",
-    phone: null,
-    officePhone: null,
-    status: "NURTURING",
-    isVip: false,
-    company: { id: "c10", name: "Crest Medical" },
-    createdAt: "2026-07-14T08:05:00.000Z",
   },
 ]

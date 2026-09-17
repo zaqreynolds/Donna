@@ -7,20 +7,20 @@ import {
   type ReactNode,
 } from "react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { CompanyForm } from "@/components/forms/CompanyForm"
-import { LeadForm } from "@/components/forms/LeadForm"
-import type { Company, Lead } from "@/lib/types"
+import { AccountForm } from "@/components/forms/AccountForm"
+import { ContactForm } from "@/components/forms/ContactForm"
+import type { Account, Contact } from "@/lib/types"
 
 type FormState =
   | { type: "closed" }
-  | { type: "lead"; leadId?: string }
-  | { type: "company"; companyId?: string }
+  | { type: "contact"; contactId?: string; defaultAccountId?: string }
+  | { type: "account"; accountId?: string }
 
 type CrmFormsContextValue = {
-  openCreateLead: () => void
-  openEditLead: (leadId: string) => void
-  openCreateCompany: () => void
-  openEditCompany: (companyId: string) => void
+  openCreateContact: (defaultAccountId?: string) => void
+  openEditContact: (contactId: string) => void
+  openCreateAccount: () => void
+  openEditAccount: (accountId: string) => void
   subscribe: (listener: () => void) => () => void
 }
 
@@ -44,20 +44,23 @@ export function CrmFormsProvider({ children }: { children: ReactNode }) {
     [listeners],
   )
 
-  const openCreateLead = useCallback(() => {
-    setState({ type: "lead" })
+  const openCreateContact = useCallback((defaultAccountId?: string) => {
+    setState({
+      type: "contact",
+      ...(defaultAccountId ? { defaultAccountId } : {}),
+    })
   }, [])
 
-  const openEditLead = useCallback((leadId: string) => {
-    setState({ type: "lead", leadId })
+  const openEditContact = useCallback((contactId: string) => {
+    setState({ type: "contact", contactId })
   }, [])
 
-  const openCreateCompany = useCallback(() => {
-    setState({ type: "company" })
+  const openCreateAccount = useCallback(() => {
+    setState({ type: "account" })
   }, [])
 
-  const openEditCompany = useCallback((companyId: string) => {
-    setState({ type: "company", companyId })
+  const openEditAccount = useCallback((accountId: string) => {
+    setState({ type: "account", accountId })
   }, [])
 
   const close = useCallback(() => {
@@ -66,27 +69,27 @@ export function CrmFormsProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(
     () => ({
-      openCreateLead,
-      openEditLead,
-      openCreateCompany,
-      openEditCompany,
+      openCreateContact,
+      openEditContact,
+      openCreateAccount,
+      openEditAccount,
       subscribe,
     }),
     [
-      openCreateLead,
-      openEditLead,
-      openCreateCompany,
-      openEditCompany,
+      openCreateContact,
+      openEditContact,
+      openCreateAccount,
+      openEditAccount,
       subscribe,
     ],
   )
 
-  function handleLeadSuccess(_lead: Lead) {
+  function handleContactSuccess(_contact: Contact) {
     close()
     notify()
   }
 
-  function handleCompanySuccess(_company: Company) {
+  function handleAccountSuccess(_account: Account) {
     close()
     notify()
   }
@@ -106,35 +109,36 @@ export function CrmFormsProvider({ children }: { children: ReactNode }) {
           className="p-0"
           onPointerDownOutside={(event) => {
             const target = event.target as HTMLElement | null
-            if (target?.closest("[data-company-combobox]")) {
+            if (target?.closest("[data-account-combobox]")) {
               event.preventDefault()
             }
           }}
           onInteractOutside={(event) => {
             const target = event.target as HTMLElement | null
-            if (target?.closest("[data-company-combobox]")) {
+            if (target?.closest("[data-account-combobox]")) {
               event.preventDefault()
             }
           }}
           onFocusOutside={(event) => {
             const target = event.target as HTMLElement | null
-            if (target?.closest("[data-company-combobox]")) {
+            if (target?.closest("[data-account-combobox]")) {
               event.preventDefault()
             }
           }}
         >
-          {state.type === "lead" ? (
-            <LeadForm
-              leadId={state.leadId}
+          {state.type === "contact" ? (
+            <ContactForm
+              contactId={state.contactId}
+              defaultAccountId={state.defaultAccountId}
               onCancel={close}
-              onSuccess={handleLeadSuccess}
+              onSuccess={handleContactSuccess}
             />
           ) : null}
-          {state.type === "company" ? (
-            <CompanyForm
-              companyId={state.companyId}
+          {state.type === "account" ? (
+            <AccountForm
+              accountId={state.accountId}
               onCancel={close}
-              onSuccess={handleCompanySuccess}
+              onSuccess={handleAccountSuccess}
             />
           ) : null}
         </DialogContent>

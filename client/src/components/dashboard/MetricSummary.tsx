@@ -33,13 +33,13 @@ export function MetricSummary({
     {
       label: "New / Uncontacted",
       value: String(newUncontacted),
-      hint: "Leads still marked NEW",
+      hint: "Accounts still marked NEW",
       icon: Inbox,
     },
     {
       label: "Qualified Pipeline",
       value: String(qualifiedPipeline),
-      hint: "Qualified or VIP leads",
+      hint: "Qualified or VIP accounts",
       icon: Target,
     },
     {
@@ -55,7 +55,7 @@ export function MetricSummary({
       <div className="flex flex-col gap-1">
         <h2 className="text-xl font-semibold tracking-tight">Overview</h2>
         <p className="text-sm text-muted-foreground">
-          Actionable lead counts across your pipeline.
+          Actionable account counts across your pipeline.
         </p>
       </div>
 

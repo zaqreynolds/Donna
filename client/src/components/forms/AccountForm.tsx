@@ -11,20 +11,28 @@ import {
 import { Input } from "@/components/ui/input"
 import { VipStarToggle } from "@/components/VipStarToggle"
 import {
-  createCompany,
-  fetchCompanyDetail,
+  createAccount,
+  fetchAccountDetail,
   fetchIndustries,
   fetchSocialPlatforms,
-  updateCompany,
+  updateAccount,
   type CatalogItem,
 } from "@/lib/api"
 import { useToast } from "@/components/ToastProvider"
-import type { Company } from "@/lib/types"
+import type { Account, AccountStatus } from "@/lib/types"
 
-type CompanyFormProps = {
-  companyId?: string | null
+const STATUS_OPTIONS = [
+  "NEW",
+  "CONTACTED",
+  "QUALIFIED",
+  "NURTURING",
+  "LOST",
+] as const satisfies readonly AccountStatus[]
+
+type AccountFormProps = {
+  accountId?: string | null
   onCancel: () => void
-  onSuccess: (company: Company) => void
+  onSuccess: (account: Account) => void
 }
 
 type FieldErrors = {
@@ -33,9 +41,13 @@ type FieldErrors = {
   form?: string
 }
 
-export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps) {
+export function AccountForm({
+  accountId,
+  onCancel,
+  onSuccess,
+}: AccountFormProps) {
   const { toast } = useToast()
-  const isEdit = Boolean(companyId)
+  const isEdit = Boolean(accountId)
 
   const [loading, setLoading] = useState(isEdit)
   const [saving, setSaving] = useState(false)
@@ -43,6 +55,7 @@ export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps
   const [platforms, setPlatforms] = useState<string[]>([])
   const [name, setName] = useState("")
   const [industryId, setIndustryId] = useState("")
+  const [status, setStatus] = useState<string>("NEW")
   const [phone, setPhone] = useState("")
   const [website, setWebsite] = useState("")
   const [address, setAddress] = useState("")
@@ -64,23 +77,25 @@ export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps
         setIndustries(industryRows)
         setPlatforms(platformNames)
 
-        if (companyId) {
-          const company = await fetchCompanyDetail(companyId)
+        if (accountId) {
+          const account = await fetchAccountDetail(accountId)
           if (cancelled) return
-          setName(company.name)
-          setIndustryId(company.industry?.id ?? "")
-          setPhone(company.phone ?? "")
-          setWebsite(company.website ?? "")
-          setAddress(company.address ?? "")
-          setIsVip(Boolean(company.isVip))
+          setName(account.name)
+          setIndustryId(account.industry?.id ?? "")
+          setStatus(account.status || "NEW")
+          setPhone(account.phone ?? "")
+          setWebsite(account.website ?? "")
+          setAddress(account.address ?? "")
+          setIsVip(Boolean(account.isVip))
           const handles: Record<string, string> = {}
-          for (const link of company.socials ?? []) {
+          for (const link of account.socials ?? []) {
             handles[link.platform] = link.handle
           }
           setSocialHandles(handles)
         } else {
           setName("")
           setIndustryId("")
+          setStatus("NEW")
           setPhone("")
           setWebsite("")
           setAddress("")
@@ -89,7 +104,7 @@ export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps
         }
       } catch {
         if (!cancelled) {
-          setErrors({ form: "Couldn’t load company details." })
+          setErrors({ form: "Couldn’t load account details." })
         }
       } finally {
         if (!cancelled) setLoading(false)
@@ -100,11 +115,11 @@ export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps
     return () => {
       cancelled = true
     }
-  }, [companyId])
+  }, [accountId])
 
   function validate(): boolean {
     const next: FieldErrors = {}
-    if (!name.trim()) next.name = "Company name is required"
+    if (!name.trim()) next.name = "Account name is required"
     if (!industryId) next.industryId = "Industry is required"
     setErrors(next)
     return Object.keys(next).length === 0
@@ -127,27 +142,29 @@ export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps
       const payload = {
         name: name.trim(),
         industryId,
+        status: status || "NEW",
         phone: phone.trim() || null,
         website: website.trim() || null,
         address: address.trim() || null,
         isVip,
         socials,
       }
-      const company = isEdit && companyId
-        ? await updateCompany(companyId, payload)
-        : await createCompany(payload)
+      const account =
+        isEdit && accountId
+          ? await updateAccount(accountId, payload)
+          : await createAccount(payload)
 
       toast({
-        title: isEdit ? "Company updated" : "Company created",
-        description: company.name,
+        title: isEdit ? "Account updated" : "Account created",
+        description: account.name,
         tone: "success",
       })
-      onSuccess(company)
+      onSuccess(account)
     } catch {
-      setErrors({ form: "Couldn’t save company. Please try again." })
+      setErrors({ form: "Couldn’t save account. Please try again." })
       toast({
         title: "Save failed",
-        description: "Couldn’t save company.",
+        description: "Couldn’t save account.",
         tone: "error",
       })
     } finally {
@@ -158,10 +175,10 @@ export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps
   return (
     <form className="flex min-h-0 flex-1 flex-col" onSubmit={handleSubmit}>
       <DialogHeader>
-        <DialogTitle>{isEdit ? "Edit company" : "New company"}</DialogTitle>
+        <DialogTitle>{isEdit ? "Edit account" : "New account"}</DialogTitle>
         <DialogDescription>
           {isEdit
-            ? "Update account details and VIP status."
+            ? "Update account details, status, and VIP."
             : "Add an account to your CRM."}
         </DialogDescription>
       </DialogHeader>
@@ -176,7 +193,7 @@ export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps
               <VipStarToggle
                 isVip={isVip}
                 onToggle={(next) => setIsVip(next)}
-                label="Toggle company VIP"
+                label="Toggle account VIP"
                 size="md"
               />
             </div>
@@ -188,7 +205,7 @@ export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps
               <Input
                 value={name}
                 onChange={(event) => setName(event.target.value)}
-                placeholder="Company name"
+                placeholder="Account name"
                 aria-invalid={Boolean(errors.name)}
               />
               {errors.name ? (
@@ -214,8 +231,25 @@ export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps
                 ))}
               </select>
               {errors.industryId ? (
-                <span className="text-xs text-destructive">{errors.industryId}</span>
+                <span className="text-xs text-destructive">
+                  {errors.industryId}
+                </span>
               ) : null}
+            </label>
+
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium">Status</span>
+              <select
+                value={status}
+                onChange={(event) => setStatus(event.target.value)}
+                className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+              >
+                {STATUS_OPTIONS.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             </label>
 
             <label className="flex flex-col gap-1.5">
@@ -250,7 +284,7 @@ export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps
             <div className="flex flex-col gap-2">
               <span className="text-sm font-medium">Social media</span>
               <p className="text-xs text-muted-foreground">
-                Handles or profile URLs for this company.
+                Handles or profile URLs for this account.
               </p>
               <div className="grid gap-2 sm:grid-cols-2">
                 {platforms.map((platform) => (
@@ -293,7 +327,7 @@ export function CompanyForm({ companyId, onCancel, onSuccess }: CompanyFormProps
           ) : isEdit ? (
             "Save changes"
           ) : (
-            "Create company"
+            "Create account"
           )}
         </Button>
       </DialogFooter>

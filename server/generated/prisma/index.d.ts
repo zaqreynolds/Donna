@@ -14,56 +14,53 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
 
 
 /**
+ * Model Organization
+ * Placeholder for a FASTSIGNS center. Clerk Organization will map here later.
+ */
+export type Organization = $Result.DefaultSelection<Prisma.$OrganizationPayload>
+/**
  * Model Industry
- * Core industry taxonomy used when creating companies.
- * Seeded values: Commercial Real Estate, Apartments/Property Management,
- * Construction, Healthcare, Education, Retail, Manufacturing, Religious, Other.
+ * Core industry taxonomy used when creating accounts.
  */
 export type Industry = $Result.DefaultSelection<Prisma.$IndustryPayload>
 /**
  * Model TouchType
  * Outreach channel labels used by Touch.type.
- * Seeded defaults: Phone, Email, Networking, Canvassing, Cold Call, Face to Face,
- * Retreva, Text, Voicemail, Video Message, Post Card, Social Media,
- * Estimate, Invoice. Additional types can be added in Settings.
- * LinkedIn lives under Social Media platforms (not a standalone touch type).
  */
 export type TouchType = $Result.DefaultSelection<Prisma.$TouchTypePayload>
 /**
  * Model SocialPlatform
  * Platforms available when Touch.type is "Social Media".
- * Seeded defaults: Instagram, Facebook, LinkedIn, X, TikTok, YouTube, Nextdoor, Other.
  */
 export type SocialPlatform = $Result.DefaultSelection<Prisma.$SocialPlatformPayload>
 /**
- * Model Company
+ * Model Account
+ * Primary prospecting target (business, property, school, GC, etc.).
+ */
+export type Account = $Result.DefaultSelection<Prisma.$AccountPayload>
+/**
+ * Model AccountSocialLink
  * 
  */
-export type Company = $Result.DefaultSelection<Prisma.$CompanyPayload>
+export type AccountSocialLink = $Result.DefaultSelection<Prisma.$AccountSocialLinkPayload>
 /**
- * Model CompanySocialLink
- * Social profile handles for a company (Instagram, LinkedIn, etc.).
- * `platform` should match a SocialPlatform.name from Settings.
- */
-export type CompanySocialLink = $Result.DefaultSelection<Prisma.$CompanySocialLinkPayload>
-/**
- * Model CompanyNote
+ * Model AccountNote
  * 
  */
-export type CompanyNote = $Result.DefaultSelection<Prisma.$CompanyNotePayload>
+export type AccountNote = $Result.DefaultSelection<Prisma.$AccountNotePayload>
 /**
- * Model Lead
+ * Model Contact
+ * Person associated with an Account. Secondary to Account prospecting.
+ */
+export type Contact = $Result.DefaultSelection<Prisma.$ContactPayload>
+/**
+ * Model ContactNote
  * 
  */
-export type Lead = $Result.DefaultSelection<Prisma.$LeadPayload>
-/**
- * Model LeadNote
- * 
- */
-export type LeadNote = $Result.DefaultSelection<Prisma.$LeadNotePayload>
+export type ContactNote = $Result.DefaultSelection<Prisma.$ContactNotePayload>
 /**
  * Model Touch
- * 
+ * Prospecting interaction. Always on an Account; optionally on a Contact.
  */
 export type Touch = $Result.DefaultSelection<Prisma.$TouchPayload>
 
@@ -76,8 +73,8 @@ export type Touch = $Result.DefaultSelection<Prisma.$TouchPayload>
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more Industries
- * const industries = await prisma.industry.findMany()
+ * // Fetch zero or more Organizations
+ * const organizations = await prisma.organization.findMany()
  * ```
  *
  *
@@ -99,8 +96,8 @@ export class PrismaClient<
    * const prisma = new PrismaClient({
    *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
    * })
-   * // Fetch zero or more Industries
-   * const industries = await prisma.industry.findMany()
+   * // Fetch zero or more Organizations
+   * const organizations = await prisma.organization.findMany()
    * ```
    *
    *
@@ -189,6 +186,16 @@ export class PrismaClient<
   }>>
 
       /**
+   * `prisma.organization`: Exposes CRUD operations for the **Organization** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Organizations
+    * const organizations = await prisma.organization.findMany()
+    * ```
+    */
+  get organization(): Prisma.OrganizationDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.industry`: Exposes CRUD operations for the **Industry** model.
     * Example usage:
     * ```ts
@@ -219,54 +226,54 @@ export class PrismaClient<
   get socialPlatform(): Prisma.SocialPlatformDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.company`: Exposes CRUD operations for the **Company** model.
+   * `prisma.account`: Exposes CRUD operations for the **Account** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Companies
-    * const companies = await prisma.company.findMany()
+    * // Fetch zero or more Accounts
+    * const accounts = await prisma.account.findMany()
     * ```
     */
-  get company(): Prisma.CompanyDelegate<ExtArgs, ClientOptions>;
+  get account(): Prisma.AccountDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.companySocialLink`: Exposes CRUD operations for the **CompanySocialLink** model.
+   * `prisma.accountSocialLink`: Exposes CRUD operations for the **AccountSocialLink** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more CompanySocialLinks
-    * const companySocialLinks = await prisma.companySocialLink.findMany()
+    * // Fetch zero or more AccountSocialLinks
+    * const accountSocialLinks = await prisma.accountSocialLink.findMany()
     * ```
     */
-  get companySocialLink(): Prisma.CompanySocialLinkDelegate<ExtArgs, ClientOptions>;
+  get accountSocialLink(): Prisma.AccountSocialLinkDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.companyNote`: Exposes CRUD operations for the **CompanyNote** model.
+   * `prisma.accountNote`: Exposes CRUD operations for the **AccountNote** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more CompanyNotes
-    * const companyNotes = await prisma.companyNote.findMany()
+    * // Fetch zero or more AccountNotes
+    * const accountNotes = await prisma.accountNote.findMany()
     * ```
     */
-  get companyNote(): Prisma.CompanyNoteDelegate<ExtArgs, ClientOptions>;
+  get accountNote(): Prisma.AccountNoteDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.lead`: Exposes CRUD operations for the **Lead** model.
+   * `prisma.contact`: Exposes CRUD operations for the **Contact** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Leads
-    * const leads = await prisma.lead.findMany()
+    * // Fetch zero or more Contacts
+    * const contacts = await prisma.contact.findMany()
     * ```
     */
-  get lead(): Prisma.LeadDelegate<ExtArgs, ClientOptions>;
+  get contact(): Prisma.ContactDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.leadNote`: Exposes CRUD operations for the **LeadNote** model.
+   * `prisma.contactNote`: Exposes CRUD operations for the **ContactNote** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more LeadNotes
-    * const leadNotes = await prisma.leadNote.findMany()
+    * // Fetch zero or more ContactNotes
+    * const contactNotes = await prisma.contactNote.findMany()
     * ```
     */
-  get leadNote(): Prisma.LeadNoteDelegate<ExtArgs, ClientOptions>;
+  get contactNote(): Prisma.ContactNoteDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.touch`: Exposes CRUD operations for the **Touch** model.
@@ -711,14 +718,15 @@ export namespace Prisma {
 
 
   export const ModelName: {
+    Organization: 'Organization',
     Industry: 'Industry',
     TouchType: 'TouchType',
     SocialPlatform: 'SocialPlatform',
-    Company: 'Company',
-    CompanySocialLink: 'CompanySocialLink',
-    CompanyNote: 'CompanyNote',
-    Lead: 'Lead',
-    LeadNote: 'LeadNote',
+    Account: 'Account',
+    AccountSocialLink: 'AccountSocialLink',
+    AccountNote: 'AccountNote',
+    Contact: 'Contact',
+    ContactNote: 'ContactNote',
     Touch: 'Touch'
   };
 
@@ -735,10 +743,84 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "industry" | "touchType" | "socialPlatform" | "company" | "companySocialLink" | "companyNote" | "lead" | "leadNote" | "touch"
+      modelProps: "organization" | "industry" | "touchType" | "socialPlatform" | "account" | "accountSocialLink" | "accountNote" | "contact" | "contactNote" | "touch"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
+      Organization: {
+        payload: Prisma.$OrganizationPayload<ExtArgs>
+        fields: Prisma.OrganizationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.OrganizationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganizationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.OrganizationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganizationPayload>
+          }
+          findFirst: {
+            args: Prisma.OrganizationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganizationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.OrganizationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganizationPayload>
+          }
+          findMany: {
+            args: Prisma.OrganizationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganizationPayload>[]
+          }
+          create: {
+            args: Prisma.OrganizationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganizationPayload>
+          }
+          createMany: {
+            args: Prisma.OrganizationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.OrganizationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganizationPayload>[]
+          }
+          delete: {
+            args: Prisma.OrganizationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganizationPayload>
+          }
+          update: {
+            args: Prisma.OrganizationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganizationPayload>
+          }
+          deleteMany: {
+            args: Prisma.OrganizationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.OrganizationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.OrganizationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganizationPayload>[]
+          }
+          upsert: {
+            args: Prisma.OrganizationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganizationPayload>
+          }
+          aggregate: {
+            args: Prisma.OrganizationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateOrganization>
+          }
+          groupBy: {
+            args: Prisma.OrganizationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<OrganizationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.OrganizationCountArgs<ExtArgs>
+            result: $Utils.Optional<OrganizationCountAggregateOutputType> | number
+          }
+        }
+      }
       Industry: {
         payload: Prisma.$IndustryPayload<ExtArgs>
         fields: Prisma.IndustryFieldRefs
@@ -961,373 +1043,373 @@ export namespace Prisma {
           }
         }
       }
-      Company: {
-        payload: Prisma.$CompanyPayload<ExtArgs>
-        fields: Prisma.CompanyFieldRefs
+      Account: {
+        payload: Prisma.$AccountPayload<ExtArgs>
+        fields: Prisma.AccountFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.CompanyFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyPayload> | null
+            args: Prisma.AccountFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.CompanyFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>
+            args: Prisma.AccountFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountPayload>
           }
           findFirst: {
-            args: Prisma.CompanyFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyPayload> | null
+            args: Prisma.AccountFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.CompanyFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>
+            args: Prisma.AccountFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountPayload>
           }
           findMany: {
-            args: Prisma.CompanyFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>[]
+            args: Prisma.AccountFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountPayload>[]
           }
           create: {
-            args: Prisma.CompanyCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>
+            args: Prisma.AccountCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountPayload>
           }
           createMany: {
-            args: Prisma.CompanyCreateManyArgs<ExtArgs>
+            args: Prisma.AccountCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.CompanyCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>[]
+            args: Prisma.AccountCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountPayload>[]
           }
           delete: {
-            args: Prisma.CompanyDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>
+            args: Prisma.AccountDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountPayload>
           }
           update: {
-            args: Prisma.CompanyUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>
+            args: Prisma.AccountUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountPayload>
           }
           deleteMany: {
-            args: Prisma.CompanyDeleteManyArgs<ExtArgs>
+            args: Prisma.AccountDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.CompanyUpdateManyArgs<ExtArgs>
+            args: Prisma.AccountUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.CompanyUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>[]
+            args: Prisma.AccountUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountPayload>[]
           }
           upsert: {
-            args: Prisma.CompanyUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>
+            args: Prisma.AccountUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountPayload>
           }
           aggregate: {
-            args: Prisma.CompanyAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateCompany>
+            args: Prisma.AccountAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAccount>
           }
           groupBy: {
-            args: Prisma.CompanyGroupByArgs<ExtArgs>
-            result: $Utils.Optional<CompanyGroupByOutputType>[]
+            args: Prisma.AccountGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AccountGroupByOutputType>[]
           }
           count: {
-            args: Prisma.CompanyCountArgs<ExtArgs>
-            result: $Utils.Optional<CompanyCountAggregateOutputType> | number
+            args: Prisma.AccountCountArgs<ExtArgs>
+            result: $Utils.Optional<AccountCountAggregateOutputType> | number
           }
         }
       }
-      CompanySocialLink: {
-        payload: Prisma.$CompanySocialLinkPayload<ExtArgs>
-        fields: Prisma.CompanySocialLinkFieldRefs
+      AccountSocialLink: {
+        payload: Prisma.$AccountSocialLinkPayload<ExtArgs>
+        fields: Prisma.AccountSocialLinkFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.CompanySocialLinkFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload> | null
+            args: Prisma.AccountSocialLinkFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountSocialLinkPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.CompanySocialLinkFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>
+            args: Prisma.AccountSocialLinkFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountSocialLinkPayload>
           }
           findFirst: {
-            args: Prisma.CompanySocialLinkFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload> | null
+            args: Prisma.AccountSocialLinkFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountSocialLinkPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.CompanySocialLinkFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>
+            args: Prisma.AccountSocialLinkFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountSocialLinkPayload>
           }
           findMany: {
-            args: Prisma.CompanySocialLinkFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>[]
+            args: Prisma.AccountSocialLinkFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountSocialLinkPayload>[]
           }
           create: {
-            args: Prisma.CompanySocialLinkCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>
+            args: Prisma.AccountSocialLinkCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountSocialLinkPayload>
           }
           createMany: {
-            args: Prisma.CompanySocialLinkCreateManyArgs<ExtArgs>
+            args: Prisma.AccountSocialLinkCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.CompanySocialLinkCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>[]
+            args: Prisma.AccountSocialLinkCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountSocialLinkPayload>[]
           }
           delete: {
-            args: Prisma.CompanySocialLinkDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>
+            args: Prisma.AccountSocialLinkDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountSocialLinkPayload>
           }
           update: {
-            args: Prisma.CompanySocialLinkUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>
+            args: Prisma.AccountSocialLinkUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountSocialLinkPayload>
           }
           deleteMany: {
-            args: Prisma.CompanySocialLinkDeleteManyArgs<ExtArgs>
+            args: Prisma.AccountSocialLinkDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.CompanySocialLinkUpdateManyArgs<ExtArgs>
+            args: Prisma.AccountSocialLinkUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.CompanySocialLinkUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>[]
+            args: Prisma.AccountSocialLinkUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountSocialLinkPayload>[]
           }
           upsert: {
-            args: Prisma.CompanySocialLinkUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanySocialLinkPayload>
+            args: Prisma.AccountSocialLinkUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountSocialLinkPayload>
           }
           aggregate: {
-            args: Prisma.CompanySocialLinkAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateCompanySocialLink>
+            args: Prisma.AccountSocialLinkAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAccountSocialLink>
           }
           groupBy: {
-            args: Prisma.CompanySocialLinkGroupByArgs<ExtArgs>
-            result: $Utils.Optional<CompanySocialLinkGroupByOutputType>[]
+            args: Prisma.AccountSocialLinkGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AccountSocialLinkGroupByOutputType>[]
           }
           count: {
-            args: Prisma.CompanySocialLinkCountArgs<ExtArgs>
-            result: $Utils.Optional<CompanySocialLinkCountAggregateOutputType> | number
+            args: Prisma.AccountSocialLinkCountArgs<ExtArgs>
+            result: $Utils.Optional<AccountSocialLinkCountAggregateOutputType> | number
           }
         }
       }
-      CompanyNote: {
-        payload: Prisma.$CompanyNotePayload<ExtArgs>
-        fields: Prisma.CompanyNoteFieldRefs
+      AccountNote: {
+        payload: Prisma.$AccountNotePayload<ExtArgs>
+        fields: Prisma.AccountNoteFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.CompanyNoteFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyNotePayload> | null
+            args: Prisma.AccountNoteFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountNotePayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.CompanyNoteFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyNotePayload>
+            args: Prisma.AccountNoteFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountNotePayload>
           }
           findFirst: {
-            args: Prisma.CompanyNoteFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyNotePayload> | null
+            args: Prisma.AccountNoteFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountNotePayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.CompanyNoteFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyNotePayload>
+            args: Prisma.AccountNoteFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountNotePayload>
           }
           findMany: {
-            args: Prisma.CompanyNoteFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyNotePayload>[]
+            args: Prisma.AccountNoteFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountNotePayload>[]
           }
           create: {
-            args: Prisma.CompanyNoteCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyNotePayload>
+            args: Prisma.AccountNoteCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountNotePayload>
           }
           createMany: {
-            args: Prisma.CompanyNoteCreateManyArgs<ExtArgs>
+            args: Prisma.AccountNoteCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.CompanyNoteCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyNotePayload>[]
+            args: Prisma.AccountNoteCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountNotePayload>[]
           }
           delete: {
-            args: Prisma.CompanyNoteDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyNotePayload>
+            args: Prisma.AccountNoteDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountNotePayload>
           }
           update: {
-            args: Prisma.CompanyNoteUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyNotePayload>
+            args: Prisma.AccountNoteUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountNotePayload>
           }
           deleteMany: {
-            args: Prisma.CompanyNoteDeleteManyArgs<ExtArgs>
+            args: Prisma.AccountNoteDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.CompanyNoteUpdateManyArgs<ExtArgs>
+            args: Prisma.AccountNoteUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.CompanyNoteUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyNotePayload>[]
+            args: Prisma.AccountNoteUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountNotePayload>[]
           }
           upsert: {
-            args: Prisma.CompanyNoteUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyNotePayload>
+            args: Prisma.AccountNoteUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountNotePayload>
           }
           aggregate: {
-            args: Prisma.CompanyNoteAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateCompanyNote>
+            args: Prisma.AccountNoteAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAccountNote>
           }
           groupBy: {
-            args: Prisma.CompanyNoteGroupByArgs<ExtArgs>
-            result: $Utils.Optional<CompanyNoteGroupByOutputType>[]
+            args: Prisma.AccountNoteGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AccountNoteGroupByOutputType>[]
           }
           count: {
-            args: Prisma.CompanyNoteCountArgs<ExtArgs>
-            result: $Utils.Optional<CompanyNoteCountAggregateOutputType> | number
+            args: Prisma.AccountNoteCountArgs<ExtArgs>
+            result: $Utils.Optional<AccountNoteCountAggregateOutputType> | number
           }
         }
       }
-      Lead: {
-        payload: Prisma.$LeadPayload<ExtArgs>
-        fields: Prisma.LeadFieldRefs
+      Contact: {
+        payload: Prisma.$ContactPayload<ExtArgs>
+        fields: Prisma.ContactFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.LeadFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadPayload> | null
+            args: Prisma.ContactFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.LeadFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadPayload>
+            args: Prisma.ContactFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPayload>
           }
           findFirst: {
-            args: Prisma.LeadFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadPayload> | null
+            args: Prisma.ContactFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.LeadFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadPayload>
+            args: Prisma.ContactFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPayload>
           }
           findMany: {
-            args: Prisma.LeadFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadPayload>[]
+            args: Prisma.ContactFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPayload>[]
           }
           create: {
-            args: Prisma.LeadCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadPayload>
+            args: Prisma.ContactCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPayload>
           }
           createMany: {
-            args: Prisma.LeadCreateManyArgs<ExtArgs>
+            args: Prisma.ContactCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.LeadCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadPayload>[]
+            args: Prisma.ContactCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPayload>[]
           }
           delete: {
-            args: Prisma.LeadDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadPayload>
+            args: Prisma.ContactDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPayload>
           }
           update: {
-            args: Prisma.LeadUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadPayload>
+            args: Prisma.ContactUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPayload>
           }
           deleteMany: {
-            args: Prisma.LeadDeleteManyArgs<ExtArgs>
+            args: Prisma.ContactDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.LeadUpdateManyArgs<ExtArgs>
+            args: Prisma.ContactUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.LeadUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadPayload>[]
+            args: Prisma.ContactUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPayload>[]
           }
           upsert: {
-            args: Prisma.LeadUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadPayload>
+            args: Prisma.ContactUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactPayload>
           }
           aggregate: {
-            args: Prisma.LeadAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateLead>
+            args: Prisma.ContactAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateContact>
           }
           groupBy: {
-            args: Prisma.LeadGroupByArgs<ExtArgs>
-            result: $Utils.Optional<LeadGroupByOutputType>[]
+            args: Prisma.ContactGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ContactGroupByOutputType>[]
           }
           count: {
-            args: Prisma.LeadCountArgs<ExtArgs>
-            result: $Utils.Optional<LeadCountAggregateOutputType> | number
+            args: Prisma.ContactCountArgs<ExtArgs>
+            result: $Utils.Optional<ContactCountAggregateOutputType> | number
           }
         }
       }
-      LeadNote: {
-        payload: Prisma.$LeadNotePayload<ExtArgs>
-        fields: Prisma.LeadNoteFieldRefs
+      ContactNote: {
+        payload: Prisma.$ContactNotePayload<ExtArgs>
+        fields: Prisma.ContactNoteFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.LeadNoteFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload> | null
+            args: Prisma.ContactNoteFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactNotePayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.LeadNoteFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>
+            args: Prisma.ContactNoteFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactNotePayload>
           }
           findFirst: {
-            args: Prisma.LeadNoteFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload> | null
+            args: Prisma.ContactNoteFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactNotePayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.LeadNoteFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>
+            args: Prisma.ContactNoteFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactNotePayload>
           }
           findMany: {
-            args: Prisma.LeadNoteFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>[]
+            args: Prisma.ContactNoteFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactNotePayload>[]
           }
           create: {
-            args: Prisma.LeadNoteCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>
+            args: Prisma.ContactNoteCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactNotePayload>
           }
           createMany: {
-            args: Prisma.LeadNoteCreateManyArgs<ExtArgs>
+            args: Prisma.ContactNoteCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.LeadNoteCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>[]
+            args: Prisma.ContactNoteCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactNotePayload>[]
           }
           delete: {
-            args: Prisma.LeadNoteDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>
+            args: Prisma.ContactNoteDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactNotePayload>
           }
           update: {
-            args: Prisma.LeadNoteUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>
+            args: Prisma.ContactNoteUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactNotePayload>
           }
           deleteMany: {
-            args: Prisma.LeadNoteDeleteManyArgs<ExtArgs>
+            args: Prisma.ContactNoteDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.LeadNoteUpdateManyArgs<ExtArgs>
+            args: Prisma.ContactNoteUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.LeadNoteUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>[]
+            args: Prisma.ContactNoteUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactNotePayload>[]
           }
           upsert: {
-            args: Prisma.LeadNoteUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$LeadNotePayload>
+            args: Prisma.ContactNoteUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContactNotePayload>
           }
           aggregate: {
-            args: Prisma.LeadNoteAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateLeadNote>
+            args: Prisma.ContactNoteAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateContactNote>
           }
           groupBy: {
-            args: Prisma.LeadNoteGroupByArgs<ExtArgs>
-            result: $Utils.Optional<LeadNoteGroupByOutputType>[]
+            args: Prisma.ContactNoteGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ContactNoteGroupByOutputType>[]
           }
           count: {
-            args: Prisma.LeadNoteCountArgs<ExtArgs>
-            result: $Utils.Optional<LeadNoteCountAggregateOutputType> | number
+            args: Prisma.ContactNoteCountArgs<ExtArgs>
+            result: $Utils.Optional<ContactNoteCountAggregateOutputType> | number
           }
         }
       }
@@ -1513,14 +1595,15 @@ export namespace Prisma {
     comments?: runtime.SqlCommenterPlugin[]
   }
   export type GlobalOmitConfig = {
+    organization?: OrganizationOmit
     industry?: IndustryOmit
     touchType?: TouchTypeOmit
     socialPlatform?: SocialPlatformOmit
-    company?: CompanyOmit
-    companySocialLink?: CompanySocialLinkOmit
-    companyNote?: CompanyNoteOmit
-    lead?: LeadOmit
-    leadNote?: LeadNoteOmit
+    account?: AccountOmit
+    accountSocialLink?: AccountSocialLinkOmit
+    accountNote?: AccountNoteOmit
+    contact?: ContactOmit
+    contactNote?: ContactNoteOmit
     touch?: TouchOmit
   }
 
@@ -1598,15 +1681,118 @@ export namespace Prisma {
 
 
   /**
+   * Count Type OrganizationCountOutputType
+   */
+
+  export type OrganizationCountOutputType = {
+    industries: number
+    touchTypes: number
+    socialPlatforms: number
+    accounts: number
+    contacts: number
+    touches: number
+    accountNotes: number
+    contactNotes: number
+    accountSocials: number
+  }
+
+  export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    industries?: boolean | OrganizationCountOutputTypeCountIndustriesArgs
+    touchTypes?: boolean | OrganizationCountOutputTypeCountTouchTypesArgs
+    socialPlatforms?: boolean | OrganizationCountOutputTypeCountSocialPlatformsArgs
+    accounts?: boolean | OrganizationCountOutputTypeCountAccountsArgs
+    contacts?: boolean | OrganizationCountOutputTypeCountContactsArgs
+    touches?: boolean | OrganizationCountOutputTypeCountTouchesArgs
+    accountNotes?: boolean | OrganizationCountOutputTypeCountAccountNotesArgs
+    contactNotes?: boolean | OrganizationCountOutputTypeCountContactNotesArgs
+    accountSocials?: boolean | OrganizationCountOutputTypeCountAccountSocialsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganizationCountOutputType
+     */
+    select?: OrganizationCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountIndustriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: IndustryWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountTouchTypesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TouchTypeWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountSocialPlatformsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SocialPlatformWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccountWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountContactsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContactWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountTouchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TouchWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountAccountNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccountNoteWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountContactNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContactNoteWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountAccountSocialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccountSocialLinkWhereInput
+  }
+
+
+  /**
    * Count Type IndustryCountOutputType
    */
 
   export type IndustryCountOutputType = {
-    companies: number
+    accounts: number
   }
 
   export type IndustryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    companies?: boolean | IndustryCountOutputTypeCountCompaniesArgs
+    accounts?: boolean | IndustryCountOutputTypeCountAccountsArgs
   }
 
   // Custom InputTypes
@@ -1623,103 +1809,1409 @@ export namespace Prisma {
   /**
    * IndustryCountOutputType without action
    */
-  export type IndustryCountOutputTypeCountCompaniesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CompanyWhereInput
+  export type IndustryCountOutputTypeCountAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccountWhereInput
   }
 
 
   /**
-   * Count Type CompanyCountOutputType
+   * Count Type AccountCountOutputType
    */
 
-  export type CompanyCountOutputType = {
-    leads: number
+  export type AccountCountOutputType = {
+    contacts: number
     notes: number
     socials: number
+    touches: number
   }
 
-  export type CompanyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    leads?: boolean | CompanyCountOutputTypeCountLeadsArgs
-    notes?: boolean | CompanyCountOutputTypeCountNotesArgs
-    socials?: boolean | CompanyCountOutputTypeCountSocialsArgs
+  export type AccountCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contacts?: boolean | AccountCountOutputTypeCountContactsArgs
+    notes?: boolean | AccountCountOutputTypeCountNotesArgs
+    socials?: boolean | AccountCountOutputTypeCountSocialsArgs
+    touches?: boolean | AccountCountOutputTypeCountTouchesArgs
   }
 
   // Custom InputTypes
   /**
-   * CompanyCountOutputType without action
+   * AccountCountOutputType without action
    */
-  export type CompanyCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyCountOutputType
+     * Select specific fields to fetch from the AccountCountOutputType
      */
-    select?: CompanyCountOutputTypeSelect<ExtArgs> | null
+    select?: AccountCountOutputTypeSelect<ExtArgs> | null
   }
 
   /**
-   * CompanyCountOutputType without action
+   * AccountCountOutputType without action
    */
-  export type CompanyCountOutputTypeCountLeadsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: LeadWhereInput
+  export type AccountCountOutputTypeCountContactsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContactWhereInput
   }
 
   /**
-   * CompanyCountOutputType without action
+   * AccountCountOutputType without action
    */
-  export type CompanyCountOutputTypeCountNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CompanyNoteWhereInput
+  export type AccountCountOutputTypeCountNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccountNoteWhereInput
   }
 
   /**
-   * CompanyCountOutputType without action
+   * AccountCountOutputType without action
    */
-  export type CompanyCountOutputTypeCountSocialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CompanySocialLinkWhereInput
+  export type AccountCountOutputTypeCountSocialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccountSocialLinkWhereInput
+  }
+
+  /**
+   * AccountCountOutputType without action
+   */
+  export type AccountCountOutputTypeCountTouchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TouchWhereInput
   }
 
 
   /**
-   * Count Type LeadCountOutputType
+   * Count Type ContactCountOutputType
    */
 
-  export type LeadCountOutputType = {
+  export type ContactCountOutputType = {
     touches: number
     notes: number
   }
 
-  export type LeadCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    touches?: boolean | LeadCountOutputTypeCountTouchesArgs
-    notes?: boolean | LeadCountOutputTypeCountNotesArgs
+  export type ContactCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    touches?: boolean | ContactCountOutputTypeCountTouchesArgs
+    notes?: boolean | ContactCountOutputTypeCountNotesArgs
   }
 
   // Custom InputTypes
   /**
-   * LeadCountOutputType without action
+   * ContactCountOutputType without action
    */
-  export type LeadCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ContactCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the LeadCountOutputType
+     * Select specific fields to fetch from the ContactCountOutputType
      */
-    select?: LeadCountOutputTypeSelect<ExtArgs> | null
+    select?: ContactCountOutputTypeSelect<ExtArgs> | null
   }
 
   /**
-   * LeadCountOutputType without action
+   * ContactCountOutputType without action
    */
-  export type LeadCountOutputTypeCountTouchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ContactCountOutputTypeCountTouchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TouchWhereInput
   }
 
   /**
-   * LeadCountOutputType without action
+   * ContactCountOutputType without action
    */
-  export type LeadCountOutputTypeCountNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: LeadNoteWhereInput
+  export type ContactCountOutputTypeCountNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContactNoteWhereInput
   }
 
 
   /**
    * Models
    */
+
+  /**
+   * Model Organization
+   */
+
+  export type AggregateOrganization = {
+    _count: OrganizationCountAggregateOutputType | null
+    _min: OrganizationMinAggregateOutputType | null
+    _max: OrganizationMaxAggregateOutputType | null
+  }
+
+  export type OrganizationMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    slug: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type OrganizationMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    slug: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type OrganizationCountAggregateOutputType = {
+    id: number
+    name: number
+    slug: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type OrganizationMinAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type OrganizationMaxAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type OrganizationCountAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type OrganizationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Organization to aggregate.
+     */
+    where?: OrganizationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Organizations to fetch.
+     */
+    orderBy?: OrganizationOrderByWithRelationInput | OrganizationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: OrganizationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Organizations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Organizations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Organizations
+    **/
+    _count?: true | OrganizationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: OrganizationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: OrganizationMaxAggregateInputType
+  }
+
+  export type GetOrganizationAggregateType<T extends OrganizationAggregateArgs> = {
+        [P in keyof T & keyof AggregateOrganization]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOrganization[P]>
+      : GetScalarType<T[P], AggregateOrganization[P]>
+  }
+
+
+
+
+  export type OrganizationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrganizationWhereInput
+    orderBy?: OrganizationOrderByWithAggregationInput | OrganizationOrderByWithAggregationInput[]
+    by: OrganizationScalarFieldEnum[] | OrganizationScalarFieldEnum
+    having?: OrganizationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: OrganizationCountAggregateInputType | true
+    _min?: OrganizationMinAggregateInputType
+    _max?: OrganizationMaxAggregateInputType
+  }
+
+  export type OrganizationGroupByOutputType = {
+    id: string
+    name: string
+    slug: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: OrganizationCountAggregateOutputType | null
+    _min: OrganizationMinAggregateOutputType | null
+    _max: OrganizationMaxAggregateOutputType | null
+  }
+
+  type GetOrganizationGroupByPayload<T extends OrganizationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<OrganizationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof OrganizationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], OrganizationGroupByOutputType[P]>
+            : GetScalarType<T[P], OrganizationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type OrganizationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    industries?: boolean | Organization$industriesArgs<ExtArgs>
+    touchTypes?: boolean | Organization$touchTypesArgs<ExtArgs>
+    socialPlatforms?: boolean | Organization$socialPlatformsArgs<ExtArgs>
+    accounts?: boolean | Organization$accountsArgs<ExtArgs>
+    contacts?: boolean | Organization$contactsArgs<ExtArgs>
+    touches?: boolean | Organization$touchesArgs<ExtArgs>
+    accountNotes?: boolean | Organization$accountNotesArgs<ExtArgs>
+    contactNotes?: boolean | Organization$contactNotesArgs<ExtArgs>
+    accountSocials?: boolean | Organization$accountSocialsArgs<ExtArgs>
+    _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["organization"]>
+
+  export type OrganizationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["organization"]>
+
+  export type OrganizationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["organization"]>
+
+  export type OrganizationSelectScalar = {
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
+  export type OrganizationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    industries?: boolean | Organization$industriesArgs<ExtArgs>
+    touchTypes?: boolean | Organization$touchTypesArgs<ExtArgs>
+    socialPlatforms?: boolean | Organization$socialPlatformsArgs<ExtArgs>
+    accounts?: boolean | Organization$accountsArgs<ExtArgs>
+    contacts?: boolean | Organization$contactsArgs<ExtArgs>
+    touches?: boolean | Organization$touchesArgs<ExtArgs>
+    accountNotes?: boolean | Organization$accountNotesArgs<ExtArgs>
+    contactNotes?: boolean | Organization$contactNotesArgs<ExtArgs>
+    accountSocials?: boolean | Organization$accountSocialsArgs<ExtArgs>
+    _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type OrganizationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $OrganizationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Organization"
+    objects: {
+      industries: Prisma.$IndustryPayload<ExtArgs>[]
+      touchTypes: Prisma.$TouchTypePayload<ExtArgs>[]
+      socialPlatforms: Prisma.$SocialPlatformPayload<ExtArgs>[]
+      accounts: Prisma.$AccountPayload<ExtArgs>[]
+      contacts: Prisma.$ContactPayload<ExtArgs>[]
+      touches: Prisma.$TouchPayload<ExtArgs>[]
+      accountNotes: Prisma.$AccountNotePayload<ExtArgs>[]
+      contactNotes: Prisma.$ContactNotePayload<ExtArgs>[]
+      accountSocials: Prisma.$AccountSocialLinkPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      slug: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["organization"]>
+    composites: {}
+  }
+
+  type OrganizationGetPayload<S extends boolean | null | undefined | OrganizationDefaultArgs> = $Result.GetResult<Prisma.$OrganizationPayload, S>
+
+  type OrganizationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<OrganizationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: OrganizationCountAggregateInputType | true
+    }
+
+  export interface OrganizationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Organization'], meta: { name: 'Organization' } }
+    /**
+     * Find zero or one Organization that matches the filter.
+     * @param {OrganizationFindUniqueArgs} args - Arguments to find a Organization
+     * @example
+     * // Get one Organization
+     * const organization = await prisma.organization.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends OrganizationFindUniqueArgs>(args: SelectSubset<T, OrganizationFindUniqueArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Organization that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {OrganizationFindUniqueOrThrowArgs} args - Arguments to find a Organization
+     * @example
+     * // Get one Organization
+     * const organization = await prisma.organization.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends OrganizationFindUniqueOrThrowArgs>(args: SelectSubset<T, OrganizationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Organization that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganizationFindFirstArgs} args - Arguments to find a Organization
+     * @example
+     * // Get one Organization
+     * const organization = await prisma.organization.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends OrganizationFindFirstArgs>(args?: SelectSubset<T, OrganizationFindFirstArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Organization that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganizationFindFirstOrThrowArgs} args - Arguments to find a Organization
+     * @example
+     * // Get one Organization
+     * const organization = await prisma.organization.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends OrganizationFindFirstOrThrowArgs>(args?: SelectSubset<T, OrganizationFindFirstOrThrowArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Organizations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganizationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Organizations
+     * const organizations = await prisma.organization.findMany()
+     * 
+     * // Get first 10 Organizations
+     * const organizations = await prisma.organization.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const organizationWithIdOnly = await prisma.organization.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends OrganizationFindManyArgs>(args?: SelectSubset<T, OrganizationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Organization.
+     * @param {OrganizationCreateArgs} args - Arguments to create a Organization.
+     * @example
+     * // Create one Organization
+     * const Organization = await prisma.organization.create({
+     *   data: {
+     *     // ... data to create a Organization
+     *   }
+     * })
+     * 
+     */
+    create<T extends OrganizationCreateArgs>(args: SelectSubset<T, OrganizationCreateArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Organizations.
+     * @param {OrganizationCreateManyArgs} args - Arguments to create many Organizations.
+     * @example
+     * // Create many Organizations
+     * const organization = await prisma.organization.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends OrganizationCreateManyArgs>(args?: SelectSubset<T, OrganizationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Organizations and returns the data saved in the database.
+     * @param {OrganizationCreateManyAndReturnArgs} args - Arguments to create many Organizations.
+     * @example
+     * // Create many Organizations
+     * const organization = await prisma.organization.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Organizations and only return the `id`
+     * const organizationWithIdOnly = await prisma.organization.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends OrganizationCreateManyAndReturnArgs>(args?: SelectSubset<T, OrganizationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Organization.
+     * @param {OrganizationDeleteArgs} args - Arguments to delete one Organization.
+     * @example
+     * // Delete one Organization
+     * const Organization = await prisma.organization.delete({
+     *   where: {
+     *     // ... filter to delete one Organization
+     *   }
+     * })
+     * 
+     */
+    delete<T extends OrganizationDeleteArgs>(args: SelectSubset<T, OrganizationDeleteArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Organization.
+     * @param {OrganizationUpdateArgs} args - Arguments to update one Organization.
+     * @example
+     * // Update one Organization
+     * const organization = await prisma.organization.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends OrganizationUpdateArgs>(args: SelectSubset<T, OrganizationUpdateArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Organizations.
+     * @param {OrganizationDeleteManyArgs} args - Arguments to filter Organizations to delete.
+     * @example
+     * // Delete a few Organizations
+     * const { count } = await prisma.organization.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends OrganizationDeleteManyArgs>(args?: SelectSubset<T, OrganizationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Organizations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganizationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Organizations
+     * const organization = await prisma.organization.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends OrganizationUpdateManyArgs>(args: SelectSubset<T, OrganizationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Organizations and returns the data updated in the database.
+     * @param {OrganizationUpdateManyAndReturnArgs} args - Arguments to update many Organizations.
+     * @example
+     * // Update many Organizations
+     * const organization = await prisma.organization.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Organizations and only return the `id`
+     * const organizationWithIdOnly = await prisma.organization.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends OrganizationUpdateManyAndReturnArgs>(args: SelectSubset<T, OrganizationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Organization.
+     * @param {OrganizationUpsertArgs} args - Arguments to update or create a Organization.
+     * @example
+     * // Update or create a Organization
+     * const organization = await prisma.organization.upsert({
+     *   create: {
+     *     // ... data to create a Organization
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Organization we want to update
+     *   }
+     * })
+     */
+    upsert<T extends OrganizationUpsertArgs>(args: SelectSubset<T, OrganizationUpsertArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Organizations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganizationCountArgs} args - Arguments to filter Organizations to count.
+     * @example
+     * // Count the number of Organizations
+     * const count = await prisma.organization.count({
+     *   where: {
+     *     // ... the filter for the Organizations we want to count
+     *   }
+     * })
+    **/
+    count<T extends OrganizationCountArgs>(
+      args?: Subset<T, OrganizationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], OrganizationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Organization.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganizationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OrganizationAggregateArgs>(args: Subset<T, OrganizationAggregateArgs>): Prisma.PrismaPromise<GetOrganizationAggregateType<T>>
+
+    /**
+     * Group by Organization.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganizationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends OrganizationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: OrganizationGroupByArgs['orderBy'] }
+        : { orderBy?: OrganizationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, OrganizationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOrganizationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Organization model
+   */
+  readonly fields: OrganizationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Organization.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    industries<T extends Organization$industriesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$industriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IndustryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    touchTypes<T extends Organization$touchTypesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$touchTypesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TouchTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    socialPlatforms<T extends Organization$socialPlatformsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$socialPlatformsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SocialPlatformPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    accounts<T extends Organization$accountsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    contacts<T extends Organization$contactsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$contactsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    touches<T extends Organization$touchesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$touchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TouchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    accountNotes<T extends Organization$accountNotesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$accountNotesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    contactNotes<T extends Organization$contactNotesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$contactNotesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    accountSocials<T extends Organization$accountSocialsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$accountSocialsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountSocialLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Organization model
+   */
+  interface OrganizationFieldRefs {
+    readonly id: FieldRef<"Organization", 'String'>
+    readonly name: FieldRef<"Organization", 'String'>
+    readonly slug: FieldRef<"Organization", 'String'>
+    readonly createdAt: FieldRef<"Organization", 'DateTime'>
+    readonly updatedAt: FieldRef<"Organization", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Organization findUnique
+   */
+  export type OrganizationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Organization
+     */
+    select?: OrganizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Organization
+     */
+    omit?: OrganizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganizationInclude<ExtArgs> | null
+    /**
+     * Filter, which Organization to fetch.
+     */
+    where: OrganizationWhereUniqueInput
+  }
+
+  /**
+   * Organization findUniqueOrThrow
+   */
+  export type OrganizationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Organization
+     */
+    select?: OrganizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Organization
+     */
+    omit?: OrganizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganizationInclude<ExtArgs> | null
+    /**
+     * Filter, which Organization to fetch.
+     */
+    where: OrganizationWhereUniqueInput
+  }
+
+  /**
+   * Organization findFirst
+   */
+  export type OrganizationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Organization
+     */
+    select?: OrganizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Organization
+     */
+    omit?: OrganizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganizationInclude<ExtArgs> | null
+    /**
+     * Filter, which Organization to fetch.
+     */
+    where?: OrganizationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Organizations to fetch.
+     */
+    orderBy?: OrganizationOrderByWithRelationInput | OrganizationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Organizations.
+     */
+    cursor?: OrganizationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Organizations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Organizations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Organizations.
+     */
+    distinct?: OrganizationScalarFieldEnum | OrganizationScalarFieldEnum[]
+  }
+
+  /**
+   * Organization findFirstOrThrow
+   */
+  export type OrganizationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Organization
+     */
+    select?: OrganizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Organization
+     */
+    omit?: OrganizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganizationInclude<ExtArgs> | null
+    /**
+     * Filter, which Organization to fetch.
+     */
+    where?: OrganizationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Organizations to fetch.
+     */
+    orderBy?: OrganizationOrderByWithRelationInput | OrganizationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Organizations.
+     */
+    cursor?: OrganizationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Organizations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Organizations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Organizations.
+     */
+    distinct?: OrganizationScalarFieldEnum | OrganizationScalarFieldEnum[]
+  }
+
+  /**
+   * Organization findMany
+   */
+  export type OrganizationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Organization
+     */
+    select?: OrganizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Organization
+     */
+    omit?: OrganizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganizationInclude<ExtArgs> | null
+    /**
+     * Filter, which Organizations to fetch.
+     */
+    where?: OrganizationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Organizations to fetch.
+     */
+    orderBy?: OrganizationOrderByWithRelationInput | OrganizationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Organizations.
+     */
+    cursor?: OrganizationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Organizations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Organizations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Organizations.
+     */
+    distinct?: OrganizationScalarFieldEnum | OrganizationScalarFieldEnum[]
+  }
+
+  /**
+   * Organization create
+   */
+  export type OrganizationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Organization
+     */
+    select?: OrganizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Organization
+     */
+    omit?: OrganizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganizationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Organization.
+     */
+    data: XOR<OrganizationCreateInput, OrganizationUncheckedCreateInput>
+  }
+
+  /**
+   * Organization createMany
+   */
+  export type OrganizationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Organizations.
+     */
+    data: OrganizationCreateManyInput | OrganizationCreateManyInput[]
+  }
+
+  /**
+   * Organization createManyAndReturn
+   */
+  export type OrganizationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Organization
+     */
+    select?: OrganizationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Organization
+     */
+    omit?: OrganizationOmit<ExtArgs> | null
+    /**
+     * The data used to create many Organizations.
+     */
+    data: OrganizationCreateManyInput | OrganizationCreateManyInput[]
+  }
+
+  /**
+   * Organization update
+   */
+  export type OrganizationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Organization
+     */
+    select?: OrganizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Organization
+     */
+    omit?: OrganizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganizationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Organization.
+     */
+    data: XOR<OrganizationUpdateInput, OrganizationUncheckedUpdateInput>
+    /**
+     * Choose, which Organization to update.
+     */
+    where: OrganizationWhereUniqueInput
+  }
+
+  /**
+   * Organization updateMany
+   */
+  export type OrganizationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Organizations.
+     */
+    data: XOR<OrganizationUpdateManyMutationInput, OrganizationUncheckedUpdateManyInput>
+    /**
+     * Filter which Organizations to update
+     */
+    where?: OrganizationWhereInput
+    /**
+     * Limit how many Organizations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Organization updateManyAndReturn
+   */
+  export type OrganizationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Organization
+     */
+    select?: OrganizationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Organization
+     */
+    omit?: OrganizationOmit<ExtArgs> | null
+    /**
+     * The data used to update Organizations.
+     */
+    data: XOR<OrganizationUpdateManyMutationInput, OrganizationUncheckedUpdateManyInput>
+    /**
+     * Filter which Organizations to update
+     */
+    where?: OrganizationWhereInput
+    /**
+     * Limit how many Organizations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Organization upsert
+   */
+  export type OrganizationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Organization
+     */
+    select?: OrganizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Organization
+     */
+    omit?: OrganizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganizationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Organization to update in case it exists.
+     */
+    where: OrganizationWhereUniqueInput
+    /**
+     * In case the Organization found by the `where` argument doesn't exist, create a new Organization with this data.
+     */
+    create: XOR<OrganizationCreateInput, OrganizationUncheckedCreateInput>
+    /**
+     * In case the Organization was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<OrganizationUpdateInput, OrganizationUncheckedUpdateInput>
+  }
+
+  /**
+   * Organization delete
+   */
+  export type OrganizationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Organization
+     */
+    select?: OrganizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Organization
+     */
+    omit?: OrganizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganizationInclude<ExtArgs> | null
+    /**
+     * Filter which Organization to delete.
+     */
+    where: OrganizationWhereUniqueInput
+  }
+
+  /**
+   * Organization deleteMany
+   */
+  export type OrganizationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Organizations to delete
+     */
+    where?: OrganizationWhereInput
+    /**
+     * Limit how many Organizations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Organization.industries
+   */
+  export type Organization$industriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Industry
+     */
+    select?: IndustrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Industry
+     */
+    omit?: IndustryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IndustryInclude<ExtArgs> | null
+    where?: IndustryWhereInput
+    orderBy?: IndustryOrderByWithRelationInput | IndustryOrderByWithRelationInput[]
+    cursor?: IndustryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: IndustryScalarFieldEnum | IndustryScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.touchTypes
+   */
+  export type Organization$touchTypesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TouchType
+     */
+    select?: TouchTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TouchType
+     */
+    omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TouchTypeInclude<ExtArgs> | null
+    where?: TouchTypeWhereInput
+    orderBy?: TouchTypeOrderByWithRelationInput | TouchTypeOrderByWithRelationInput[]
+    cursor?: TouchTypeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TouchTypeScalarFieldEnum | TouchTypeScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.socialPlatforms
+   */
+  export type Organization$socialPlatformsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SocialPlatform
+     */
+    select?: SocialPlatformSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SocialPlatform
+     */
+    omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SocialPlatformInclude<ExtArgs> | null
+    where?: SocialPlatformWhereInput
+    orderBy?: SocialPlatformOrderByWithRelationInput | SocialPlatformOrderByWithRelationInput[]
+    cursor?: SocialPlatformWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SocialPlatformScalarFieldEnum | SocialPlatformScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.accounts
+   */
+  export type Organization$accountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Account
+     */
+    select?: AccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Account
+     */
+    omit?: AccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountInclude<ExtArgs> | null
+    where?: AccountWhereInput
+    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
+    cursor?: AccountWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.contacts
+   */
+  export type Organization$contactsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contact
+     */
+    omit?: ContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactInclude<ExtArgs> | null
+    where?: ContactWhereInput
+    orderBy?: ContactOrderByWithRelationInput | ContactOrderByWithRelationInput[]
+    cursor?: ContactWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ContactScalarFieldEnum | ContactScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.touches
+   */
+  export type Organization$touchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Touch
+     */
+    select?: TouchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Touch
+     */
+    omit?: TouchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TouchInclude<ExtArgs> | null
+    where?: TouchWhereInput
+    orderBy?: TouchOrderByWithRelationInput | TouchOrderByWithRelationInput[]
+    cursor?: TouchWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TouchScalarFieldEnum | TouchScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.accountNotes
+   */
+  export type Organization$accountNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountNote
+     */
+    select?: AccountNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountNote
+     */
+    omit?: AccountNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountNoteInclude<ExtArgs> | null
+    where?: AccountNoteWhereInput
+    orderBy?: AccountNoteOrderByWithRelationInput | AccountNoteOrderByWithRelationInput[]
+    cursor?: AccountNoteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AccountNoteScalarFieldEnum | AccountNoteScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.contactNotes
+   */
+  export type Organization$contactNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactNote
+     */
+    select?: ContactNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ContactNote
+     */
+    omit?: ContactNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactNoteInclude<ExtArgs> | null
+    where?: ContactNoteWhereInput
+    orderBy?: ContactNoteOrderByWithRelationInput | ContactNoteOrderByWithRelationInput[]
+    cursor?: ContactNoteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ContactNoteScalarFieldEnum | ContactNoteScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.accountSocials
+   */
+  export type Organization$accountSocialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountSocialLink
+     */
+    select?: AccountSocialLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountSocialLink
+     */
+    omit?: AccountSocialLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountSocialLinkInclude<ExtArgs> | null
+    where?: AccountSocialLinkWhereInput
+    orderBy?: AccountSocialLinkOrderByWithRelationInput | AccountSocialLinkOrderByWithRelationInput[]
+    cursor?: AccountSocialLinkWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AccountSocialLinkScalarFieldEnum | AccountSocialLinkScalarFieldEnum[]
+  }
+
+  /**
+   * Organization without action
+   */
+  export type OrganizationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Organization
+     */
+    select?: OrganizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Organization
+     */
+    omit?: OrganizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganizationInclude<ExtArgs> | null
+  }
+
 
   /**
    * Model Industry
@@ -1733,18 +3225,21 @@ export namespace Prisma {
 
   export type IndustryMinAggregateOutputType = {
     id: string | null
+    organizationId: string | null
     name: string | null
     isSystem: boolean | null
   }
 
   export type IndustryMaxAggregateOutputType = {
     id: string | null
+    organizationId: string | null
     name: string | null
     isSystem: boolean | null
   }
 
   export type IndustryCountAggregateOutputType = {
     id: number
+    organizationId: number
     name: number
     isSystem: number
     _all: number
@@ -1753,18 +3248,21 @@ export namespace Prisma {
 
   export type IndustryMinAggregateInputType = {
     id?: true
+    organizationId?: true
     name?: true
     isSystem?: true
   }
 
   export type IndustryMaxAggregateInputType = {
     id?: true
+    organizationId?: true
     name?: true
     isSystem?: true
   }
 
   export type IndustryCountAggregateInputType = {
     id?: true
+    organizationId?: true
     name?: true
     isSystem?: true
     _all?: true
@@ -1844,6 +3342,7 @@ export namespace Prisma {
 
   export type IndustryGroupByOutputType = {
     id: string
+    organizationId: string
     name: string
     isSystem: boolean
     _count: IndustryCountAggregateOutputType | null
@@ -1867,45 +3366,59 @@ export namespace Prisma {
 
   export type IndustrySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    organizationId?: boolean
     name?: boolean
     isSystem?: boolean
-    companies?: boolean | Industry$companiesArgs<ExtArgs>
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    accounts?: boolean | Industry$accountsArgs<ExtArgs>
     _count?: boolean | IndustryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["industry"]>
 
   export type IndustrySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    organizationId?: boolean
     name?: boolean
     isSystem?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["industry"]>
 
   export type IndustrySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    organizationId?: boolean
     name?: boolean
     isSystem?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["industry"]>
 
   export type IndustrySelectScalar = {
     id?: boolean
+    organizationId?: boolean
     name?: boolean
     isSystem?: boolean
   }
 
-  export type IndustryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isSystem", ExtArgs["result"]["industry"]>
+  export type IndustryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "name" | "isSystem", ExtArgs["result"]["industry"]>
   export type IndustryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    companies?: boolean | Industry$companiesArgs<ExtArgs>
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    accounts?: boolean | Industry$accountsArgs<ExtArgs>
     _count?: boolean | IndustryCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type IndustryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type IndustryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type IndustryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type IndustryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
 
   export type $IndustryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Industry"
     objects: {
-      companies: Prisma.$CompanyPayload<ExtArgs>[]
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      accounts: Prisma.$AccountPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      organizationId: string
       name: string
       /**
        * Built-in seeded industries cannot be renamed or deleted in Settings.
@@ -2305,7 +3818,8 @@ export namespace Prisma {
    */
   export interface Prisma__IndustryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    companies<T extends Industry$companiesArgs<ExtArgs> = {}>(args?: Subset<T, Industry$companiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    accounts<T extends Industry$accountsArgs<ExtArgs> = {}>(args?: Subset<T, Industry$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2336,6 +3850,7 @@ export namespace Prisma {
    */
   interface IndustryFieldRefs {
     readonly id: FieldRef<"Industry", 'String'>
+    readonly organizationId: FieldRef<"Industry", 'String'>
     readonly name: FieldRef<"Industry", 'String'>
     readonly isSystem: FieldRef<"Industry", 'Boolean'>
   }
@@ -2590,6 +4105,10 @@ export namespace Prisma {
      * The data used to create many Industries.
      */
     data: IndustryCreateManyInput | IndustryCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IndustryIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -2660,6 +4179,10 @@ export namespace Prisma {
      * Limit how many Industries to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IndustryIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -2729,27 +4252,27 @@ export namespace Prisma {
   }
 
   /**
-   * Industry.companies
+   * Industry.accounts
    */
-  export type Industry$companiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Industry$accountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Company
+     * Select specific fields to fetch from the Account
      */
-    select?: CompanySelect<ExtArgs> | null
+    select?: AccountSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Company
+     * Omit specific fields from the Account
      */
-    omit?: CompanyOmit<ExtArgs> | null
+    omit?: AccountOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyInclude<ExtArgs> | null
-    where?: CompanyWhereInput
-    orderBy?: CompanyOrderByWithRelationInput | CompanyOrderByWithRelationInput[]
-    cursor?: CompanyWhereUniqueInput
+    include?: AccountInclude<ExtArgs> | null
+    where?: AccountWhereInput
+    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
+    cursor?: AccountWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: CompanyScalarFieldEnum | CompanyScalarFieldEnum[]
+    distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
   }
 
   /**
@@ -2783,18 +4306,21 @@ export namespace Prisma {
 
   export type TouchTypeMinAggregateOutputType = {
     id: string | null
+    organizationId: string | null
     name: string | null
     isSystem: boolean | null
   }
 
   export type TouchTypeMaxAggregateOutputType = {
     id: string | null
+    organizationId: string | null
     name: string | null
     isSystem: boolean | null
   }
 
   export type TouchTypeCountAggregateOutputType = {
     id: number
+    organizationId: number
     name: number
     isSystem: number
     _all: number
@@ -2803,18 +4329,21 @@ export namespace Prisma {
 
   export type TouchTypeMinAggregateInputType = {
     id?: true
+    organizationId?: true
     name?: true
     isSystem?: true
   }
 
   export type TouchTypeMaxAggregateInputType = {
     id?: true
+    organizationId?: true
     name?: true
     isSystem?: true
   }
 
   export type TouchTypeCountAggregateInputType = {
     id?: true
+    organizationId?: true
     name?: true
     isSystem?: true
     _all?: true
@@ -2894,6 +4423,7 @@ export namespace Prisma {
 
   export type TouchTypeGroupByOutputType = {
     id: string
+    organizationId: string
     name: string
     isSystem: boolean
     _count: TouchTypeCountAggregateOutputType | null
@@ -2917,35 +4447,54 @@ export namespace Prisma {
 
   export type TouchTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    organizationId?: boolean
     name?: boolean
     isSystem?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["touchType"]>
 
   export type TouchTypeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    organizationId?: boolean
     name?: boolean
     isSystem?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["touchType"]>
 
   export type TouchTypeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    organizationId?: boolean
     name?: boolean
     isSystem?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["touchType"]>
 
   export type TouchTypeSelectScalar = {
     id?: boolean
+    organizationId?: boolean
     name?: boolean
     isSystem?: boolean
   }
 
-  export type TouchTypeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isSystem", ExtArgs["result"]["touchType"]>
+  export type TouchTypeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "name" | "isSystem", ExtArgs["result"]["touchType"]>
+  export type TouchTypeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type TouchTypeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type TouchTypeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
 
   export type $TouchTypePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "TouchType"
-    objects: {}
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      organizationId: string
       name: string
       /**
        * Built-in seeded touch types cannot be renamed or deleted in Settings.
@@ -3345,6 +4894,7 @@ export namespace Prisma {
    */
   export interface Prisma__TouchTypeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3375,6 +4925,7 @@ export namespace Prisma {
    */
   interface TouchTypeFieldRefs {
     readonly id: FieldRef<"TouchType", 'String'>
+    readonly organizationId: FieldRef<"TouchType", 'String'>
     readonly name: FieldRef<"TouchType", 'String'>
     readonly isSystem: FieldRef<"TouchType", 'Boolean'>
   }
@@ -3394,6 +4945,10 @@ export namespace Prisma {
      */
     omit?: TouchTypeOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TouchTypeInclude<ExtArgs> | null
+    /**
      * Filter, which TouchType to fetch.
      */
     where: TouchTypeWhereUniqueInput
@@ -3412,6 +4967,10 @@ export namespace Prisma {
      */
     omit?: TouchTypeOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TouchTypeInclude<ExtArgs> | null
+    /**
      * Filter, which TouchType to fetch.
      */
     where: TouchTypeWhereUniqueInput
@@ -3429,6 +4988,10 @@ export namespace Prisma {
      * Omit specific fields from the TouchType
      */
     omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TouchTypeInclude<ExtArgs> | null
     /**
      * Filter, which TouchType to fetch.
      */
@@ -3478,6 +5041,10 @@ export namespace Prisma {
      */
     omit?: TouchTypeOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TouchTypeInclude<ExtArgs> | null
+    /**
      * Filter, which TouchType to fetch.
      */
     where?: TouchTypeWhereInput
@@ -3525,6 +5092,10 @@ export namespace Prisma {
      * Omit specific fields from the TouchType
      */
     omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TouchTypeInclude<ExtArgs> | null
     /**
      * Filter, which TouchTypes to fetch.
      */
@@ -3574,6 +5145,10 @@ export namespace Prisma {
      */
     omit?: TouchTypeOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TouchTypeInclude<ExtArgs> | null
+    /**
      * The data needed to create a TouchType.
      */
     data: XOR<TouchTypeCreateInput, TouchTypeUncheckedCreateInput>
@@ -3605,6 +5180,10 @@ export namespace Prisma {
      * The data used to create many TouchTypes.
      */
     data: TouchTypeCreateManyInput | TouchTypeCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TouchTypeIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -3619,6 +5198,10 @@ export namespace Prisma {
      * Omit specific fields from the TouchType
      */
     omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TouchTypeInclude<ExtArgs> | null
     /**
      * The data needed to update a TouchType.
      */
@@ -3671,6 +5254,10 @@ export namespace Prisma {
      * Limit how many TouchTypes to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TouchTypeIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -3685,6 +5272,10 @@ export namespace Prisma {
      * Omit specific fields from the TouchType
      */
     omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TouchTypeInclude<ExtArgs> | null
     /**
      * The filter to search for the TouchType to update in case it exists.
      */
@@ -3711,6 +5302,10 @@ export namespace Prisma {
      * Omit specific fields from the TouchType
      */
     omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TouchTypeInclude<ExtArgs> | null
     /**
      * Filter which TouchType to delete.
      */
@@ -3743,6 +5338,10 @@ export namespace Prisma {
      * Omit specific fields from the TouchType
      */
     omit?: TouchTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TouchTypeInclude<ExtArgs> | null
   }
 
 
@@ -3758,18 +5357,21 @@ export namespace Prisma {
 
   export type SocialPlatformMinAggregateOutputType = {
     id: string | null
+    organizationId: string | null
     name: string | null
     isSystem: boolean | null
   }
 
   export type SocialPlatformMaxAggregateOutputType = {
     id: string | null
+    organizationId: string | null
     name: string | null
     isSystem: boolean | null
   }
 
   export type SocialPlatformCountAggregateOutputType = {
     id: number
+    organizationId: number
     name: number
     isSystem: number
     _all: number
@@ -3778,18 +5380,21 @@ export namespace Prisma {
 
   export type SocialPlatformMinAggregateInputType = {
     id?: true
+    organizationId?: true
     name?: true
     isSystem?: true
   }
 
   export type SocialPlatformMaxAggregateInputType = {
     id?: true
+    organizationId?: true
     name?: true
     isSystem?: true
   }
 
   export type SocialPlatformCountAggregateInputType = {
     id?: true
+    organizationId?: true
     name?: true
     isSystem?: true
     _all?: true
@@ -3869,6 +5474,7 @@ export namespace Prisma {
 
   export type SocialPlatformGroupByOutputType = {
     id: string
+    organizationId: string
     name: string
     isSystem: boolean
     _count: SocialPlatformCountAggregateOutputType | null
@@ -3892,35 +5498,54 @@ export namespace Prisma {
 
   export type SocialPlatformSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    organizationId?: boolean
     name?: boolean
     isSystem?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["socialPlatform"]>
 
   export type SocialPlatformSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    organizationId?: boolean
     name?: boolean
     isSystem?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["socialPlatform"]>
 
   export type SocialPlatformSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    organizationId?: boolean
     name?: boolean
     isSystem?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["socialPlatform"]>
 
   export type SocialPlatformSelectScalar = {
     id?: boolean
+    organizationId?: boolean
     name?: boolean
     isSystem?: boolean
   }
 
-  export type SocialPlatformOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isSystem", ExtArgs["result"]["socialPlatform"]>
+  export type SocialPlatformOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "name" | "isSystem", ExtArgs["result"]["socialPlatform"]>
+  export type SocialPlatformInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type SocialPlatformIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type SocialPlatformIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
 
   export type $SocialPlatformPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SocialPlatform"
-    objects: {}
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      organizationId: string
       name: string
       /**
        * Built-in seeded platforms cannot be renamed or deleted in Settings.
@@ -4320,6 +5945,7 @@ export namespace Prisma {
    */
   export interface Prisma__SocialPlatformClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4350,6 +5976,7 @@ export namespace Prisma {
    */
   interface SocialPlatformFieldRefs {
     readonly id: FieldRef<"SocialPlatform", 'String'>
+    readonly organizationId: FieldRef<"SocialPlatform", 'String'>
     readonly name: FieldRef<"SocialPlatform", 'String'>
     readonly isSystem: FieldRef<"SocialPlatform", 'Boolean'>
   }
@@ -4369,6 +5996,10 @@ export namespace Prisma {
      */
     omit?: SocialPlatformOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SocialPlatformInclude<ExtArgs> | null
+    /**
      * Filter, which SocialPlatform to fetch.
      */
     where: SocialPlatformWhereUniqueInput
@@ -4387,6 +6018,10 @@ export namespace Prisma {
      */
     omit?: SocialPlatformOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SocialPlatformInclude<ExtArgs> | null
+    /**
      * Filter, which SocialPlatform to fetch.
      */
     where: SocialPlatformWhereUniqueInput
@@ -4404,6 +6039,10 @@ export namespace Prisma {
      * Omit specific fields from the SocialPlatform
      */
     omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SocialPlatformInclude<ExtArgs> | null
     /**
      * Filter, which SocialPlatform to fetch.
      */
@@ -4453,6 +6092,10 @@ export namespace Prisma {
      */
     omit?: SocialPlatformOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SocialPlatformInclude<ExtArgs> | null
+    /**
      * Filter, which SocialPlatform to fetch.
      */
     where?: SocialPlatformWhereInput
@@ -4500,6 +6143,10 @@ export namespace Prisma {
      * Omit specific fields from the SocialPlatform
      */
     omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SocialPlatformInclude<ExtArgs> | null
     /**
      * Filter, which SocialPlatforms to fetch.
      */
@@ -4549,6 +6196,10 @@ export namespace Prisma {
      */
     omit?: SocialPlatformOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SocialPlatformInclude<ExtArgs> | null
+    /**
      * The data needed to create a SocialPlatform.
      */
     data: XOR<SocialPlatformCreateInput, SocialPlatformUncheckedCreateInput>
@@ -4580,6 +6231,10 @@ export namespace Prisma {
      * The data used to create many SocialPlatforms.
      */
     data: SocialPlatformCreateManyInput | SocialPlatformCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SocialPlatformIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -4594,6 +6249,10 @@ export namespace Prisma {
      * Omit specific fields from the SocialPlatform
      */
     omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SocialPlatformInclude<ExtArgs> | null
     /**
      * The data needed to update a SocialPlatform.
      */
@@ -4646,6 +6305,10 @@ export namespace Prisma {
      * Limit how many SocialPlatforms to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SocialPlatformIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -4660,6 +6323,10 @@ export namespace Prisma {
      * Omit specific fields from the SocialPlatform
      */
     omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SocialPlatformInclude<ExtArgs> | null
     /**
      * The filter to search for the SocialPlatform to update in case it exists.
      */
@@ -4686,6 +6353,10 @@ export namespace Prisma {
      * Omit specific fields from the SocialPlatform
      */
     omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SocialPlatformInclude<ExtArgs> | null
     /**
      * Filter which SocialPlatform to delete.
      */
@@ -4718,50 +6389,78 @@ export namespace Prisma {
      * Omit specific fields from the SocialPlatform
      */
     omit?: SocialPlatformOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SocialPlatformInclude<ExtArgs> | null
   }
 
 
   /**
-   * Model Company
+   * Model Account
    */
 
-  export type AggregateCompany = {
-    _count: CompanyCountAggregateOutputType | null
-    _min: CompanyMinAggregateOutputType | null
-    _max: CompanyMaxAggregateOutputType | null
+  export type AggregateAccount = {
+    _count: AccountCountAggregateOutputType | null
+    _min: AccountMinAggregateOutputType | null
+    _max: AccountMaxAggregateOutputType | null
   }
 
-  export type CompanyMinAggregateOutputType = {
+  export type AccountMinAggregateOutputType = {
     id: string | null
+    organizationId: string | null
     name: string | null
     address: string | null
     phone: string | null
     website: string | null
+    status: string | null
     isVip: boolean | null
+    source: string | null
+    ownerUserId: string | null
+    createdByUserId: string | null
+    nextTouchAt: Date | null
+    nextTouchType: string | null
+    nextTouchNote: string | null
     industryId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
 
-  export type CompanyMaxAggregateOutputType = {
+  export type AccountMaxAggregateOutputType = {
     id: string | null
+    organizationId: string | null
     name: string | null
     address: string | null
     phone: string | null
     website: string | null
+    status: string | null
     isVip: boolean | null
+    source: string | null
+    ownerUserId: string | null
+    createdByUserId: string | null
+    nextTouchAt: Date | null
+    nextTouchType: string | null
+    nextTouchNote: string | null
     industryId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
 
-  export type CompanyCountAggregateOutputType = {
+  export type AccountCountAggregateOutputType = {
     id: number
+    organizationId: number
     name: number
     address: number
     phone: number
     website: number
+    status: number
     isVip: number
+    source: number
+    ownerUserId: number
+    createdByUserId: number
+    nextTouchAt: number
+    nextTouchType: number
+    nextTouchNote: number
     industryId: number
     createdAt: number
     updatedAt: number
@@ -4769,3688 +6468,451 @@ export namespace Prisma {
   }
 
 
-  export type CompanyMinAggregateInputType = {
+  export type AccountMinAggregateInputType = {
     id?: true
+    organizationId?: true
     name?: true
     address?: true
     phone?: true
     website?: true
+    status?: true
     isVip?: true
+    source?: true
+    ownerUserId?: true
+    createdByUserId?: true
+    nextTouchAt?: true
+    nextTouchType?: true
+    nextTouchNote?: true
     industryId?: true
     createdAt?: true
     updatedAt?: true
   }
 
-  export type CompanyMaxAggregateInputType = {
+  export type AccountMaxAggregateInputType = {
     id?: true
+    organizationId?: true
     name?: true
     address?: true
     phone?: true
     website?: true
+    status?: true
     isVip?: true
+    source?: true
+    ownerUserId?: true
+    createdByUserId?: true
+    nextTouchAt?: true
+    nextTouchType?: true
+    nextTouchNote?: true
     industryId?: true
     createdAt?: true
     updatedAt?: true
   }
 
-  export type CompanyCountAggregateInputType = {
+  export type AccountCountAggregateInputType = {
     id?: true
+    organizationId?: true
     name?: true
     address?: true
     phone?: true
     website?: true
+    status?: true
     isVip?: true
+    source?: true
+    ownerUserId?: true
+    createdByUserId?: true
+    nextTouchAt?: true
+    nextTouchType?: true
+    nextTouchNote?: true
     industryId?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
   }
 
-  export type CompanyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Company to aggregate.
+     * Filter which Account to aggregate.
      */
-    where?: CompanyWhereInput
+    where?: AccountWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Companies to fetch.
+     * Determine the order of Accounts to fetch.
      */
-    orderBy?: CompanyOrderByWithRelationInput | CompanyOrderByWithRelationInput[]
+    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: CompanyWhereUniqueInput
+    cursor?: AccountWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Companies from the position of the cursor.
+     * Take `±n` Accounts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Companies.
+     * Skip the first `n` Accounts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned Companies
+     * Count returned Accounts
     **/
-    _count?: true | CompanyCountAggregateInputType
+    _count?: true | AccountCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: CompanyMinAggregateInputType
+    _min?: AccountMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: CompanyMaxAggregateInputType
+    _max?: AccountMaxAggregateInputType
   }
 
-  export type GetCompanyAggregateType<T extends CompanyAggregateArgs> = {
-        [P in keyof T & keyof AggregateCompany]: P extends '_count' | 'count'
+  export type GetAccountAggregateType<T extends AccountAggregateArgs> = {
+        [P in keyof T & keyof AggregateAccount]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateCompany[P]>
-      : GetScalarType<T[P], AggregateCompany[P]>
+        : GetScalarType<T[P], AggregateAccount[P]>
+      : GetScalarType<T[P], AggregateAccount[P]>
   }
 
 
 
 
-  export type CompanyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CompanyWhereInput
-    orderBy?: CompanyOrderByWithAggregationInput | CompanyOrderByWithAggregationInput[]
-    by: CompanyScalarFieldEnum[] | CompanyScalarFieldEnum
-    having?: CompanyScalarWhereWithAggregatesInput
+  export type AccountGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccountWhereInput
+    orderBy?: AccountOrderByWithAggregationInput | AccountOrderByWithAggregationInput[]
+    by: AccountScalarFieldEnum[] | AccountScalarFieldEnum
+    having?: AccountScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: CompanyCountAggregateInputType | true
-    _min?: CompanyMinAggregateInputType
-    _max?: CompanyMaxAggregateInputType
+    _count?: AccountCountAggregateInputType | true
+    _min?: AccountMinAggregateInputType
+    _max?: AccountMaxAggregateInputType
   }
 
-  export type CompanyGroupByOutputType = {
+  export type AccountGroupByOutputType = {
     id: string
+    organizationId: string
     name: string
     address: string | null
     phone: string | null
     website: string | null
+    status: string
     isVip: boolean
+    source: string | null
+    ownerUserId: string | null
+    createdByUserId: string | null
+    nextTouchAt: Date | null
+    nextTouchType: string | null
+    nextTouchNote: string | null
     industryId: string
     createdAt: Date
     updatedAt: Date
-    _count: CompanyCountAggregateOutputType | null
-    _min: CompanyMinAggregateOutputType | null
-    _max: CompanyMaxAggregateOutputType | null
+    _count: AccountCountAggregateOutputType | null
+    _min: AccountMinAggregateOutputType | null
+    _max: AccountMaxAggregateOutputType | null
   }
 
-  type GetCompanyGroupByPayload<T extends CompanyGroupByArgs> = Prisma.PrismaPromise<
+  type GetAccountGroupByPayload<T extends AccountGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<CompanyGroupByOutputType, T['by']> &
+      PickEnumerable<AccountGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof CompanyGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof AccountGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], CompanyGroupByOutputType[P]>
-            : GetScalarType<T[P], CompanyGroupByOutputType[P]>
+              : GetScalarType<T[P], AccountGroupByOutputType[P]>
+            : GetScalarType<T[P], AccountGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type CompanySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type AccountSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    organizationId?: boolean
     name?: boolean
     address?: boolean
     phone?: boolean
     website?: boolean
+    status?: boolean
     isVip?: boolean
+    source?: boolean
+    ownerUserId?: boolean
+    createdByUserId?: boolean
+    nextTouchAt?: boolean
+    nextTouchType?: boolean
+    nextTouchNote?: boolean
     industryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     industry?: boolean | IndustryDefaultArgs<ExtArgs>
-    leads?: boolean | Company$leadsArgs<ExtArgs>
-    notes?: boolean | Company$notesArgs<ExtArgs>
-    socials?: boolean | Company$socialsArgs<ExtArgs>
-    _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["company"]>
+    contacts?: boolean | Account$contactsArgs<ExtArgs>
+    notes?: boolean | Account$notesArgs<ExtArgs>
+    socials?: boolean | Account$socialsArgs<ExtArgs>
+    touches?: boolean | Account$touchesArgs<ExtArgs>
+    _count?: boolean | AccountCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["account"]>
 
-  export type CompanySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type AccountSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    organizationId?: boolean
     name?: boolean
     address?: boolean
     phone?: boolean
     website?: boolean
+    status?: boolean
     isVip?: boolean
+    source?: boolean
+    ownerUserId?: boolean
+    createdByUserId?: boolean
+    nextTouchAt?: boolean
+    nextTouchType?: boolean
+    nextTouchNote?: boolean
     industryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     industry?: boolean | IndustryDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["company"]>
+  }, ExtArgs["result"]["account"]>
 
-  export type CompanySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type AccountSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    organizationId?: boolean
     name?: boolean
     address?: boolean
     phone?: boolean
     website?: boolean
+    status?: boolean
     isVip?: boolean
+    source?: boolean
+    ownerUserId?: boolean
+    createdByUserId?: boolean
+    nextTouchAt?: boolean
+    nextTouchType?: boolean
+    nextTouchNote?: boolean
     industryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     industry?: boolean | IndustryDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["company"]>
+  }, ExtArgs["result"]["account"]>
 
-  export type CompanySelectScalar = {
+  export type AccountSelectScalar = {
     id?: boolean
+    organizationId?: boolean
     name?: boolean
     address?: boolean
     phone?: boolean
     website?: boolean
+    status?: boolean
     isVip?: boolean
+    source?: boolean
+    ownerUserId?: boolean
+    createdByUserId?: boolean
+    nextTouchAt?: boolean
+    nextTouchType?: boolean
+    nextTouchNote?: boolean
     industryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type CompanyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "address" | "phone" | "website" | "isVip" | "industryId" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
-  export type CompanyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "name" | "address" | "phone" | "website" | "status" | "isVip" | "source" | "ownerUserId" | "createdByUserId" | "nextTouchAt" | "nextTouchType" | "nextTouchNote" | "industryId" | "createdAt" | "updatedAt", ExtArgs["result"]["account"]>
+  export type AccountInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     industry?: boolean | IndustryDefaultArgs<ExtArgs>
-    leads?: boolean | Company$leadsArgs<ExtArgs>
-    notes?: boolean | Company$notesArgs<ExtArgs>
-    socials?: boolean | Company$socialsArgs<ExtArgs>
-    _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
+    contacts?: boolean | Account$contactsArgs<ExtArgs>
+    notes?: boolean | Account$notesArgs<ExtArgs>
+    socials?: boolean | Account$socialsArgs<ExtArgs>
+    touches?: boolean | Account$touchesArgs<ExtArgs>
+    _count?: boolean | AccountCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type CompanyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     industry?: boolean | IndustryDefaultArgs<ExtArgs>
   }
-  export type CompanyIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     industry?: boolean | IndustryDefaultArgs<ExtArgs>
   }
 
-  export type $CompanyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Company"
+  export type $AccountPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Account"
     objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
       industry: Prisma.$IndustryPayload<ExtArgs>
-      leads: Prisma.$LeadPayload<ExtArgs>[]
-      notes: Prisma.$CompanyNotePayload<ExtArgs>[]
-      socials: Prisma.$CompanySocialLinkPayload<ExtArgs>[]
+      contacts: Prisma.$ContactPayload<ExtArgs>[]
+      notes: Prisma.$AccountNotePayload<ExtArgs>[]
+      socials: Prisma.$AccountSocialLinkPayload<ExtArgs>[]
+      touches: Prisma.$TouchPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      organizationId: string
       name: string
       address: string | null
       phone: string | null
       website: string | null
-      isVip: boolean
-      industryId: string
-      createdAt: Date
-      updatedAt: Date
-    }, ExtArgs["result"]["company"]>
-    composites: {}
-  }
-
-  type CompanyGetPayload<S extends boolean | null | undefined | CompanyDefaultArgs> = $Result.GetResult<Prisma.$CompanyPayload, S>
-
-  type CompanyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<CompanyFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: CompanyCountAggregateInputType | true
-    }
-
-  export interface CompanyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Company'], meta: { name: 'Company' } }
-    /**
-     * Find zero or one Company that matches the filter.
-     * @param {CompanyFindUniqueArgs} args - Arguments to find a Company
-     * @example
-     * // Get one Company
-     * const company = await prisma.company.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends CompanyFindUniqueArgs>(args: SelectSubset<T, CompanyFindUniqueArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Company that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {CompanyFindUniqueOrThrowArgs} args - Arguments to find a Company
-     * @example
-     * // Get one Company
-     * const company = await prisma.company.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends CompanyFindUniqueOrThrowArgs>(args: SelectSubset<T, CompanyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Company that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyFindFirstArgs} args - Arguments to find a Company
-     * @example
-     * // Get one Company
-     * const company = await prisma.company.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends CompanyFindFirstArgs>(args?: SelectSubset<T, CompanyFindFirstArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Company that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyFindFirstOrThrowArgs} args - Arguments to find a Company
-     * @example
-     * // Get one Company
-     * const company = await prisma.company.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends CompanyFindFirstOrThrowArgs>(args?: SelectSubset<T, CompanyFindFirstOrThrowArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Companies that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Companies
-     * const companies = await prisma.company.findMany()
-     * 
-     * // Get first 10 Companies
-     * const companies = await prisma.company.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const companyWithIdOnly = await prisma.company.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends CompanyFindManyArgs>(args?: SelectSubset<T, CompanyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Company.
-     * @param {CompanyCreateArgs} args - Arguments to create a Company.
-     * @example
-     * // Create one Company
-     * const Company = await prisma.company.create({
-     *   data: {
-     *     // ... data to create a Company
-     *   }
-     * })
-     * 
-     */
-    create<T extends CompanyCreateArgs>(args: SelectSubset<T, CompanyCreateArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Companies.
-     * @param {CompanyCreateManyArgs} args - Arguments to create many Companies.
-     * @example
-     * // Create many Companies
-     * const company = await prisma.company.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends CompanyCreateManyArgs>(args?: SelectSubset<T, CompanyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Companies and returns the data saved in the database.
-     * @param {CompanyCreateManyAndReturnArgs} args - Arguments to create many Companies.
-     * @example
-     * // Create many Companies
-     * const company = await prisma.company.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Companies and only return the `id`
-     * const companyWithIdOnly = await prisma.company.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends CompanyCreateManyAndReturnArgs>(args?: SelectSubset<T, CompanyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Company.
-     * @param {CompanyDeleteArgs} args - Arguments to delete one Company.
-     * @example
-     * // Delete one Company
-     * const Company = await prisma.company.delete({
-     *   where: {
-     *     // ... filter to delete one Company
-     *   }
-     * })
-     * 
-     */
-    delete<T extends CompanyDeleteArgs>(args: SelectSubset<T, CompanyDeleteArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Company.
-     * @param {CompanyUpdateArgs} args - Arguments to update one Company.
-     * @example
-     * // Update one Company
-     * const company = await prisma.company.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends CompanyUpdateArgs>(args: SelectSubset<T, CompanyUpdateArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Companies.
-     * @param {CompanyDeleteManyArgs} args - Arguments to filter Companies to delete.
-     * @example
-     * // Delete a few Companies
-     * const { count } = await prisma.company.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends CompanyDeleteManyArgs>(args?: SelectSubset<T, CompanyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Companies.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Companies
-     * const company = await prisma.company.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends CompanyUpdateManyArgs>(args: SelectSubset<T, CompanyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Companies and returns the data updated in the database.
-     * @param {CompanyUpdateManyAndReturnArgs} args - Arguments to update many Companies.
-     * @example
-     * // Update many Companies
-     * const company = await prisma.company.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Companies and only return the `id`
-     * const companyWithIdOnly = await prisma.company.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends CompanyUpdateManyAndReturnArgs>(args: SelectSubset<T, CompanyUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Company.
-     * @param {CompanyUpsertArgs} args - Arguments to update or create a Company.
-     * @example
-     * // Update or create a Company
-     * const company = await prisma.company.upsert({
-     *   create: {
-     *     // ... data to create a Company
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Company we want to update
-     *   }
-     * })
-     */
-    upsert<T extends CompanyUpsertArgs>(args: SelectSubset<T, CompanyUpsertArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Companies.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyCountArgs} args - Arguments to filter Companies to count.
-     * @example
-     * // Count the number of Companies
-     * const count = await prisma.company.count({
-     *   where: {
-     *     // ... the filter for the Companies we want to count
-     *   }
-     * })
-    **/
-    count<T extends CompanyCountArgs>(
-      args?: Subset<T, CompanyCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], CompanyCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Company.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends CompanyAggregateArgs>(args: Subset<T, CompanyAggregateArgs>): Prisma.PrismaPromise<GetCompanyAggregateType<T>>
-
-    /**
-     * Group by Company.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends CompanyGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: CompanyGroupByArgs['orderBy'] }
-        : { orderBy?: CompanyGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, CompanyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCompanyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Company model
-   */
-  readonly fields: CompanyFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Company.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__CompanyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    industry<T extends IndustryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, IndustryDefaultArgs<ExtArgs>>): Prisma__IndustryClient<$Result.GetResult<Prisma.$IndustryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    leads<T extends Company$leadsArgs<ExtArgs> = {}>(args?: Subset<T, Company$leadsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    notes<T extends Company$notesArgs<ExtArgs> = {}>(args?: Subset<T, Company$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    socials<T extends Company$socialsArgs<ExtArgs> = {}>(args?: Subset<T, Company$socialsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Company model
-   */
-  interface CompanyFieldRefs {
-    readonly id: FieldRef<"Company", 'String'>
-    readonly name: FieldRef<"Company", 'String'>
-    readonly address: FieldRef<"Company", 'String'>
-    readonly phone: FieldRef<"Company", 'String'>
-    readonly website: FieldRef<"Company", 'String'>
-    readonly isVip: FieldRef<"Company", 'Boolean'>
-    readonly industryId: FieldRef<"Company", 'String'>
-    readonly createdAt: FieldRef<"Company", 'DateTime'>
-    readonly updatedAt: FieldRef<"Company", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Company findUnique
-   */
-  export type CompanyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Company
-     */
-    select?: CompanySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Company
-     */
-    omit?: CompanyOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyInclude<ExtArgs> | null
-    /**
-     * Filter, which Company to fetch.
-     */
-    where: CompanyWhereUniqueInput
-  }
-
-  /**
-   * Company findUniqueOrThrow
-   */
-  export type CompanyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Company
-     */
-    select?: CompanySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Company
-     */
-    omit?: CompanyOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyInclude<ExtArgs> | null
-    /**
-     * Filter, which Company to fetch.
-     */
-    where: CompanyWhereUniqueInput
-  }
-
-  /**
-   * Company findFirst
-   */
-  export type CompanyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Company
-     */
-    select?: CompanySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Company
-     */
-    omit?: CompanyOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyInclude<ExtArgs> | null
-    /**
-     * Filter, which Company to fetch.
-     */
-    where?: CompanyWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Companies to fetch.
-     */
-    orderBy?: CompanyOrderByWithRelationInput | CompanyOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Companies.
-     */
-    cursor?: CompanyWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Companies from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Companies.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Companies.
-     */
-    distinct?: CompanyScalarFieldEnum | CompanyScalarFieldEnum[]
-  }
-
-  /**
-   * Company findFirstOrThrow
-   */
-  export type CompanyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Company
-     */
-    select?: CompanySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Company
-     */
-    omit?: CompanyOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyInclude<ExtArgs> | null
-    /**
-     * Filter, which Company to fetch.
-     */
-    where?: CompanyWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Companies to fetch.
-     */
-    orderBy?: CompanyOrderByWithRelationInput | CompanyOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Companies.
-     */
-    cursor?: CompanyWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Companies from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Companies.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Companies.
-     */
-    distinct?: CompanyScalarFieldEnum | CompanyScalarFieldEnum[]
-  }
-
-  /**
-   * Company findMany
-   */
-  export type CompanyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Company
-     */
-    select?: CompanySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Company
-     */
-    omit?: CompanyOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyInclude<ExtArgs> | null
-    /**
-     * Filter, which Companies to fetch.
-     */
-    where?: CompanyWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Companies to fetch.
-     */
-    orderBy?: CompanyOrderByWithRelationInput | CompanyOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Companies.
-     */
-    cursor?: CompanyWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Companies from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Companies.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Companies.
-     */
-    distinct?: CompanyScalarFieldEnum | CompanyScalarFieldEnum[]
-  }
-
-  /**
-   * Company create
-   */
-  export type CompanyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Company
-     */
-    select?: CompanySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Company
-     */
-    omit?: CompanyOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Company.
-     */
-    data: XOR<CompanyCreateInput, CompanyUncheckedCreateInput>
-  }
-
-  /**
-   * Company createMany
-   */
-  export type CompanyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Companies.
-     */
-    data: CompanyCreateManyInput | CompanyCreateManyInput[]
-  }
-
-  /**
-   * Company createManyAndReturn
-   */
-  export type CompanyCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Company
-     */
-    select?: CompanySelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Company
-     */
-    omit?: CompanyOmit<ExtArgs> | null
-    /**
-     * The data used to create many Companies.
-     */
-    data: CompanyCreateManyInput | CompanyCreateManyInput[]
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Company update
-   */
-  export type CompanyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Company
-     */
-    select?: CompanySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Company
-     */
-    omit?: CompanyOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Company.
-     */
-    data: XOR<CompanyUpdateInput, CompanyUncheckedUpdateInput>
-    /**
-     * Choose, which Company to update.
-     */
-    where: CompanyWhereUniqueInput
-  }
-
-  /**
-   * Company updateMany
-   */
-  export type CompanyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Companies.
-     */
-    data: XOR<CompanyUpdateManyMutationInput, CompanyUncheckedUpdateManyInput>
-    /**
-     * Filter which Companies to update
-     */
-    where?: CompanyWhereInput
-    /**
-     * Limit how many Companies to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Company updateManyAndReturn
-   */
-  export type CompanyUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Company
-     */
-    select?: CompanySelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Company
-     */
-    omit?: CompanyOmit<ExtArgs> | null
-    /**
-     * The data used to update Companies.
-     */
-    data: XOR<CompanyUpdateManyMutationInput, CompanyUncheckedUpdateManyInput>
-    /**
-     * Filter which Companies to update
-     */
-    where?: CompanyWhereInput
-    /**
-     * Limit how many Companies to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Company upsert
-   */
-  export type CompanyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Company
-     */
-    select?: CompanySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Company
-     */
-    omit?: CompanyOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Company to update in case it exists.
-     */
-    where: CompanyWhereUniqueInput
-    /**
-     * In case the Company found by the `where` argument doesn't exist, create a new Company with this data.
-     */
-    create: XOR<CompanyCreateInput, CompanyUncheckedCreateInput>
-    /**
-     * In case the Company was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<CompanyUpdateInput, CompanyUncheckedUpdateInput>
-  }
-
-  /**
-   * Company delete
-   */
-  export type CompanyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Company
-     */
-    select?: CompanySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Company
-     */
-    omit?: CompanyOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyInclude<ExtArgs> | null
-    /**
-     * Filter which Company to delete.
-     */
-    where: CompanyWhereUniqueInput
-  }
-
-  /**
-   * Company deleteMany
-   */
-  export type CompanyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Companies to delete
-     */
-    where?: CompanyWhereInput
-    /**
-     * Limit how many Companies to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Company.leads
-   */
-  export type Company$leadsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Lead
-     */
-    select?: LeadSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Lead
-     */
-    omit?: LeadOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: LeadInclude<ExtArgs> | null
-    where?: LeadWhereInput
-    orderBy?: LeadOrderByWithRelationInput | LeadOrderByWithRelationInput[]
-    cursor?: LeadWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: LeadScalarFieldEnum | LeadScalarFieldEnum[]
-  }
-
-  /**
-   * Company.notes
-   */
-  export type Company$notesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyNote
-     */
-    select?: CompanyNoteSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyNote
-     */
-    omit?: CompanyNoteOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyNoteInclude<ExtArgs> | null
-    where?: CompanyNoteWhereInput
-    orderBy?: CompanyNoteOrderByWithRelationInput | CompanyNoteOrderByWithRelationInput[]
-    cursor?: CompanyNoteWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: CompanyNoteScalarFieldEnum | CompanyNoteScalarFieldEnum[]
-  }
-
-  /**
-   * Company.socials
-   */
-  export type Company$socialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanySocialLink
-     */
-    select?: CompanySocialLinkSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanySocialLink
-     */
-    omit?: CompanySocialLinkOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanySocialLinkInclude<ExtArgs> | null
-    where?: CompanySocialLinkWhereInput
-    orderBy?: CompanySocialLinkOrderByWithRelationInput | CompanySocialLinkOrderByWithRelationInput[]
-    cursor?: CompanySocialLinkWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: CompanySocialLinkScalarFieldEnum | CompanySocialLinkScalarFieldEnum[]
-  }
-
-  /**
-   * Company without action
-   */
-  export type CompanyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Company
-     */
-    select?: CompanySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Company
-     */
-    omit?: CompanyOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model CompanySocialLink
-   */
-
-  export type AggregateCompanySocialLink = {
-    _count: CompanySocialLinkCountAggregateOutputType | null
-    _min: CompanySocialLinkMinAggregateOutputType | null
-    _max: CompanySocialLinkMaxAggregateOutputType | null
-  }
-
-  export type CompanySocialLinkMinAggregateOutputType = {
-    id: string | null
-    companyId: string | null
-    platform: string | null
-    handle: string | null
-  }
-
-  export type CompanySocialLinkMaxAggregateOutputType = {
-    id: string | null
-    companyId: string | null
-    platform: string | null
-    handle: string | null
-  }
-
-  export type CompanySocialLinkCountAggregateOutputType = {
-    id: number
-    companyId: number
-    platform: number
-    handle: number
-    _all: number
-  }
-
-
-  export type CompanySocialLinkMinAggregateInputType = {
-    id?: true
-    companyId?: true
-    platform?: true
-    handle?: true
-  }
-
-  export type CompanySocialLinkMaxAggregateInputType = {
-    id?: true
-    companyId?: true
-    platform?: true
-    handle?: true
-  }
-
-  export type CompanySocialLinkCountAggregateInputType = {
-    id?: true
-    companyId?: true
-    platform?: true
-    handle?: true
-    _all?: true
-  }
-
-  export type CompanySocialLinkAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which CompanySocialLink to aggregate.
-     */
-    where?: CompanySocialLinkWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of CompanySocialLinks to fetch.
-     */
-    orderBy?: CompanySocialLinkOrderByWithRelationInput | CompanySocialLinkOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: CompanySocialLinkWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` CompanySocialLinks from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` CompanySocialLinks.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned CompanySocialLinks
-    **/
-    _count?: true | CompanySocialLinkCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: CompanySocialLinkMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: CompanySocialLinkMaxAggregateInputType
-  }
-
-  export type GetCompanySocialLinkAggregateType<T extends CompanySocialLinkAggregateArgs> = {
-        [P in keyof T & keyof AggregateCompanySocialLink]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateCompanySocialLink[P]>
-      : GetScalarType<T[P], AggregateCompanySocialLink[P]>
-  }
-
-
-
-
-  export type CompanySocialLinkGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CompanySocialLinkWhereInput
-    orderBy?: CompanySocialLinkOrderByWithAggregationInput | CompanySocialLinkOrderByWithAggregationInput[]
-    by: CompanySocialLinkScalarFieldEnum[] | CompanySocialLinkScalarFieldEnum
-    having?: CompanySocialLinkScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: CompanySocialLinkCountAggregateInputType | true
-    _min?: CompanySocialLinkMinAggregateInputType
-    _max?: CompanySocialLinkMaxAggregateInputType
-  }
-
-  export type CompanySocialLinkGroupByOutputType = {
-    id: string
-    companyId: string
-    platform: string
-    handle: string
-    _count: CompanySocialLinkCountAggregateOutputType | null
-    _min: CompanySocialLinkMinAggregateOutputType | null
-    _max: CompanySocialLinkMaxAggregateOutputType | null
-  }
-
-  type GetCompanySocialLinkGroupByPayload<T extends CompanySocialLinkGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<CompanySocialLinkGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof CompanySocialLinkGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], CompanySocialLinkGroupByOutputType[P]>
-            : GetScalarType<T[P], CompanySocialLinkGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type CompanySocialLinkSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    companyId?: boolean
-    platform?: boolean
-    handle?: boolean
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["companySocialLink"]>
-
-  export type CompanySocialLinkSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    companyId?: boolean
-    platform?: boolean
-    handle?: boolean
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["companySocialLink"]>
-
-  export type CompanySocialLinkSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    companyId?: boolean
-    platform?: boolean
-    handle?: boolean
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["companySocialLink"]>
-
-  export type CompanySocialLinkSelectScalar = {
-    id?: boolean
-    companyId?: boolean
-    platform?: boolean
-    handle?: boolean
-  }
-
-  export type CompanySocialLinkOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "platform" | "handle", ExtArgs["result"]["companySocialLink"]>
-  export type CompanySocialLinkInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }
-  export type CompanySocialLinkIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }
-  export type CompanySocialLinkIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }
-
-  export type $CompanySocialLinkPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "CompanySocialLink"
-    objects: {
-      company: Prisma.$CompanyPayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      companyId: string
-      platform: string
-      handle: string
-    }, ExtArgs["result"]["companySocialLink"]>
-    composites: {}
-  }
-
-  type CompanySocialLinkGetPayload<S extends boolean | null | undefined | CompanySocialLinkDefaultArgs> = $Result.GetResult<Prisma.$CompanySocialLinkPayload, S>
-
-  type CompanySocialLinkCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<CompanySocialLinkFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: CompanySocialLinkCountAggregateInputType | true
-    }
-
-  export interface CompanySocialLinkDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CompanySocialLink'], meta: { name: 'CompanySocialLink' } }
-    /**
-     * Find zero or one CompanySocialLink that matches the filter.
-     * @param {CompanySocialLinkFindUniqueArgs} args - Arguments to find a CompanySocialLink
-     * @example
-     * // Get one CompanySocialLink
-     * const companySocialLink = await prisma.companySocialLink.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends CompanySocialLinkFindUniqueArgs>(args: SelectSubset<T, CompanySocialLinkFindUniqueArgs<ExtArgs>>): Prisma__CompanySocialLinkClient<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one CompanySocialLink that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {CompanySocialLinkFindUniqueOrThrowArgs} args - Arguments to find a CompanySocialLink
-     * @example
-     * // Get one CompanySocialLink
-     * const companySocialLink = await prisma.companySocialLink.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends CompanySocialLinkFindUniqueOrThrowArgs>(args: SelectSubset<T, CompanySocialLinkFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CompanySocialLinkClient<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first CompanySocialLink that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanySocialLinkFindFirstArgs} args - Arguments to find a CompanySocialLink
-     * @example
-     * // Get one CompanySocialLink
-     * const companySocialLink = await prisma.companySocialLink.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends CompanySocialLinkFindFirstArgs>(args?: SelectSubset<T, CompanySocialLinkFindFirstArgs<ExtArgs>>): Prisma__CompanySocialLinkClient<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first CompanySocialLink that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanySocialLinkFindFirstOrThrowArgs} args - Arguments to find a CompanySocialLink
-     * @example
-     * // Get one CompanySocialLink
-     * const companySocialLink = await prisma.companySocialLink.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends CompanySocialLinkFindFirstOrThrowArgs>(args?: SelectSubset<T, CompanySocialLinkFindFirstOrThrowArgs<ExtArgs>>): Prisma__CompanySocialLinkClient<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more CompanySocialLinks that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanySocialLinkFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all CompanySocialLinks
-     * const companySocialLinks = await prisma.companySocialLink.findMany()
-     * 
-     * // Get first 10 CompanySocialLinks
-     * const companySocialLinks = await prisma.companySocialLink.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const companySocialLinkWithIdOnly = await prisma.companySocialLink.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends CompanySocialLinkFindManyArgs>(args?: SelectSubset<T, CompanySocialLinkFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a CompanySocialLink.
-     * @param {CompanySocialLinkCreateArgs} args - Arguments to create a CompanySocialLink.
-     * @example
-     * // Create one CompanySocialLink
-     * const CompanySocialLink = await prisma.companySocialLink.create({
-     *   data: {
-     *     // ... data to create a CompanySocialLink
-     *   }
-     * })
-     * 
-     */
-    create<T extends CompanySocialLinkCreateArgs>(args: SelectSubset<T, CompanySocialLinkCreateArgs<ExtArgs>>): Prisma__CompanySocialLinkClient<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many CompanySocialLinks.
-     * @param {CompanySocialLinkCreateManyArgs} args - Arguments to create many CompanySocialLinks.
-     * @example
-     * // Create many CompanySocialLinks
-     * const companySocialLink = await prisma.companySocialLink.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends CompanySocialLinkCreateManyArgs>(args?: SelectSubset<T, CompanySocialLinkCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many CompanySocialLinks and returns the data saved in the database.
-     * @param {CompanySocialLinkCreateManyAndReturnArgs} args - Arguments to create many CompanySocialLinks.
-     * @example
-     * // Create many CompanySocialLinks
-     * const companySocialLink = await prisma.companySocialLink.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many CompanySocialLinks and only return the `id`
-     * const companySocialLinkWithIdOnly = await prisma.companySocialLink.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends CompanySocialLinkCreateManyAndReturnArgs>(args?: SelectSubset<T, CompanySocialLinkCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a CompanySocialLink.
-     * @param {CompanySocialLinkDeleteArgs} args - Arguments to delete one CompanySocialLink.
-     * @example
-     * // Delete one CompanySocialLink
-     * const CompanySocialLink = await prisma.companySocialLink.delete({
-     *   where: {
-     *     // ... filter to delete one CompanySocialLink
-     *   }
-     * })
-     * 
-     */
-    delete<T extends CompanySocialLinkDeleteArgs>(args: SelectSubset<T, CompanySocialLinkDeleteArgs<ExtArgs>>): Prisma__CompanySocialLinkClient<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one CompanySocialLink.
-     * @param {CompanySocialLinkUpdateArgs} args - Arguments to update one CompanySocialLink.
-     * @example
-     * // Update one CompanySocialLink
-     * const companySocialLink = await prisma.companySocialLink.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends CompanySocialLinkUpdateArgs>(args: SelectSubset<T, CompanySocialLinkUpdateArgs<ExtArgs>>): Prisma__CompanySocialLinkClient<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more CompanySocialLinks.
-     * @param {CompanySocialLinkDeleteManyArgs} args - Arguments to filter CompanySocialLinks to delete.
-     * @example
-     * // Delete a few CompanySocialLinks
-     * const { count } = await prisma.companySocialLink.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends CompanySocialLinkDeleteManyArgs>(args?: SelectSubset<T, CompanySocialLinkDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more CompanySocialLinks.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanySocialLinkUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many CompanySocialLinks
-     * const companySocialLink = await prisma.companySocialLink.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends CompanySocialLinkUpdateManyArgs>(args: SelectSubset<T, CompanySocialLinkUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more CompanySocialLinks and returns the data updated in the database.
-     * @param {CompanySocialLinkUpdateManyAndReturnArgs} args - Arguments to update many CompanySocialLinks.
-     * @example
-     * // Update many CompanySocialLinks
-     * const companySocialLink = await prisma.companySocialLink.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more CompanySocialLinks and only return the `id`
-     * const companySocialLinkWithIdOnly = await prisma.companySocialLink.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends CompanySocialLinkUpdateManyAndReturnArgs>(args: SelectSubset<T, CompanySocialLinkUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one CompanySocialLink.
-     * @param {CompanySocialLinkUpsertArgs} args - Arguments to update or create a CompanySocialLink.
-     * @example
-     * // Update or create a CompanySocialLink
-     * const companySocialLink = await prisma.companySocialLink.upsert({
-     *   create: {
-     *     // ... data to create a CompanySocialLink
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the CompanySocialLink we want to update
-     *   }
-     * })
-     */
-    upsert<T extends CompanySocialLinkUpsertArgs>(args: SelectSubset<T, CompanySocialLinkUpsertArgs<ExtArgs>>): Prisma__CompanySocialLinkClient<$Result.GetResult<Prisma.$CompanySocialLinkPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of CompanySocialLinks.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanySocialLinkCountArgs} args - Arguments to filter CompanySocialLinks to count.
-     * @example
-     * // Count the number of CompanySocialLinks
-     * const count = await prisma.companySocialLink.count({
-     *   where: {
-     *     // ... the filter for the CompanySocialLinks we want to count
-     *   }
-     * })
-    **/
-    count<T extends CompanySocialLinkCountArgs>(
-      args?: Subset<T, CompanySocialLinkCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], CompanySocialLinkCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a CompanySocialLink.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanySocialLinkAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends CompanySocialLinkAggregateArgs>(args: Subset<T, CompanySocialLinkAggregateArgs>): Prisma.PrismaPromise<GetCompanySocialLinkAggregateType<T>>
-
-    /**
-     * Group by CompanySocialLink.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanySocialLinkGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends CompanySocialLinkGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: CompanySocialLinkGroupByArgs['orderBy'] }
-        : { orderBy?: CompanySocialLinkGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, CompanySocialLinkGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCompanySocialLinkGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the CompanySocialLink model
-   */
-  readonly fields: CompanySocialLinkFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for CompanySocialLink.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__CompanySocialLinkClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the CompanySocialLink model
-   */
-  interface CompanySocialLinkFieldRefs {
-    readonly id: FieldRef<"CompanySocialLink", 'String'>
-    readonly companyId: FieldRef<"CompanySocialLink", 'String'>
-    readonly platform: FieldRef<"CompanySocialLink", 'String'>
-    readonly handle: FieldRef<"CompanySocialLink", 'String'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * CompanySocialLink findUnique
-   */
-  export type CompanySocialLinkFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanySocialLink
-     */
-    select?: CompanySocialLinkSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanySocialLink
-     */
-    omit?: CompanySocialLinkOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanySocialLinkInclude<ExtArgs> | null
-    /**
-     * Filter, which CompanySocialLink to fetch.
-     */
-    where: CompanySocialLinkWhereUniqueInput
-  }
-
-  /**
-   * CompanySocialLink findUniqueOrThrow
-   */
-  export type CompanySocialLinkFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanySocialLink
-     */
-    select?: CompanySocialLinkSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanySocialLink
-     */
-    omit?: CompanySocialLinkOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanySocialLinkInclude<ExtArgs> | null
-    /**
-     * Filter, which CompanySocialLink to fetch.
-     */
-    where: CompanySocialLinkWhereUniqueInput
-  }
-
-  /**
-   * CompanySocialLink findFirst
-   */
-  export type CompanySocialLinkFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanySocialLink
-     */
-    select?: CompanySocialLinkSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanySocialLink
-     */
-    omit?: CompanySocialLinkOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanySocialLinkInclude<ExtArgs> | null
-    /**
-     * Filter, which CompanySocialLink to fetch.
-     */
-    where?: CompanySocialLinkWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of CompanySocialLinks to fetch.
-     */
-    orderBy?: CompanySocialLinkOrderByWithRelationInput | CompanySocialLinkOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for CompanySocialLinks.
-     */
-    cursor?: CompanySocialLinkWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` CompanySocialLinks from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` CompanySocialLinks.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of CompanySocialLinks.
-     */
-    distinct?: CompanySocialLinkScalarFieldEnum | CompanySocialLinkScalarFieldEnum[]
-  }
-
-  /**
-   * CompanySocialLink findFirstOrThrow
-   */
-  export type CompanySocialLinkFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanySocialLink
-     */
-    select?: CompanySocialLinkSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanySocialLink
-     */
-    omit?: CompanySocialLinkOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanySocialLinkInclude<ExtArgs> | null
-    /**
-     * Filter, which CompanySocialLink to fetch.
-     */
-    where?: CompanySocialLinkWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of CompanySocialLinks to fetch.
-     */
-    orderBy?: CompanySocialLinkOrderByWithRelationInput | CompanySocialLinkOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for CompanySocialLinks.
-     */
-    cursor?: CompanySocialLinkWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` CompanySocialLinks from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` CompanySocialLinks.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of CompanySocialLinks.
-     */
-    distinct?: CompanySocialLinkScalarFieldEnum | CompanySocialLinkScalarFieldEnum[]
-  }
-
-  /**
-   * CompanySocialLink findMany
-   */
-  export type CompanySocialLinkFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanySocialLink
-     */
-    select?: CompanySocialLinkSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanySocialLink
-     */
-    omit?: CompanySocialLinkOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanySocialLinkInclude<ExtArgs> | null
-    /**
-     * Filter, which CompanySocialLinks to fetch.
-     */
-    where?: CompanySocialLinkWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of CompanySocialLinks to fetch.
-     */
-    orderBy?: CompanySocialLinkOrderByWithRelationInput | CompanySocialLinkOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing CompanySocialLinks.
-     */
-    cursor?: CompanySocialLinkWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` CompanySocialLinks from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` CompanySocialLinks.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of CompanySocialLinks.
-     */
-    distinct?: CompanySocialLinkScalarFieldEnum | CompanySocialLinkScalarFieldEnum[]
-  }
-
-  /**
-   * CompanySocialLink create
-   */
-  export type CompanySocialLinkCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanySocialLink
-     */
-    select?: CompanySocialLinkSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanySocialLink
-     */
-    omit?: CompanySocialLinkOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanySocialLinkInclude<ExtArgs> | null
-    /**
-     * The data needed to create a CompanySocialLink.
-     */
-    data: XOR<CompanySocialLinkCreateInput, CompanySocialLinkUncheckedCreateInput>
-  }
-
-  /**
-   * CompanySocialLink createMany
-   */
-  export type CompanySocialLinkCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many CompanySocialLinks.
-     */
-    data: CompanySocialLinkCreateManyInput | CompanySocialLinkCreateManyInput[]
-  }
-
-  /**
-   * CompanySocialLink createManyAndReturn
-   */
-  export type CompanySocialLinkCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanySocialLink
-     */
-    select?: CompanySocialLinkSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanySocialLink
-     */
-    omit?: CompanySocialLinkOmit<ExtArgs> | null
-    /**
-     * The data used to create many CompanySocialLinks.
-     */
-    data: CompanySocialLinkCreateManyInput | CompanySocialLinkCreateManyInput[]
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanySocialLinkIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * CompanySocialLink update
-   */
-  export type CompanySocialLinkUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanySocialLink
-     */
-    select?: CompanySocialLinkSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanySocialLink
-     */
-    omit?: CompanySocialLinkOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanySocialLinkInclude<ExtArgs> | null
-    /**
-     * The data needed to update a CompanySocialLink.
-     */
-    data: XOR<CompanySocialLinkUpdateInput, CompanySocialLinkUncheckedUpdateInput>
-    /**
-     * Choose, which CompanySocialLink to update.
-     */
-    where: CompanySocialLinkWhereUniqueInput
-  }
-
-  /**
-   * CompanySocialLink updateMany
-   */
-  export type CompanySocialLinkUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update CompanySocialLinks.
-     */
-    data: XOR<CompanySocialLinkUpdateManyMutationInput, CompanySocialLinkUncheckedUpdateManyInput>
-    /**
-     * Filter which CompanySocialLinks to update
-     */
-    where?: CompanySocialLinkWhereInput
-    /**
-     * Limit how many CompanySocialLinks to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * CompanySocialLink updateManyAndReturn
-   */
-  export type CompanySocialLinkUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanySocialLink
-     */
-    select?: CompanySocialLinkSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanySocialLink
-     */
-    omit?: CompanySocialLinkOmit<ExtArgs> | null
-    /**
-     * The data used to update CompanySocialLinks.
-     */
-    data: XOR<CompanySocialLinkUpdateManyMutationInput, CompanySocialLinkUncheckedUpdateManyInput>
-    /**
-     * Filter which CompanySocialLinks to update
-     */
-    where?: CompanySocialLinkWhereInput
-    /**
-     * Limit how many CompanySocialLinks to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanySocialLinkIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * CompanySocialLink upsert
-   */
-  export type CompanySocialLinkUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanySocialLink
-     */
-    select?: CompanySocialLinkSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanySocialLink
-     */
-    omit?: CompanySocialLinkOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanySocialLinkInclude<ExtArgs> | null
-    /**
-     * The filter to search for the CompanySocialLink to update in case it exists.
-     */
-    where: CompanySocialLinkWhereUniqueInput
-    /**
-     * In case the CompanySocialLink found by the `where` argument doesn't exist, create a new CompanySocialLink with this data.
-     */
-    create: XOR<CompanySocialLinkCreateInput, CompanySocialLinkUncheckedCreateInput>
-    /**
-     * In case the CompanySocialLink was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<CompanySocialLinkUpdateInput, CompanySocialLinkUncheckedUpdateInput>
-  }
-
-  /**
-   * CompanySocialLink delete
-   */
-  export type CompanySocialLinkDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanySocialLink
-     */
-    select?: CompanySocialLinkSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanySocialLink
-     */
-    omit?: CompanySocialLinkOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanySocialLinkInclude<ExtArgs> | null
-    /**
-     * Filter which CompanySocialLink to delete.
-     */
-    where: CompanySocialLinkWhereUniqueInput
-  }
-
-  /**
-   * CompanySocialLink deleteMany
-   */
-  export type CompanySocialLinkDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which CompanySocialLinks to delete
-     */
-    where?: CompanySocialLinkWhereInput
-    /**
-     * Limit how many CompanySocialLinks to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * CompanySocialLink without action
-   */
-  export type CompanySocialLinkDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanySocialLink
-     */
-    select?: CompanySocialLinkSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanySocialLink
-     */
-    omit?: CompanySocialLinkOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanySocialLinkInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model CompanyNote
-   */
-
-  export type AggregateCompanyNote = {
-    _count: CompanyNoteCountAggregateOutputType | null
-    _min: CompanyNoteMinAggregateOutputType | null
-    _max: CompanyNoteMaxAggregateOutputType | null
-  }
-
-  export type CompanyNoteMinAggregateOutputType = {
-    id: string | null
-    text: string | null
-    companyId: string | null
-    createdAt: Date | null
-  }
-
-  export type CompanyNoteMaxAggregateOutputType = {
-    id: string | null
-    text: string | null
-    companyId: string | null
-    createdAt: Date | null
-  }
-
-  export type CompanyNoteCountAggregateOutputType = {
-    id: number
-    text: number
-    companyId: number
-    createdAt: number
-    _all: number
-  }
-
-
-  export type CompanyNoteMinAggregateInputType = {
-    id?: true
-    text?: true
-    companyId?: true
-    createdAt?: true
-  }
-
-  export type CompanyNoteMaxAggregateInputType = {
-    id?: true
-    text?: true
-    companyId?: true
-    createdAt?: true
-  }
-
-  export type CompanyNoteCountAggregateInputType = {
-    id?: true
-    text?: true
-    companyId?: true
-    createdAt?: true
-    _all?: true
-  }
-
-  export type CompanyNoteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which CompanyNote to aggregate.
-     */
-    where?: CompanyNoteWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of CompanyNotes to fetch.
-     */
-    orderBy?: CompanyNoteOrderByWithRelationInput | CompanyNoteOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: CompanyNoteWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` CompanyNotes from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` CompanyNotes.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned CompanyNotes
-    **/
-    _count?: true | CompanyNoteCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: CompanyNoteMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: CompanyNoteMaxAggregateInputType
-  }
-
-  export type GetCompanyNoteAggregateType<T extends CompanyNoteAggregateArgs> = {
-        [P in keyof T & keyof AggregateCompanyNote]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateCompanyNote[P]>
-      : GetScalarType<T[P], AggregateCompanyNote[P]>
-  }
-
-
-
-
-  export type CompanyNoteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CompanyNoteWhereInput
-    orderBy?: CompanyNoteOrderByWithAggregationInput | CompanyNoteOrderByWithAggregationInput[]
-    by: CompanyNoteScalarFieldEnum[] | CompanyNoteScalarFieldEnum
-    having?: CompanyNoteScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: CompanyNoteCountAggregateInputType | true
-    _min?: CompanyNoteMinAggregateInputType
-    _max?: CompanyNoteMaxAggregateInputType
-  }
-
-  export type CompanyNoteGroupByOutputType = {
-    id: string
-    text: string
-    companyId: string
-    createdAt: Date
-    _count: CompanyNoteCountAggregateOutputType | null
-    _min: CompanyNoteMinAggregateOutputType | null
-    _max: CompanyNoteMaxAggregateOutputType | null
-  }
-
-  type GetCompanyNoteGroupByPayload<T extends CompanyNoteGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<CompanyNoteGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof CompanyNoteGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], CompanyNoteGroupByOutputType[P]>
-            : GetScalarType<T[P], CompanyNoteGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type CompanyNoteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    text?: boolean
-    companyId?: boolean
-    createdAt?: boolean
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["companyNote"]>
-
-  export type CompanyNoteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    text?: boolean
-    companyId?: boolean
-    createdAt?: boolean
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["companyNote"]>
-
-  export type CompanyNoteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    text?: boolean
-    companyId?: boolean
-    createdAt?: boolean
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["companyNote"]>
-
-  export type CompanyNoteSelectScalar = {
-    id?: boolean
-    text?: boolean
-    companyId?: boolean
-    createdAt?: boolean
-  }
-
-  export type CompanyNoteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "companyId" | "createdAt", ExtArgs["result"]["companyNote"]>
-  export type CompanyNoteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }
-  export type CompanyNoteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }
-  export type CompanyNoteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }
-
-  export type $CompanyNotePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "CompanyNote"
-    objects: {
-      company: Prisma.$CompanyPayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      text: string
-      companyId: string
-      createdAt: Date
-    }, ExtArgs["result"]["companyNote"]>
-    composites: {}
-  }
-
-  type CompanyNoteGetPayload<S extends boolean | null | undefined | CompanyNoteDefaultArgs> = $Result.GetResult<Prisma.$CompanyNotePayload, S>
-
-  type CompanyNoteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<CompanyNoteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: CompanyNoteCountAggregateInputType | true
-    }
-
-  export interface CompanyNoteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CompanyNote'], meta: { name: 'CompanyNote' } }
-    /**
-     * Find zero or one CompanyNote that matches the filter.
-     * @param {CompanyNoteFindUniqueArgs} args - Arguments to find a CompanyNote
-     * @example
-     * // Get one CompanyNote
-     * const companyNote = await prisma.companyNote.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends CompanyNoteFindUniqueArgs>(args: SelectSubset<T, CompanyNoteFindUniqueArgs<ExtArgs>>): Prisma__CompanyNoteClient<$Result.GetResult<Prisma.$CompanyNotePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one CompanyNote that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {CompanyNoteFindUniqueOrThrowArgs} args - Arguments to find a CompanyNote
-     * @example
-     * // Get one CompanyNote
-     * const companyNote = await prisma.companyNote.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends CompanyNoteFindUniqueOrThrowArgs>(args: SelectSubset<T, CompanyNoteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CompanyNoteClient<$Result.GetResult<Prisma.$CompanyNotePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first CompanyNote that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyNoteFindFirstArgs} args - Arguments to find a CompanyNote
-     * @example
-     * // Get one CompanyNote
-     * const companyNote = await prisma.companyNote.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends CompanyNoteFindFirstArgs>(args?: SelectSubset<T, CompanyNoteFindFirstArgs<ExtArgs>>): Prisma__CompanyNoteClient<$Result.GetResult<Prisma.$CompanyNotePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first CompanyNote that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyNoteFindFirstOrThrowArgs} args - Arguments to find a CompanyNote
-     * @example
-     * // Get one CompanyNote
-     * const companyNote = await prisma.companyNote.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends CompanyNoteFindFirstOrThrowArgs>(args?: SelectSubset<T, CompanyNoteFindFirstOrThrowArgs<ExtArgs>>): Prisma__CompanyNoteClient<$Result.GetResult<Prisma.$CompanyNotePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more CompanyNotes that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyNoteFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all CompanyNotes
-     * const companyNotes = await prisma.companyNote.findMany()
-     * 
-     * // Get first 10 CompanyNotes
-     * const companyNotes = await prisma.companyNote.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const companyNoteWithIdOnly = await prisma.companyNote.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends CompanyNoteFindManyArgs>(args?: SelectSubset<T, CompanyNoteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a CompanyNote.
-     * @param {CompanyNoteCreateArgs} args - Arguments to create a CompanyNote.
-     * @example
-     * // Create one CompanyNote
-     * const CompanyNote = await prisma.companyNote.create({
-     *   data: {
-     *     // ... data to create a CompanyNote
-     *   }
-     * })
-     * 
-     */
-    create<T extends CompanyNoteCreateArgs>(args: SelectSubset<T, CompanyNoteCreateArgs<ExtArgs>>): Prisma__CompanyNoteClient<$Result.GetResult<Prisma.$CompanyNotePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many CompanyNotes.
-     * @param {CompanyNoteCreateManyArgs} args - Arguments to create many CompanyNotes.
-     * @example
-     * // Create many CompanyNotes
-     * const companyNote = await prisma.companyNote.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends CompanyNoteCreateManyArgs>(args?: SelectSubset<T, CompanyNoteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many CompanyNotes and returns the data saved in the database.
-     * @param {CompanyNoteCreateManyAndReturnArgs} args - Arguments to create many CompanyNotes.
-     * @example
-     * // Create many CompanyNotes
-     * const companyNote = await prisma.companyNote.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many CompanyNotes and only return the `id`
-     * const companyNoteWithIdOnly = await prisma.companyNote.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends CompanyNoteCreateManyAndReturnArgs>(args?: SelectSubset<T, CompanyNoteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyNotePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a CompanyNote.
-     * @param {CompanyNoteDeleteArgs} args - Arguments to delete one CompanyNote.
-     * @example
-     * // Delete one CompanyNote
-     * const CompanyNote = await prisma.companyNote.delete({
-     *   where: {
-     *     // ... filter to delete one CompanyNote
-     *   }
-     * })
-     * 
-     */
-    delete<T extends CompanyNoteDeleteArgs>(args: SelectSubset<T, CompanyNoteDeleteArgs<ExtArgs>>): Prisma__CompanyNoteClient<$Result.GetResult<Prisma.$CompanyNotePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one CompanyNote.
-     * @param {CompanyNoteUpdateArgs} args - Arguments to update one CompanyNote.
-     * @example
-     * // Update one CompanyNote
-     * const companyNote = await prisma.companyNote.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends CompanyNoteUpdateArgs>(args: SelectSubset<T, CompanyNoteUpdateArgs<ExtArgs>>): Prisma__CompanyNoteClient<$Result.GetResult<Prisma.$CompanyNotePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more CompanyNotes.
-     * @param {CompanyNoteDeleteManyArgs} args - Arguments to filter CompanyNotes to delete.
-     * @example
-     * // Delete a few CompanyNotes
-     * const { count } = await prisma.companyNote.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends CompanyNoteDeleteManyArgs>(args?: SelectSubset<T, CompanyNoteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more CompanyNotes.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyNoteUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many CompanyNotes
-     * const companyNote = await prisma.companyNote.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends CompanyNoteUpdateManyArgs>(args: SelectSubset<T, CompanyNoteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more CompanyNotes and returns the data updated in the database.
-     * @param {CompanyNoteUpdateManyAndReturnArgs} args - Arguments to update many CompanyNotes.
-     * @example
-     * // Update many CompanyNotes
-     * const companyNote = await prisma.companyNote.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more CompanyNotes and only return the `id`
-     * const companyNoteWithIdOnly = await prisma.companyNote.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends CompanyNoteUpdateManyAndReturnArgs>(args: SelectSubset<T, CompanyNoteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyNotePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one CompanyNote.
-     * @param {CompanyNoteUpsertArgs} args - Arguments to update or create a CompanyNote.
-     * @example
-     * // Update or create a CompanyNote
-     * const companyNote = await prisma.companyNote.upsert({
-     *   create: {
-     *     // ... data to create a CompanyNote
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the CompanyNote we want to update
-     *   }
-     * })
-     */
-    upsert<T extends CompanyNoteUpsertArgs>(args: SelectSubset<T, CompanyNoteUpsertArgs<ExtArgs>>): Prisma__CompanyNoteClient<$Result.GetResult<Prisma.$CompanyNotePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of CompanyNotes.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyNoteCountArgs} args - Arguments to filter CompanyNotes to count.
-     * @example
-     * // Count the number of CompanyNotes
-     * const count = await prisma.companyNote.count({
-     *   where: {
-     *     // ... the filter for the CompanyNotes we want to count
-     *   }
-     * })
-    **/
-    count<T extends CompanyNoteCountArgs>(
-      args?: Subset<T, CompanyNoteCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], CompanyNoteCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a CompanyNote.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyNoteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends CompanyNoteAggregateArgs>(args: Subset<T, CompanyNoteAggregateArgs>): Prisma.PrismaPromise<GetCompanyNoteAggregateType<T>>
-
-    /**
-     * Group by CompanyNote.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyNoteGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends CompanyNoteGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: CompanyNoteGroupByArgs['orderBy'] }
-        : { orderBy?: CompanyNoteGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, CompanyNoteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCompanyNoteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the CompanyNote model
-   */
-  readonly fields: CompanyNoteFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for CompanyNote.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__CompanyNoteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the CompanyNote model
-   */
-  interface CompanyNoteFieldRefs {
-    readonly id: FieldRef<"CompanyNote", 'String'>
-    readonly text: FieldRef<"CompanyNote", 'String'>
-    readonly companyId: FieldRef<"CompanyNote", 'String'>
-    readonly createdAt: FieldRef<"CompanyNote", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * CompanyNote findUnique
-   */
-  export type CompanyNoteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyNote
-     */
-    select?: CompanyNoteSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyNote
-     */
-    omit?: CompanyNoteOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyNoteInclude<ExtArgs> | null
-    /**
-     * Filter, which CompanyNote to fetch.
-     */
-    where: CompanyNoteWhereUniqueInput
-  }
-
-  /**
-   * CompanyNote findUniqueOrThrow
-   */
-  export type CompanyNoteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyNote
-     */
-    select?: CompanyNoteSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyNote
-     */
-    omit?: CompanyNoteOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyNoteInclude<ExtArgs> | null
-    /**
-     * Filter, which CompanyNote to fetch.
-     */
-    where: CompanyNoteWhereUniqueInput
-  }
-
-  /**
-   * CompanyNote findFirst
-   */
-  export type CompanyNoteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyNote
-     */
-    select?: CompanyNoteSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyNote
-     */
-    omit?: CompanyNoteOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyNoteInclude<ExtArgs> | null
-    /**
-     * Filter, which CompanyNote to fetch.
-     */
-    where?: CompanyNoteWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of CompanyNotes to fetch.
-     */
-    orderBy?: CompanyNoteOrderByWithRelationInput | CompanyNoteOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for CompanyNotes.
-     */
-    cursor?: CompanyNoteWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` CompanyNotes from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` CompanyNotes.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of CompanyNotes.
-     */
-    distinct?: CompanyNoteScalarFieldEnum | CompanyNoteScalarFieldEnum[]
-  }
-
-  /**
-   * CompanyNote findFirstOrThrow
-   */
-  export type CompanyNoteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyNote
-     */
-    select?: CompanyNoteSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyNote
-     */
-    omit?: CompanyNoteOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyNoteInclude<ExtArgs> | null
-    /**
-     * Filter, which CompanyNote to fetch.
-     */
-    where?: CompanyNoteWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of CompanyNotes to fetch.
-     */
-    orderBy?: CompanyNoteOrderByWithRelationInput | CompanyNoteOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for CompanyNotes.
-     */
-    cursor?: CompanyNoteWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` CompanyNotes from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` CompanyNotes.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of CompanyNotes.
-     */
-    distinct?: CompanyNoteScalarFieldEnum | CompanyNoteScalarFieldEnum[]
-  }
-
-  /**
-   * CompanyNote findMany
-   */
-  export type CompanyNoteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyNote
-     */
-    select?: CompanyNoteSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyNote
-     */
-    omit?: CompanyNoteOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyNoteInclude<ExtArgs> | null
-    /**
-     * Filter, which CompanyNotes to fetch.
-     */
-    where?: CompanyNoteWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of CompanyNotes to fetch.
-     */
-    orderBy?: CompanyNoteOrderByWithRelationInput | CompanyNoteOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing CompanyNotes.
-     */
-    cursor?: CompanyNoteWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` CompanyNotes from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` CompanyNotes.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of CompanyNotes.
-     */
-    distinct?: CompanyNoteScalarFieldEnum | CompanyNoteScalarFieldEnum[]
-  }
-
-  /**
-   * CompanyNote create
-   */
-  export type CompanyNoteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyNote
-     */
-    select?: CompanyNoteSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyNote
-     */
-    omit?: CompanyNoteOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyNoteInclude<ExtArgs> | null
-    /**
-     * The data needed to create a CompanyNote.
-     */
-    data: XOR<CompanyNoteCreateInput, CompanyNoteUncheckedCreateInput>
-  }
-
-  /**
-   * CompanyNote createMany
-   */
-  export type CompanyNoteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many CompanyNotes.
-     */
-    data: CompanyNoteCreateManyInput | CompanyNoteCreateManyInput[]
-  }
-
-  /**
-   * CompanyNote createManyAndReturn
-   */
-  export type CompanyNoteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyNote
-     */
-    select?: CompanyNoteSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyNote
-     */
-    omit?: CompanyNoteOmit<ExtArgs> | null
-    /**
-     * The data used to create many CompanyNotes.
-     */
-    data: CompanyNoteCreateManyInput | CompanyNoteCreateManyInput[]
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyNoteIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * CompanyNote update
-   */
-  export type CompanyNoteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyNote
-     */
-    select?: CompanyNoteSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyNote
-     */
-    omit?: CompanyNoteOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyNoteInclude<ExtArgs> | null
-    /**
-     * The data needed to update a CompanyNote.
-     */
-    data: XOR<CompanyNoteUpdateInput, CompanyNoteUncheckedUpdateInput>
-    /**
-     * Choose, which CompanyNote to update.
-     */
-    where: CompanyNoteWhereUniqueInput
-  }
-
-  /**
-   * CompanyNote updateMany
-   */
-  export type CompanyNoteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update CompanyNotes.
-     */
-    data: XOR<CompanyNoteUpdateManyMutationInput, CompanyNoteUncheckedUpdateManyInput>
-    /**
-     * Filter which CompanyNotes to update
-     */
-    where?: CompanyNoteWhereInput
-    /**
-     * Limit how many CompanyNotes to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * CompanyNote updateManyAndReturn
-   */
-  export type CompanyNoteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyNote
-     */
-    select?: CompanyNoteSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyNote
-     */
-    omit?: CompanyNoteOmit<ExtArgs> | null
-    /**
-     * The data used to update CompanyNotes.
-     */
-    data: XOR<CompanyNoteUpdateManyMutationInput, CompanyNoteUncheckedUpdateManyInput>
-    /**
-     * Filter which CompanyNotes to update
-     */
-    where?: CompanyNoteWhereInput
-    /**
-     * Limit how many CompanyNotes to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyNoteIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * CompanyNote upsert
-   */
-  export type CompanyNoteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyNote
-     */
-    select?: CompanyNoteSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyNote
-     */
-    omit?: CompanyNoteOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyNoteInclude<ExtArgs> | null
-    /**
-     * The filter to search for the CompanyNote to update in case it exists.
-     */
-    where: CompanyNoteWhereUniqueInput
-    /**
-     * In case the CompanyNote found by the `where` argument doesn't exist, create a new CompanyNote with this data.
-     */
-    create: XOR<CompanyNoteCreateInput, CompanyNoteUncheckedCreateInput>
-    /**
-     * In case the CompanyNote was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<CompanyNoteUpdateInput, CompanyNoteUncheckedUpdateInput>
-  }
-
-  /**
-   * CompanyNote delete
-   */
-  export type CompanyNoteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyNote
-     */
-    select?: CompanyNoteSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyNote
-     */
-    omit?: CompanyNoteOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyNoteInclude<ExtArgs> | null
-    /**
-     * Filter which CompanyNote to delete.
-     */
-    where: CompanyNoteWhereUniqueInput
-  }
-
-  /**
-   * CompanyNote deleteMany
-   */
-  export type CompanyNoteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which CompanyNotes to delete
-     */
-    where?: CompanyNoteWhereInput
-    /**
-     * Limit how many CompanyNotes to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * CompanyNote without action
-   */
-  export type CompanyNoteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CompanyNote
-     */
-    select?: CompanyNoteSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CompanyNote
-     */
-    omit?: CompanyNoteOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CompanyNoteInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model Lead
-   */
-
-  export type AggregateLead = {
-    _count: LeadCountAggregateOutputType | null
-    _min: LeadMinAggregateOutputType | null
-    _max: LeadMaxAggregateOutputType | null
-  }
-
-  export type LeadMinAggregateOutputType = {
-    id: string | null
-    firstName: string | null
-    lastName: string | null
-    title: string | null
-    email: string | null
-    phone: string | null
-    officePhone: string | null
-    status: string | null
-    isVip: boolean | null
-    companyId: string | null
-    createdAt: Date | null
-  }
-
-  export type LeadMaxAggregateOutputType = {
-    id: string | null
-    firstName: string | null
-    lastName: string | null
-    title: string | null
-    email: string | null
-    phone: string | null
-    officePhone: string | null
-    status: string | null
-    isVip: boolean | null
-    companyId: string | null
-    createdAt: Date | null
-  }
-
-  export type LeadCountAggregateOutputType = {
-    id: number
-    firstName: number
-    lastName: number
-    title: number
-    email: number
-    phone: number
-    officePhone: number
-    status: number
-    isVip: number
-    companyId: number
-    createdAt: number
-    _all: number
-  }
-
-
-  export type LeadMinAggregateInputType = {
-    id?: true
-    firstName?: true
-    lastName?: true
-    title?: true
-    email?: true
-    phone?: true
-    officePhone?: true
-    status?: true
-    isVip?: true
-    companyId?: true
-    createdAt?: true
-  }
-
-  export type LeadMaxAggregateInputType = {
-    id?: true
-    firstName?: true
-    lastName?: true
-    title?: true
-    email?: true
-    phone?: true
-    officePhone?: true
-    status?: true
-    isVip?: true
-    companyId?: true
-    createdAt?: true
-  }
-
-  export type LeadCountAggregateInputType = {
-    id?: true
-    firstName?: true
-    lastName?: true
-    title?: true
-    email?: true
-    phone?: true
-    officePhone?: true
-    status?: true
-    isVip?: true
-    companyId?: true
-    createdAt?: true
-    _all?: true
-  }
-
-  export type LeadAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Lead to aggregate.
-     */
-    where?: LeadWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Leads to fetch.
-     */
-    orderBy?: LeadOrderByWithRelationInput | LeadOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: LeadWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Leads from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Leads.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Leads
-    **/
-    _count?: true | LeadCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: LeadMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: LeadMaxAggregateInputType
-  }
-
-  export type GetLeadAggregateType<T extends LeadAggregateArgs> = {
-        [P in keyof T & keyof AggregateLead]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateLead[P]>
-      : GetScalarType<T[P], AggregateLead[P]>
-  }
-
-
-
-
-  export type LeadGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: LeadWhereInput
-    orderBy?: LeadOrderByWithAggregationInput | LeadOrderByWithAggregationInput[]
-    by: LeadScalarFieldEnum[] | LeadScalarFieldEnum
-    having?: LeadScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: LeadCountAggregateInputType | true
-    _min?: LeadMinAggregateInputType
-    _max?: LeadMaxAggregateInputType
-  }
-
-  export type LeadGroupByOutputType = {
-    id: string
-    firstName: string
-    lastName: string
-    title: string | null
-    email: string | null
-    phone: string | null
-    officePhone: string | null
-    status: string
-    isVip: boolean
-    companyId: string
-    createdAt: Date
-    _count: LeadCountAggregateOutputType | null
-    _min: LeadMinAggregateOutputType | null
-    _max: LeadMaxAggregateOutputType | null
-  }
-
-  type GetLeadGroupByPayload<T extends LeadGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<LeadGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof LeadGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], LeadGroupByOutputType[P]>
-            : GetScalarType<T[P], LeadGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type LeadSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    firstName?: boolean
-    lastName?: boolean
-    title?: boolean
-    email?: boolean
-    phone?: boolean
-    officePhone?: boolean
-    status?: boolean
-    isVip?: boolean
-    companyId?: boolean
-    createdAt?: boolean
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-    touches?: boolean | Lead$touchesArgs<ExtArgs>
-    notes?: boolean | Lead$notesArgs<ExtArgs>
-    _count?: boolean | LeadCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["lead"]>
-
-  export type LeadSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    firstName?: boolean
-    lastName?: boolean
-    title?: boolean
-    email?: boolean
-    phone?: boolean
-    officePhone?: boolean
-    status?: boolean
-    isVip?: boolean
-    companyId?: boolean
-    createdAt?: boolean
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["lead"]>
-
-  export type LeadSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    firstName?: boolean
-    lastName?: boolean
-    title?: boolean
-    email?: boolean
-    phone?: boolean
-    officePhone?: boolean
-    status?: boolean
-    isVip?: boolean
-    companyId?: boolean
-    createdAt?: boolean
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["lead"]>
-
-  export type LeadSelectScalar = {
-    id?: boolean
-    firstName?: boolean
-    lastName?: boolean
-    title?: boolean
-    email?: boolean
-    phone?: boolean
-    officePhone?: boolean
-    status?: boolean
-    isVip?: boolean
-    companyId?: boolean
-    createdAt?: boolean
-  }
-
-  export type LeadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "firstName" | "lastName" | "title" | "email" | "phone" | "officePhone" | "status" | "isVip" | "companyId" | "createdAt", ExtArgs["result"]["lead"]>
-  export type LeadInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-    touches?: boolean | Lead$touchesArgs<ExtArgs>
-    notes?: boolean | Lead$notesArgs<ExtArgs>
-    _count?: boolean | LeadCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type LeadIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }
-  export type LeadIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    company?: boolean | CompanyDefaultArgs<ExtArgs>
-  }
-
-  export type $LeadPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Lead"
-    objects: {
-      company: Prisma.$CompanyPayload<ExtArgs>
-      touches: Prisma.$TouchPayload<ExtArgs>[]
-      notes: Prisma.$LeadNotePayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      firstName: string
-      lastName: string
-      title: string | null
-      email: string | null
       /**
-       * Cell / mobile number.
-       */
-      phone: string | null
-      /**
-       * Office / desk number.
-       */
-      officePhone: string | null
-      /**
-       * Pipeline stage.
-       * Allowed values: "NEW" | "CONTACTED" | "QUALIFIED" | "NURTURING" | "LOST"
+       * Pipeline / prospecting state (separate from freshness).
+       * Allowed: "NEW" | "CONTACTED" | "QUALIFIED" | "NURTURING" | "LOST"
        */
       status: string
       isVip: boolean
-      companyId: string
+      source: string | null
+      /**
+       * Responsibility only — does not restrict coworker visibility.
+       */
+      ownerUserId: string | null
+      createdByUserId: string | null
+      nextTouchAt: Date | null
+      nextTouchType: string | null
+      nextTouchNote: string | null
+      industryId: string
       createdAt: Date
-    }, ExtArgs["result"]["lead"]>
+      updatedAt: Date
+    }, ExtArgs["result"]["account"]>
     composites: {}
   }
 
-  type LeadGetPayload<S extends boolean | null | undefined | LeadDefaultArgs> = $Result.GetResult<Prisma.$LeadPayload, S>
+  type AccountGetPayload<S extends boolean | null | undefined | AccountDefaultArgs> = $Result.GetResult<Prisma.$AccountPayload, S>
 
-  type LeadCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<LeadFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: LeadCountAggregateInputType | true
+  type AccountCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AccountFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AccountCountAggregateInputType | true
     }
 
-  export interface LeadDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Lead'], meta: { name: 'Lead' } }
+  export interface AccountDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Account'], meta: { name: 'Account' } }
     /**
-     * Find zero or one Lead that matches the filter.
-     * @param {LeadFindUniqueArgs} args - Arguments to find a Lead
+     * Find zero or one Account that matches the filter.
+     * @param {AccountFindUniqueArgs} args - Arguments to find a Account
      * @example
-     * // Get one Lead
-     * const lead = await prisma.lead.findUnique({
+     * // Get one Account
+     * const account = await prisma.account.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends LeadFindUniqueArgs>(args: SelectSubset<T, LeadFindUniqueArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends AccountFindUniqueArgs>(args: SelectSubset<T, AccountFindUniqueArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one Lead that matches the filter or throw an error with `error.code='P2025'`
+     * Find one Account that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {LeadFindUniqueOrThrowArgs} args - Arguments to find a Lead
+     * @param {AccountFindUniqueOrThrowArgs} args - Arguments to find a Account
      * @example
-     * // Get one Lead
-     * const lead = await prisma.lead.findUniqueOrThrow({
+     * // Get one Account
+     * const account = await prisma.account.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends LeadFindUniqueOrThrowArgs>(args: SelectSubset<T, LeadFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends AccountFindUniqueOrThrowArgs>(args: SelectSubset<T, AccountFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first Lead that matches the filter.
+     * Find the first Account that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {LeadFindFirstArgs} args - Arguments to find a Lead
+     * @param {AccountFindFirstArgs} args - Arguments to find a Account
      * @example
-     * // Get one Lead
-     * const lead = await prisma.lead.findFirst({
+     * // Get one Account
+     * const account = await prisma.account.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends LeadFindFirstArgs>(args?: SelectSubset<T, LeadFindFirstArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends AccountFindFirstArgs>(args?: SelectSubset<T, AccountFindFirstArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first Lead that matches the filter or
+     * Find the first Account that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {LeadFindFirstOrThrowArgs} args - Arguments to find a Lead
+     * @param {AccountFindFirstOrThrowArgs} args - Arguments to find a Account
      * @example
-     * // Get one Lead
-     * const lead = await prisma.lead.findFirstOrThrow({
+     * // Get one Account
+     * const account = await prisma.account.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends LeadFindFirstOrThrowArgs>(args?: SelectSubset<T, LeadFindFirstOrThrowArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends AccountFindFirstOrThrowArgs>(args?: SelectSubset<T, AccountFindFirstOrThrowArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more Leads that matches the filter.
+     * Find zero or more Accounts that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {LeadFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {AccountFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all Leads
-     * const leads = await prisma.lead.findMany()
+     * // Get all Accounts
+     * const accounts = await prisma.account.findMany()
      * 
-     * // Get first 10 Leads
-     * const leads = await prisma.lead.findMany({ take: 10 })
+     * // Get first 10 Accounts
+     * const accounts = await prisma.account.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const leadWithIdOnly = await prisma.lead.findMany({ select: { id: true } })
+     * const accountWithIdOnly = await prisma.account.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends LeadFindManyArgs>(args?: SelectSubset<T, LeadFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends AccountFindManyArgs>(args?: SelectSubset<T, AccountFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a Lead.
-     * @param {LeadCreateArgs} args - Arguments to create a Lead.
+     * Create a Account.
+     * @param {AccountCreateArgs} args - Arguments to create a Account.
      * @example
-     * // Create one Lead
-     * const Lead = await prisma.lead.create({
+     * // Create one Account
+     * const Account = await prisma.account.create({
      *   data: {
-     *     // ... data to create a Lead
+     *     // ... data to create a Account
      *   }
      * })
      * 
      */
-    create<T extends LeadCreateArgs>(args: SelectSubset<T, LeadCreateArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends AccountCreateArgs>(args: SelectSubset<T, AccountCreateArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many Leads.
-     * @param {LeadCreateManyArgs} args - Arguments to create many Leads.
+     * Create many Accounts.
+     * @param {AccountCreateManyArgs} args - Arguments to create many Accounts.
      * @example
-     * // Create many Leads
-     * const lead = await prisma.lead.createMany({
+     * // Create many Accounts
+     * const account = await prisma.account.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends LeadCreateManyArgs>(args?: SelectSubset<T, LeadCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends AccountCreateManyArgs>(args?: SelectSubset<T, AccountCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many Leads and returns the data saved in the database.
-     * @param {LeadCreateManyAndReturnArgs} args - Arguments to create many Leads.
+     * Create many Accounts and returns the data saved in the database.
+     * @param {AccountCreateManyAndReturnArgs} args - Arguments to create many Accounts.
      * @example
-     * // Create many Leads
-     * const lead = await prisma.lead.createManyAndReturn({
+     * // Create many Accounts
+     * const account = await prisma.account.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many Leads and only return the `id`
-     * const leadWithIdOnly = await prisma.lead.createManyAndReturn({
+     * // Create many Accounts and only return the `id`
+     * const accountWithIdOnly = await prisma.account.createManyAndReturn({
      *   select: { id: true },
      *   data: [
      *     // ... provide data here
@@ -8460,28 +6922,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends LeadCreateManyAndReturnArgs>(args?: SelectSubset<T, LeadCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends AccountCreateManyAndReturnArgs>(args?: SelectSubset<T, AccountCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a Lead.
-     * @param {LeadDeleteArgs} args - Arguments to delete one Lead.
+     * Delete a Account.
+     * @param {AccountDeleteArgs} args - Arguments to delete one Account.
      * @example
-     * // Delete one Lead
-     * const Lead = await prisma.lead.delete({
+     * // Delete one Account
+     * const Account = await prisma.account.delete({
      *   where: {
-     *     // ... filter to delete one Lead
+     *     // ... filter to delete one Account
      *   }
      * })
      * 
      */
-    delete<T extends LeadDeleteArgs>(args: SelectSubset<T, LeadDeleteArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends AccountDeleteArgs>(args: SelectSubset<T, AccountDeleteArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one Lead.
-     * @param {LeadUpdateArgs} args - Arguments to update one Lead.
+     * Update one Account.
+     * @param {AccountUpdateArgs} args - Arguments to update one Account.
      * @example
-     * // Update one Lead
-     * const lead = await prisma.lead.update({
+     * // Update one Account
+     * const account = await prisma.account.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -8491,30 +6953,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends LeadUpdateArgs>(args: SelectSubset<T, LeadUpdateArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends AccountUpdateArgs>(args: SelectSubset<T, AccountUpdateArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more Leads.
-     * @param {LeadDeleteManyArgs} args - Arguments to filter Leads to delete.
+     * Delete zero or more Accounts.
+     * @param {AccountDeleteManyArgs} args - Arguments to filter Accounts to delete.
      * @example
-     * // Delete a few Leads
-     * const { count } = await prisma.lead.deleteMany({
+     * // Delete a few Accounts
+     * const { count } = await prisma.account.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends LeadDeleteManyArgs>(args?: SelectSubset<T, LeadDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends AccountDeleteManyArgs>(args?: SelectSubset<T, AccountDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more Leads.
+     * Update zero or more Accounts.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {LeadUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {AccountUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many Leads
-     * const lead = await prisma.lead.updateMany({
+     * // Update many Accounts
+     * const account = await prisma.account.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -8524,14 +6986,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends LeadUpdateManyArgs>(args: SelectSubset<T, LeadUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends AccountUpdateManyArgs>(args: SelectSubset<T, AccountUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more Leads and returns the data updated in the database.
-     * @param {LeadUpdateManyAndReturnArgs} args - Arguments to update many Leads.
+     * Update zero or more Accounts and returns the data updated in the database.
+     * @param {AccountUpdateManyAndReturnArgs} args - Arguments to update many Accounts.
      * @example
-     * // Update many Leads
-     * const lead = await prisma.lead.updateManyAndReturn({
+     * // Update many Accounts
+     * const account = await prisma.account.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -8540,8 +7002,8 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more Leads and only return the `id`
-     * const leadWithIdOnly = await prisma.lead.updateManyAndReturn({
+     * // Update zero or more Accounts and only return the `id`
+     * const accountWithIdOnly = await prisma.account.updateManyAndReturn({
      *   select: { id: true },
      *   where: {
      *     // ... provide filter here
@@ -8554,56 +7016,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends LeadUpdateManyAndReturnArgs>(args: SelectSubset<T, LeadUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends AccountUpdateManyAndReturnArgs>(args: SelectSubset<T, AccountUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one Lead.
-     * @param {LeadUpsertArgs} args - Arguments to update or create a Lead.
+     * Create or update one Account.
+     * @param {AccountUpsertArgs} args - Arguments to update or create a Account.
      * @example
-     * // Update or create a Lead
-     * const lead = await prisma.lead.upsert({
+     * // Update or create a Account
+     * const account = await prisma.account.upsert({
      *   create: {
-     *     // ... data to create a Lead
+     *     // ... data to create a Account
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the Lead we want to update
+     *     // ... the filter for the Account we want to update
      *   }
      * })
      */
-    upsert<T extends LeadUpsertArgs>(args: SelectSubset<T, LeadUpsertArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends AccountUpsertArgs>(args: SelectSubset<T, AccountUpsertArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of Leads.
+     * Count the number of Accounts.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {LeadCountArgs} args - Arguments to filter Leads to count.
+     * @param {AccountCountArgs} args - Arguments to filter Accounts to count.
      * @example
-     * // Count the number of Leads
-     * const count = await prisma.lead.count({
+     * // Count the number of Accounts
+     * const count = await prisma.account.count({
      *   where: {
-     *     // ... the filter for the Leads we want to count
+     *     // ... the filter for the Accounts we want to count
      *   }
      * })
     **/
-    count<T extends LeadCountArgs>(
-      args?: Subset<T, LeadCountArgs>,
+    count<T extends AccountCountArgs>(
+      args?: Subset<T, AccountCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], LeadCountAggregateOutputType>
+          : GetScalarType<T['select'], AccountCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a Lead.
+     * Allows you to perform aggregations operations on a Account.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {LeadAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {AccountAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -8623,13 +7085,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends LeadAggregateArgs>(args: Subset<T, LeadAggregateArgs>): Prisma.PrismaPromise<GetLeadAggregateType<T>>
+    aggregate<T extends AccountAggregateArgs>(args: Subset<T, AccountAggregateArgs>): Prisma.PrismaPromise<GetAccountAggregateType<T>>
 
     /**
-     * Group by Lead.
+     * Group by Account.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {LeadGroupByArgs} args - Group by arguments.
+     * @param {AccountGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -8644,14 +7106,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends LeadGroupByArgs,
+      T extends AccountGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: LeadGroupByArgs['orderBy'] }
-        : { orderBy?: LeadGroupByArgs['orderBy'] },
+        ? { orderBy: AccountGroupByArgs['orderBy'] }
+        : { orderBy?: AccountGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -8700,24 +7162,27 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, LeadGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLeadGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, AccountGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAccountGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the Lead model
+   * Fields of the Account model
    */
-  readonly fields: LeadFieldRefs;
+  readonly fields: AccountFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for Lead.
+   * The delegate class that acts as a "Promise-like" for Account.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__LeadClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__AccountClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    touches<T extends Lead$touchesArgs<ExtArgs> = {}>(args?: Subset<T, Lead$touchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TouchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    notes<T extends Lead$notesArgs<ExtArgs> = {}>(args?: Subset<T, Lead$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    industry<T extends IndustryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, IndustryDefaultArgs<ExtArgs>>): Prisma__IndustryClient<$Result.GetResult<Prisma.$IndustryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    contacts<T extends Account$contactsArgs<ExtArgs> = {}>(args?: Subset<T, Account$contactsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    notes<T extends Account$notesArgs<ExtArgs> = {}>(args?: Subset<T, Account$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    socials<T extends Account$socialsArgs<ExtArgs> = {}>(args?: Subset<T, Account$socialsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountSocialLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    touches<T extends Account$touchesArgs<ExtArgs> = {}>(args?: Subset<T, Account$touchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TouchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8744,422 +7209,500 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the Lead model
+   * Fields of the Account model
    */
-  interface LeadFieldRefs {
-    readonly id: FieldRef<"Lead", 'String'>
-    readonly firstName: FieldRef<"Lead", 'String'>
-    readonly lastName: FieldRef<"Lead", 'String'>
-    readonly title: FieldRef<"Lead", 'String'>
-    readonly email: FieldRef<"Lead", 'String'>
-    readonly phone: FieldRef<"Lead", 'String'>
-    readonly officePhone: FieldRef<"Lead", 'String'>
-    readonly status: FieldRef<"Lead", 'String'>
-    readonly isVip: FieldRef<"Lead", 'Boolean'>
-    readonly companyId: FieldRef<"Lead", 'String'>
-    readonly createdAt: FieldRef<"Lead", 'DateTime'>
+  interface AccountFieldRefs {
+    readonly id: FieldRef<"Account", 'String'>
+    readonly organizationId: FieldRef<"Account", 'String'>
+    readonly name: FieldRef<"Account", 'String'>
+    readonly address: FieldRef<"Account", 'String'>
+    readonly phone: FieldRef<"Account", 'String'>
+    readonly website: FieldRef<"Account", 'String'>
+    readonly status: FieldRef<"Account", 'String'>
+    readonly isVip: FieldRef<"Account", 'Boolean'>
+    readonly source: FieldRef<"Account", 'String'>
+    readonly ownerUserId: FieldRef<"Account", 'String'>
+    readonly createdByUserId: FieldRef<"Account", 'String'>
+    readonly nextTouchAt: FieldRef<"Account", 'DateTime'>
+    readonly nextTouchType: FieldRef<"Account", 'String'>
+    readonly nextTouchNote: FieldRef<"Account", 'String'>
+    readonly industryId: FieldRef<"Account", 'String'>
+    readonly createdAt: FieldRef<"Account", 'DateTime'>
+    readonly updatedAt: FieldRef<"Account", 'DateTime'>
   }
     
 
   // Custom InputTypes
   /**
-   * Lead findUnique
+   * Account findUnique
    */
-  export type LeadFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Lead
+     * Select specific fields to fetch from the Account
      */
-    select?: LeadSelect<ExtArgs> | null
+    select?: AccountSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Lead
+     * Omit specific fields from the Account
      */
-    omit?: LeadOmit<ExtArgs> | null
+    omit?: AccountOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadInclude<ExtArgs> | null
+    include?: AccountInclude<ExtArgs> | null
     /**
-     * Filter, which Lead to fetch.
+     * Filter, which Account to fetch.
      */
-    where: LeadWhereUniqueInput
+    where: AccountWhereUniqueInput
   }
 
   /**
-   * Lead findUniqueOrThrow
+   * Account findUniqueOrThrow
    */
-  export type LeadFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Lead
+     * Select specific fields to fetch from the Account
      */
-    select?: LeadSelect<ExtArgs> | null
+    select?: AccountSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Lead
+     * Omit specific fields from the Account
      */
-    omit?: LeadOmit<ExtArgs> | null
+    omit?: AccountOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadInclude<ExtArgs> | null
+    include?: AccountInclude<ExtArgs> | null
     /**
-     * Filter, which Lead to fetch.
+     * Filter, which Account to fetch.
      */
-    where: LeadWhereUniqueInput
+    where: AccountWhereUniqueInput
   }
 
   /**
-   * Lead findFirst
+   * Account findFirst
    */
-  export type LeadFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Lead
+     * Select specific fields to fetch from the Account
      */
-    select?: LeadSelect<ExtArgs> | null
+    select?: AccountSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Lead
+     * Omit specific fields from the Account
      */
-    omit?: LeadOmit<ExtArgs> | null
+    omit?: AccountOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadInclude<ExtArgs> | null
+    include?: AccountInclude<ExtArgs> | null
     /**
-     * Filter, which Lead to fetch.
+     * Filter, which Account to fetch.
      */
-    where?: LeadWhereInput
+    where?: AccountWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Leads to fetch.
+     * Determine the order of Accounts to fetch.
      */
-    orderBy?: LeadOrderByWithRelationInput | LeadOrderByWithRelationInput[]
+    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Leads.
+     * Sets the position for searching for Accounts.
      */
-    cursor?: LeadWhereUniqueInput
+    cursor?: AccountWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Leads from the position of the cursor.
+     * Take `±n` Accounts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Leads.
+     * Skip the first `n` Accounts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Leads.
+     * Filter by unique combinations of Accounts.
      */
-    distinct?: LeadScalarFieldEnum | LeadScalarFieldEnum[]
+    distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
   }
 
   /**
-   * Lead findFirstOrThrow
+   * Account findFirstOrThrow
    */
-  export type LeadFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Lead
+     * Select specific fields to fetch from the Account
      */
-    select?: LeadSelect<ExtArgs> | null
+    select?: AccountSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Lead
+     * Omit specific fields from the Account
      */
-    omit?: LeadOmit<ExtArgs> | null
+    omit?: AccountOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadInclude<ExtArgs> | null
+    include?: AccountInclude<ExtArgs> | null
     /**
-     * Filter, which Lead to fetch.
+     * Filter, which Account to fetch.
      */
-    where?: LeadWhereInput
+    where?: AccountWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Leads to fetch.
+     * Determine the order of Accounts to fetch.
      */
-    orderBy?: LeadOrderByWithRelationInput | LeadOrderByWithRelationInput[]
+    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Leads.
+     * Sets the position for searching for Accounts.
      */
-    cursor?: LeadWhereUniqueInput
+    cursor?: AccountWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Leads from the position of the cursor.
+     * Take `±n` Accounts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Leads.
+     * Skip the first `n` Accounts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Leads.
+     * Filter by unique combinations of Accounts.
      */
-    distinct?: LeadScalarFieldEnum | LeadScalarFieldEnum[]
+    distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
   }
 
   /**
-   * Lead findMany
+   * Account findMany
    */
-  export type LeadFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Lead
+     * Select specific fields to fetch from the Account
      */
-    select?: LeadSelect<ExtArgs> | null
+    select?: AccountSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Lead
+     * Omit specific fields from the Account
      */
-    omit?: LeadOmit<ExtArgs> | null
+    omit?: AccountOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadInclude<ExtArgs> | null
+    include?: AccountInclude<ExtArgs> | null
     /**
-     * Filter, which Leads to fetch.
+     * Filter, which Accounts to fetch.
      */
-    where?: LeadWhereInput
+    where?: AccountWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Leads to fetch.
+     * Determine the order of Accounts to fetch.
      */
-    orderBy?: LeadOrderByWithRelationInput | LeadOrderByWithRelationInput[]
+    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing Leads.
+     * Sets the position for listing Accounts.
      */
-    cursor?: LeadWhereUniqueInput
+    cursor?: AccountWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Leads from the position of the cursor.
+     * Take `±n` Accounts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Leads.
+     * Skip the first `n` Accounts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Leads.
+     * Filter by unique combinations of Accounts.
      */
-    distinct?: LeadScalarFieldEnum | LeadScalarFieldEnum[]
+    distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
   }
 
   /**
-   * Lead create
+   * Account create
    */
-  export type LeadCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Lead
+     * Select specific fields to fetch from the Account
      */
-    select?: LeadSelect<ExtArgs> | null
+    select?: AccountSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Lead
+     * Omit specific fields from the Account
      */
-    omit?: LeadOmit<ExtArgs> | null
+    omit?: AccountOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadInclude<ExtArgs> | null
+    include?: AccountInclude<ExtArgs> | null
     /**
-     * The data needed to create a Lead.
+     * The data needed to create a Account.
      */
-    data: XOR<LeadCreateInput, LeadUncheckedCreateInput>
+    data: XOR<AccountCreateInput, AccountUncheckedCreateInput>
   }
 
   /**
-   * Lead createMany
+   * Account createMany
    */
-  export type LeadCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many Leads.
+     * The data used to create many Accounts.
      */
-    data: LeadCreateManyInput | LeadCreateManyInput[]
+    data: AccountCreateManyInput | AccountCreateManyInput[]
   }
 
   /**
-   * Lead createManyAndReturn
+   * Account createManyAndReturn
    */
-  export type LeadCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Lead
+     * Select specific fields to fetch from the Account
      */
-    select?: LeadSelectCreateManyAndReturn<ExtArgs> | null
+    select?: AccountSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the Lead
+     * Omit specific fields from the Account
      */
-    omit?: LeadOmit<ExtArgs> | null
+    omit?: AccountOmit<ExtArgs> | null
     /**
-     * The data used to create many Leads.
+     * The data used to create many Accounts.
      */
-    data: LeadCreateManyInput | LeadCreateManyInput[]
+    data: AccountCreateManyInput | AccountCreateManyInput[]
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: AccountIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * Lead update
+   * Account update
    */
-  export type LeadUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Lead
+     * Select specific fields to fetch from the Account
      */
-    select?: LeadSelect<ExtArgs> | null
+    select?: AccountSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Lead
+     * Omit specific fields from the Account
      */
-    omit?: LeadOmit<ExtArgs> | null
+    omit?: AccountOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadInclude<ExtArgs> | null
+    include?: AccountInclude<ExtArgs> | null
     /**
-     * The data needed to update a Lead.
+     * The data needed to update a Account.
      */
-    data: XOR<LeadUpdateInput, LeadUncheckedUpdateInput>
+    data: XOR<AccountUpdateInput, AccountUncheckedUpdateInput>
     /**
-     * Choose, which Lead to update.
+     * Choose, which Account to update.
      */
-    where: LeadWhereUniqueInput
+    where: AccountWhereUniqueInput
   }
 
   /**
-   * Lead updateMany
+   * Account updateMany
    */
-  export type LeadUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update Leads.
+     * The data used to update Accounts.
      */
-    data: XOR<LeadUpdateManyMutationInput, LeadUncheckedUpdateManyInput>
+    data: XOR<AccountUpdateManyMutationInput, AccountUncheckedUpdateManyInput>
     /**
-     * Filter which Leads to update
+     * Filter which Accounts to update
      */
-    where?: LeadWhereInput
+    where?: AccountWhereInput
     /**
-     * Limit how many Leads to update.
+     * Limit how many Accounts to update.
      */
     limit?: number
   }
 
   /**
-   * Lead updateManyAndReturn
+   * Account updateManyAndReturn
    */
-  export type LeadUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Lead
+     * Select specific fields to fetch from the Account
      */
-    select?: LeadSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: AccountSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the Lead
+     * Omit specific fields from the Account
      */
-    omit?: LeadOmit<ExtArgs> | null
+    omit?: AccountOmit<ExtArgs> | null
     /**
-     * The data used to update Leads.
+     * The data used to update Accounts.
      */
-    data: XOR<LeadUpdateManyMutationInput, LeadUncheckedUpdateManyInput>
+    data: XOR<AccountUpdateManyMutationInput, AccountUncheckedUpdateManyInput>
     /**
-     * Filter which Leads to update
+     * Filter which Accounts to update
      */
-    where?: LeadWhereInput
+    where?: AccountWhereInput
     /**
-     * Limit how many Leads to update.
+     * Limit how many Accounts to update.
      */
     limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadIncludeUpdateManyAndReturn<ExtArgs> | null
+    include?: AccountIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * Lead upsert
+   * Account upsert
    */
-  export type LeadUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Lead
+     * Select specific fields to fetch from the Account
      */
-    select?: LeadSelect<ExtArgs> | null
+    select?: AccountSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Lead
+     * Omit specific fields from the Account
      */
-    omit?: LeadOmit<ExtArgs> | null
+    omit?: AccountOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadInclude<ExtArgs> | null
+    include?: AccountInclude<ExtArgs> | null
     /**
-     * The filter to search for the Lead to update in case it exists.
+     * The filter to search for the Account to update in case it exists.
      */
-    where: LeadWhereUniqueInput
+    where: AccountWhereUniqueInput
     /**
-     * In case the Lead found by the `where` argument doesn't exist, create a new Lead with this data.
+     * In case the Account found by the `where` argument doesn't exist, create a new Account with this data.
      */
-    create: XOR<LeadCreateInput, LeadUncheckedCreateInput>
+    create: XOR<AccountCreateInput, AccountUncheckedCreateInput>
     /**
-     * In case the Lead was found with the provided `where` argument, update it with this data.
+     * In case the Account was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<LeadUpdateInput, LeadUncheckedUpdateInput>
+    update: XOR<AccountUpdateInput, AccountUncheckedUpdateInput>
   }
 
   /**
-   * Lead delete
+   * Account delete
    */
-  export type LeadDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Lead
+     * Select specific fields to fetch from the Account
      */
-    select?: LeadSelect<ExtArgs> | null
+    select?: AccountSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Lead
+     * Omit specific fields from the Account
      */
-    omit?: LeadOmit<ExtArgs> | null
+    omit?: AccountOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadInclude<ExtArgs> | null
+    include?: AccountInclude<ExtArgs> | null
     /**
-     * Filter which Lead to delete.
+     * Filter which Account to delete.
      */
-    where: LeadWhereUniqueInput
+    where: AccountWhereUniqueInput
   }
 
   /**
-   * Lead deleteMany
+   * Account deleteMany
    */
-  export type LeadDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Leads to delete
+     * Filter which Accounts to delete
      */
-    where?: LeadWhereInput
+    where?: AccountWhereInput
     /**
-     * Limit how many Leads to delete.
+     * Limit how many Accounts to delete.
      */
     limit?: number
   }
 
   /**
-   * Lead.touches
+   * Account.contacts
    */
-  export type Lead$touchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Account$contactsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contact
+     */
+    omit?: ContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactInclude<ExtArgs> | null
+    where?: ContactWhereInput
+    orderBy?: ContactOrderByWithRelationInput | ContactOrderByWithRelationInput[]
+    cursor?: ContactWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ContactScalarFieldEnum | ContactScalarFieldEnum[]
+  }
+
+  /**
+   * Account.notes
+   */
+  export type Account$notesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountNote
+     */
+    select?: AccountNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountNote
+     */
+    omit?: AccountNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountNoteInclude<ExtArgs> | null
+    where?: AccountNoteWhereInput
+    orderBy?: AccountNoteOrderByWithRelationInput | AccountNoteOrderByWithRelationInput[]
+    cursor?: AccountNoteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AccountNoteScalarFieldEnum | AccountNoteScalarFieldEnum[]
+  }
+
+  /**
+   * Account.socials
+   */
+  export type Account$socialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountSocialLink
+     */
+    select?: AccountSocialLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountSocialLink
+     */
+    omit?: AccountSocialLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountSocialLinkInclude<ExtArgs> | null
+    where?: AccountSocialLinkWhereInput
+    orderBy?: AccountSocialLinkOrderByWithRelationInput | AccountSocialLinkOrderByWithRelationInput[]
+    cursor?: AccountSocialLinkWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AccountSocialLinkScalarFieldEnum | AccountSocialLinkScalarFieldEnum[]
+  }
+
+  /**
+   * Account.touches
+   */
+  export type Account$touchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Touch
      */
@@ -9181,381 +7724,376 @@ export namespace Prisma {
   }
 
   /**
-   * Lead.notes
+   * Account without action
    */
-  export type Lead$notesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the LeadNote
+     * Select specific fields to fetch from the Account
      */
-    select?: LeadNoteSelect<ExtArgs> | null
+    select?: AccountSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the LeadNote
+     * Omit specific fields from the Account
      */
-    omit?: LeadNoteOmit<ExtArgs> | null
+    omit?: AccountOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadNoteInclude<ExtArgs> | null
-    where?: LeadNoteWhereInput
-    orderBy?: LeadNoteOrderByWithRelationInput | LeadNoteOrderByWithRelationInput[]
-    cursor?: LeadNoteWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: LeadNoteScalarFieldEnum | LeadNoteScalarFieldEnum[]
-  }
-
-  /**
-   * Lead without action
-   */
-  export type LeadDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Lead
-     */
-    select?: LeadSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Lead
-     */
-    omit?: LeadOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: LeadInclude<ExtArgs> | null
+    include?: AccountInclude<ExtArgs> | null
   }
 
 
   /**
-   * Model LeadNote
+   * Model AccountSocialLink
    */
 
-  export type AggregateLeadNote = {
-    _count: LeadNoteCountAggregateOutputType | null
-    _min: LeadNoteMinAggregateOutputType | null
-    _max: LeadNoteMaxAggregateOutputType | null
+  export type AggregateAccountSocialLink = {
+    _count: AccountSocialLinkCountAggregateOutputType | null
+    _min: AccountSocialLinkMinAggregateOutputType | null
+    _max: AccountSocialLinkMaxAggregateOutputType | null
   }
 
-  export type LeadNoteMinAggregateOutputType = {
+  export type AccountSocialLinkMinAggregateOutputType = {
     id: string | null
-    text: string | null
-    leadId: string | null
-    createdAt: Date | null
+    organizationId: string | null
+    accountId: string | null
+    platform: string | null
+    handle: string | null
   }
 
-  export type LeadNoteMaxAggregateOutputType = {
+  export type AccountSocialLinkMaxAggregateOutputType = {
     id: string | null
-    text: string | null
-    leadId: string | null
-    createdAt: Date | null
+    organizationId: string | null
+    accountId: string | null
+    platform: string | null
+    handle: string | null
   }
 
-  export type LeadNoteCountAggregateOutputType = {
+  export type AccountSocialLinkCountAggregateOutputType = {
     id: number
-    text: number
-    leadId: number
-    createdAt: number
+    organizationId: number
+    accountId: number
+    platform: number
+    handle: number
     _all: number
   }
 
 
-  export type LeadNoteMinAggregateInputType = {
+  export type AccountSocialLinkMinAggregateInputType = {
     id?: true
-    text?: true
-    leadId?: true
-    createdAt?: true
+    organizationId?: true
+    accountId?: true
+    platform?: true
+    handle?: true
   }
 
-  export type LeadNoteMaxAggregateInputType = {
+  export type AccountSocialLinkMaxAggregateInputType = {
     id?: true
-    text?: true
-    leadId?: true
-    createdAt?: true
+    organizationId?: true
+    accountId?: true
+    platform?: true
+    handle?: true
   }
 
-  export type LeadNoteCountAggregateInputType = {
+  export type AccountSocialLinkCountAggregateInputType = {
     id?: true
-    text?: true
-    leadId?: true
-    createdAt?: true
+    organizationId?: true
+    accountId?: true
+    platform?: true
+    handle?: true
     _all?: true
   }
 
-  export type LeadNoteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountSocialLinkAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which LeadNote to aggregate.
+     * Filter which AccountSocialLink to aggregate.
      */
-    where?: LeadNoteWhereInput
+    where?: AccountSocialLinkWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of LeadNotes to fetch.
+     * Determine the order of AccountSocialLinks to fetch.
      */
-    orderBy?: LeadNoteOrderByWithRelationInput | LeadNoteOrderByWithRelationInput[]
+    orderBy?: AccountSocialLinkOrderByWithRelationInput | AccountSocialLinkOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: LeadNoteWhereUniqueInput
+    cursor?: AccountSocialLinkWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` LeadNotes from the position of the cursor.
+     * Take `±n` AccountSocialLinks from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` LeadNotes.
+     * Skip the first `n` AccountSocialLinks.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned LeadNotes
+     * Count returned AccountSocialLinks
     **/
-    _count?: true | LeadNoteCountAggregateInputType
+    _count?: true | AccountSocialLinkCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: LeadNoteMinAggregateInputType
+    _min?: AccountSocialLinkMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: LeadNoteMaxAggregateInputType
+    _max?: AccountSocialLinkMaxAggregateInputType
   }
 
-  export type GetLeadNoteAggregateType<T extends LeadNoteAggregateArgs> = {
-        [P in keyof T & keyof AggregateLeadNote]: P extends '_count' | 'count'
+  export type GetAccountSocialLinkAggregateType<T extends AccountSocialLinkAggregateArgs> = {
+        [P in keyof T & keyof AggregateAccountSocialLink]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateLeadNote[P]>
-      : GetScalarType<T[P], AggregateLeadNote[P]>
+        : GetScalarType<T[P], AggregateAccountSocialLink[P]>
+      : GetScalarType<T[P], AggregateAccountSocialLink[P]>
   }
 
 
 
 
-  export type LeadNoteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: LeadNoteWhereInput
-    orderBy?: LeadNoteOrderByWithAggregationInput | LeadNoteOrderByWithAggregationInput[]
-    by: LeadNoteScalarFieldEnum[] | LeadNoteScalarFieldEnum
-    having?: LeadNoteScalarWhereWithAggregatesInput
+  export type AccountSocialLinkGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccountSocialLinkWhereInput
+    orderBy?: AccountSocialLinkOrderByWithAggregationInput | AccountSocialLinkOrderByWithAggregationInput[]
+    by: AccountSocialLinkScalarFieldEnum[] | AccountSocialLinkScalarFieldEnum
+    having?: AccountSocialLinkScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: LeadNoteCountAggregateInputType | true
-    _min?: LeadNoteMinAggregateInputType
-    _max?: LeadNoteMaxAggregateInputType
+    _count?: AccountSocialLinkCountAggregateInputType | true
+    _min?: AccountSocialLinkMinAggregateInputType
+    _max?: AccountSocialLinkMaxAggregateInputType
   }
 
-  export type LeadNoteGroupByOutputType = {
+  export type AccountSocialLinkGroupByOutputType = {
     id: string
-    text: string
-    leadId: string
-    createdAt: Date
-    _count: LeadNoteCountAggregateOutputType | null
-    _min: LeadNoteMinAggregateOutputType | null
-    _max: LeadNoteMaxAggregateOutputType | null
+    organizationId: string
+    accountId: string
+    platform: string
+    handle: string
+    _count: AccountSocialLinkCountAggregateOutputType | null
+    _min: AccountSocialLinkMinAggregateOutputType | null
+    _max: AccountSocialLinkMaxAggregateOutputType | null
   }
 
-  type GetLeadNoteGroupByPayload<T extends LeadNoteGroupByArgs> = Prisma.PrismaPromise<
+  type GetAccountSocialLinkGroupByPayload<T extends AccountSocialLinkGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<LeadNoteGroupByOutputType, T['by']> &
+      PickEnumerable<AccountSocialLinkGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof LeadNoteGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof AccountSocialLinkGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], LeadNoteGroupByOutputType[P]>
-            : GetScalarType<T[P], LeadNoteGroupByOutputType[P]>
+              : GetScalarType<T[P], AccountSocialLinkGroupByOutputType[P]>
+            : GetScalarType<T[P], AccountSocialLinkGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type LeadNoteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type AccountSocialLinkSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    text?: boolean
-    leadId?: boolean
-    createdAt?: boolean
-    lead?: boolean | LeadDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["leadNote"]>
+    organizationId?: boolean
+    accountId?: boolean
+    platform?: boolean
+    handle?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["accountSocialLink"]>
 
-  export type LeadNoteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type AccountSocialLinkSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    text?: boolean
-    leadId?: boolean
-    createdAt?: boolean
-    lead?: boolean | LeadDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["leadNote"]>
+    organizationId?: boolean
+    accountId?: boolean
+    platform?: boolean
+    handle?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["accountSocialLink"]>
 
-  export type LeadNoteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type AccountSocialLinkSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    text?: boolean
-    leadId?: boolean
-    createdAt?: boolean
-    lead?: boolean | LeadDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["leadNote"]>
+    organizationId?: boolean
+    accountId?: boolean
+    platform?: boolean
+    handle?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["accountSocialLink"]>
 
-  export type LeadNoteSelectScalar = {
+  export type AccountSocialLinkSelectScalar = {
     id?: boolean
-    text?: boolean
-    leadId?: boolean
-    createdAt?: boolean
+    organizationId?: boolean
+    accountId?: boolean
+    platform?: boolean
+    handle?: boolean
   }
 
-  export type LeadNoteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "leadId" | "createdAt", ExtArgs["result"]["leadNote"]>
-  export type LeadNoteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  export type AccountSocialLinkOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "accountId" | "platform" | "handle", ExtArgs["result"]["accountSocialLink"]>
+  export type AccountSocialLinkInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
   }
-  export type LeadNoteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  export type AccountSocialLinkIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
   }
-  export type LeadNoteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  export type AccountSocialLinkIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
   }
 
-  export type $LeadNotePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "LeadNote"
+  export type $AccountSocialLinkPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AccountSocialLink"
     objects: {
-      lead: Prisma.$LeadPayload<ExtArgs>
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      account: Prisma.$AccountPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      text: string
-      leadId: string
-      createdAt: Date
-    }, ExtArgs["result"]["leadNote"]>
+      organizationId: string
+      accountId: string
+      platform: string
+      handle: string
+    }, ExtArgs["result"]["accountSocialLink"]>
     composites: {}
   }
 
-  type LeadNoteGetPayload<S extends boolean | null | undefined | LeadNoteDefaultArgs> = $Result.GetResult<Prisma.$LeadNotePayload, S>
+  type AccountSocialLinkGetPayload<S extends boolean | null | undefined | AccountSocialLinkDefaultArgs> = $Result.GetResult<Prisma.$AccountSocialLinkPayload, S>
 
-  type LeadNoteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<LeadNoteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: LeadNoteCountAggregateInputType | true
+  type AccountSocialLinkCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AccountSocialLinkFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AccountSocialLinkCountAggregateInputType | true
     }
 
-  export interface LeadNoteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['LeadNote'], meta: { name: 'LeadNote' } }
+  export interface AccountSocialLinkDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AccountSocialLink'], meta: { name: 'AccountSocialLink' } }
     /**
-     * Find zero or one LeadNote that matches the filter.
-     * @param {LeadNoteFindUniqueArgs} args - Arguments to find a LeadNote
+     * Find zero or one AccountSocialLink that matches the filter.
+     * @param {AccountSocialLinkFindUniqueArgs} args - Arguments to find a AccountSocialLink
      * @example
-     * // Get one LeadNote
-     * const leadNote = await prisma.leadNote.findUnique({
+     * // Get one AccountSocialLink
+     * const accountSocialLink = await prisma.accountSocialLink.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends LeadNoteFindUniqueArgs>(args: SelectSubset<T, LeadNoteFindUniqueArgs<ExtArgs>>): Prisma__LeadNoteClient<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends AccountSocialLinkFindUniqueArgs>(args: SelectSubset<T, AccountSocialLinkFindUniqueArgs<ExtArgs>>): Prisma__AccountSocialLinkClient<$Result.GetResult<Prisma.$AccountSocialLinkPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one LeadNote that matches the filter or throw an error with `error.code='P2025'`
+     * Find one AccountSocialLink that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {LeadNoteFindUniqueOrThrowArgs} args - Arguments to find a LeadNote
+     * @param {AccountSocialLinkFindUniqueOrThrowArgs} args - Arguments to find a AccountSocialLink
      * @example
-     * // Get one LeadNote
-     * const leadNote = await prisma.leadNote.findUniqueOrThrow({
+     * // Get one AccountSocialLink
+     * const accountSocialLink = await prisma.accountSocialLink.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends LeadNoteFindUniqueOrThrowArgs>(args: SelectSubset<T, LeadNoteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LeadNoteClient<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends AccountSocialLinkFindUniqueOrThrowArgs>(args: SelectSubset<T, AccountSocialLinkFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AccountSocialLinkClient<$Result.GetResult<Prisma.$AccountSocialLinkPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first LeadNote that matches the filter.
+     * Find the first AccountSocialLink that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {LeadNoteFindFirstArgs} args - Arguments to find a LeadNote
+     * @param {AccountSocialLinkFindFirstArgs} args - Arguments to find a AccountSocialLink
      * @example
-     * // Get one LeadNote
-     * const leadNote = await prisma.leadNote.findFirst({
+     * // Get one AccountSocialLink
+     * const accountSocialLink = await prisma.accountSocialLink.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends LeadNoteFindFirstArgs>(args?: SelectSubset<T, LeadNoteFindFirstArgs<ExtArgs>>): Prisma__LeadNoteClient<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends AccountSocialLinkFindFirstArgs>(args?: SelectSubset<T, AccountSocialLinkFindFirstArgs<ExtArgs>>): Prisma__AccountSocialLinkClient<$Result.GetResult<Prisma.$AccountSocialLinkPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first LeadNote that matches the filter or
+     * Find the first AccountSocialLink that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {LeadNoteFindFirstOrThrowArgs} args - Arguments to find a LeadNote
+     * @param {AccountSocialLinkFindFirstOrThrowArgs} args - Arguments to find a AccountSocialLink
      * @example
-     * // Get one LeadNote
-     * const leadNote = await prisma.leadNote.findFirstOrThrow({
+     * // Get one AccountSocialLink
+     * const accountSocialLink = await prisma.accountSocialLink.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends LeadNoteFindFirstOrThrowArgs>(args?: SelectSubset<T, LeadNoteFindFirstOrThrowArgs<ExtArgs>>): Prisma__LeadNoteClient<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends AccountSocialLinkFindFirstOrThrowArgs>(args?: SelectSubset<T, AccountSocialLinkFindFirstOrThrowArgs<ExtArgs>>): Prisma__AccountSocialLinkClient<$Result.GetResult<Prisma.$AccountSocialLinkPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more LeadNotes that matches the filter.
+     * Find zero or more AccountSocialLinks that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {LeadNoteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {AccountSocialLinkFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all LeadNotes
-     * const leadNotes = await prisma.leadNote.findMany()
+     * // Get all AccountSocialLinks
+     * const accountSocialLinks = await prisma.accountSocialLink.findMany()
      * 
-     * // Get first 10 LeadNotes
-     * const leadNotes = await prisma.leadNote.findMany({ take: 10 })
+     * // Get first 10 AccountSocialLinks
+     * const accountSocialLinks = await prisma.accountSocialLink.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const leadNoteWithIdOnly = await prisma.leadNote.findMany({ select: { id: true } })
+     * const accountSocialLinkWithIdOnly = await prisma.accountSocialLink.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends LeadNoteFindManyArgs>(args?: SelectSubset<T, LeadNoteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends AccountSocialLinkFindManyArgs>(args?: SelectSubset<T, AccountSocialLinkFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountSocialLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a LeadNote.
-     * @param {LeadNoteCreateArgs} args - Arguments to create a LeadNote.
+     * Create a AccountSocialLink.
+     * @param {AccountSocialLinkCreateArgs} args - Arguments to create a AccountSocialLink.
      * @example
-     * // Create one LeadNote
-     * const LeadNote = await prisma.leadNote.create({
+     * // Create one AccountSocialLink
+     * const AccountSocialLink = await prisma.accountSocialLink.create({
      *   data: {
-     *     // ... data to create a LeadNote
+     *     // ... data to create a AccountSocialLink
      *   }
      * })
      * 
      */
-    create<T extends LeadNoteCreateArgs>(args: SelectSubset<T, LeadNoteCreateArgs<ExtArgs>>): Prisma__LeadNoteClient<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends AccountSocialLinkCreateArgs>(args: SelectSubset<T, AccountSocialLinkCreateArgs<ExtArgs>>): Prisma__AccountSocialLinkClient<$Result.GetResult<Prisma.$AccountSocialLinkPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many LeadNotes.
-     * @param {LeadNoteCreateManyArgs} args - Arguments to create many LeadNotes.
+     * Create many AccountSocialLinks.
+     * @param {AccountSocialLinkCreateManyArgs} args - Arguments to create many AccountSocialLinks.
      * @example
-     * // Create many LeadNotes
-     * const leadNote = await prisma.leadNote.createMany({
+     * // Create many AccountSocialLinks
+     * const accountSocialLink = await prisma.accountSocialLink.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends LeadNoteCreateManyArgs>(args?: SelectSubset<T, LeadNoteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends AccountSocialLinkCreateManyArgs>(args?: SelectSubset<T, AccountSocialLinkCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many LeadNotes and returns the data saved in the database.
-     * @param {LeadNoteCreateManyAndReturnArgs} args - Arguments to create many LeadNotes.
+     * Create many AccountSocialLinks and returns the data saved in the database.
+     * @param {AccountSocialLinkCreateManyAndReturnArgs} args - Arguments to create many AccountSocialLinks.
      * @example
-     * // Create many LeadNotes
-     * const leadNote = await prisma.leadNote.createManyAndReturn({
+     * // Create many AccountSocialLinks
+     * const accountSocialLink = await prisma.accountSocialLink.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many LeadNotes and only return the `id`
-     * const leadNoteWithIdOnly = await prisma.leadNote.createManyAndReturn({
+     * // Create many AccountSocialLinks and only return the `id`
+     * const accountSocialLinkWithIdOnly = await prisma.accountSocialLink.createManyAndReturn({
      *   select: { id: true },
      *   data: [
      *     // ... provide data here
@@ -9565,28 +8103,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends LeadNoteCreateManyAndReturnArgs>(args?: SelectSubset<T, LeadNoteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends AccountSocialLinkCreateManyAndReturnArgs>(args?: SelectSubset<T, AccountSocialLinkCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountSocialLinkPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a LeadNote.
-     * @param {LeadNoteDeleteArgs} args - Arguments to delete one LeadNote.
+     * Delete a AccountSocialLink.
+     * @param {AccountSocialLinkDeleteArgs} args - Arguments to delete one AccountSocialLink.
      * @example
-     * // Delete one LeadNote
-     * const LeadNote = await prisma.leadNote.delete({
+     * // Delete one AccountSocialLink
+     * const AccountSocialLink = await prisma.accountSocialLink.delete({
      *   where: {
-     *     // ... filter to delete one LeadNote
+     *     // ... filter to delete one AccountSocialLink
      *   }
      * })
      * 
      */
-    delete<T extends LeadNoteDeleteArgs>(args: SelectSubset<T, LeadNoteDeleteArgs<ExtArgs>>): Prisma__LeadNoteClient<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends AccountSocialLinkDeleteArgs>(args: SelectSubset<T, AccountSocialLinkDeleteArgs<ExtArgs>>): Prisma__AccountSocialLinkClient<$Result.GetResult<Prisma.$AccountSocialLinkPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one LeadNote.
-     * @param {LeadNoteUpdateArgs} args - Arguments to update one LeadNote.
+     * Update one AccountSocialLink.
+     * @param {AccountSocialLinkUpdateArgs} args - Arguments to update one AccountSocialLink.
      * @example
-     * // Update one LeadNote
-     * const leadNote = await prisma.leadNote.update({
+     * // Update one AccountSocialLink
+     * const accountSocialLink = await prisma.accountSocialLink.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -9596,30 +8134,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends LeadNoteUpdateArgs>(args: SelectSubset<T, LeadNoteUpdateArgs<ExtArgs>>): Prisma__LeadNoteClient<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends AccountSocialLinkUpdateArgs>(args: SelectSubset<T, AccountSocialLinkUpdateArgs<ExtArgs>>): Prisma__AccountSocialLinkClient<$Result.GetResult<Prisma.$AccountSocialLinkPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more LeadNotes.
-     * @param {LeadNoteDeleteManyArgs} args - Arguments to filter LeadNotes to delete.
+     * Delete zero or more AccountSocialLinks.
+     * @param {AccountSocialLinkDeleteManyArgs} args - Arguments to filter AccountSocialLinks to delete.
      * @example
-     * // Delete a few LeadNotes
-     * const { count } = await prisma.leadNote.deleteMany({
+     * // Delete a few AccountSocialLinks
+     * const { count } = await prisma.accountSocialLink.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends LeadNoteDeleteManyArgs>(args?: SelectSubset<T, LeadNoteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends AccountSocialLinkDeleteManyArgs>(args?: SelectSubset<T, AccountSocialLinkDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more LeadNotes.
+     * Update zero or more AccountSocialLinks.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {LeadNoteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {AccountSocialLinkUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many LeadNotes
-     * const leadNote = await prisma.leadNote.updateMany({
+     * // Update many AccountSocialLinks
+     * const accountSocialLink = await prisma.accountSocialLink.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -9629,14 +8167,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends LeadNoteUpdateManyArgs>(args: SelectSubset<T, LeadNoteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends AccountSocialLinkUpdateManyArgs>(args: SelectSubset<T, AccountSocialLinkUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more LeadNotes and returns the data updated in the database.
-     * @param {LeadNoteUpdateManyAndReturnArgs} args - Arguments to update many LeadNotes.
+     * Update zero or more AccountSocialLinks and returns the data updated in the database.
+     * @param {AccountSocialLinkUpdateManyAndReturnArgs} args - Arguments to update many AccountSocialLinks.
      * @example
-     * // Update many LeadNotes
-     * const leadNote = await prisma.leadNote.updateManyAndReturn({
+     * // Update many AccountSocialLinks
+     * const accountSocialLink = await prisma.accountSocialLink.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -9645,8 +8183,8 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more LeadNotes and only return the `id`
-     * const leadNoteWithIdOnly = await prisma.leadNote.updateManyAndReturn({
+     * // Update zero or more AccountSocialLinks and only return the `id`
+     * const accountSocialLinkWithIdOnly = await prisma.accountSocialLink.updateManyAndReturn({
      *   select: { id: true },
      *   where: {
      *     // ... provide filter here
@@ -9659,56 +8197,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends LeadNoteUpdateManyAndReturnArgs>(args: SelectSubset<T, LeadNoteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends AccountSocialLinkUpdateManyAndReturnArgs>(args: SelectSubset<T, AccountSocialLinkUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountSocialLinkPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one LeadNote.
-     * @param {LeadNoteUpsertArgs} args - Arguments to update or create a LeadNote.
+     * Create or update one AccountSocialLink.
+     * @param {AccountSocialLinkUpsertArgs} args - Arguments to update or create a AccountSocialLink.
      * @example
-     * // Update or create a LeadNote
-     * const leadNote = await prisma.leadNote.upsert({
+     * // Update or create a AccountSocialLink
+     * const accountSocialLink = await prisma.accountSocialLink.upsert({
      *   create: {
-     *     // ... data to create a LeadNote
+     *     // ... data to create a AccountSocialLink
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the LeadNote we want to update
+     *     // ... the filter for the AccountSocialLink we want to update
      *   }
      * })
      */
-    upsert<T extends LeadNoteUpsertArgs>(args: SelectSubset<T, LeadNoteUpsertArgs<ExtArgs>>): Prisma__LeadNoteClient<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends AccountSocialLinkUpsertArgs>(args: SelectSubset<T, AccountSocialLinkUpsertArgs<ExtArgs>>): Prisma__AccountSocialLinkClient<$Result.GetResult<Prisma.$AccountSocialLinkPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of LeadNotes.
+     * Count the number of AccountSocialLinks.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {LeadNoteCountArgs} args - Arguments to filter LeadNotes to count.
+     * @param {AccountSocialLinkCountArgs} args - Arguments to filter AccountSocialLinks to count.
      * @example
-     * // Count the number of LeadNotes
-     * const count = await prisma.leadNote.count({
+     * // Count the number of AccountSocialLinks
+     * const count = await prisma.accountSocialLink.count({
      *   where: {
-     *     // ... the filter for the LeadNotes we want to count
+     *     // ... the filter for the AccountSocialLinks we want to count
      *   }
      * })
     **/
-    count<T extends LeadNoteCountArgs>(
-      args?: Subset<T, LeadNoteCountArgs>,
+    count<T extends AccountSocialLinkCountArgs>(
+      args?: Subset<T, AccountSocialLinkCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], LeadNoteCountAggregateOutputType>
+          : GetScalarType<T['select'], AccountSocialLinkCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a LeadNote.
+     * Allows you to perform aggregations operations on a AccountSocialLink.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {LeadNoteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {AccountSocialLinkAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -9728,13 +8266,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends LeadNoteAggregateArgs>(args: Subset<T, LeadNoteAggregateArgs>): Prisma.PrismaPromise<GetLeadNoteAggregateType<T>>
+    aggregate<T extends AccountSocialLinkAggregateArgs>(args: Subset<T, AccountSocialLinkAggregateArgs>): Prisma.PrismaPromise<GetAccountSocialLinkAggregateType<T>>
 
     /**
-     * Group by LeadNote.
+     * Group by AccountSocialLink.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {LeadNoteGroupByArgs} args - Group by arguments.
+     * @param {AccountSocialLinkGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -9749,14 +8287,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends LeadNoteGroupByArgs,
+      T extends AccountSocialLinkGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: LeadNoteGroupByArgs['orderBy'] }
-        : { orderBy?: LeadNoteGroupByArgs['orderBy'] },
+        ? { orderBy: AccountSocialLinkGroupByArgs['orderBy'] }
+        : { orderBy?: AccountSocialLinkGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -9805,22 +8343,23 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, LeadNoteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLeadNoteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, AccountSocialLinkGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAccountSocialLinkGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the LeadNote model
+   * Fields of the AccountSocialLink model
    */
-  readonly fields: LeadNoteFieldRefs;
+  readonly fields: AccountSocialLinkFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for LeadNote.
+   * The delegate class that acts as a "Promise-like" for AccountSocialLink.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__LeadNoteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__AccountSocialLinkClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    lead<T extends LeadDefaultArgs<ExtArgs> = {}>(args?: Subset<T, LeadDefaultArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    account<T extends AccountDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AccountDefaultArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9847,427 +8386,3803 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the LeadNote model
+   * Fields of the AccountSocialLink model
    */
-  interface LeadNoteFieldRefs {
-    readonly id: FieldRef<"LeadNote", 'String'>
-    readonly text: FieldRef<"LeadNote", 'String'>
-    readonly leadId: FieldRef<"LeadNote", 'String'>
-    readonly createdAt: FieldRef<"LeadNote", 'DateTime'>
+  interface AccountSocialLinkFieldRefs {
+    readonly id: FieldRef<"AccountSocialLink", 'String'>
+    readonly organizationId: FieldRef<"AccountSocialLink", 'String'>
+    readonly accountId: FieldRef<"AccountSocialLink", 'String'>
+    readonly platform: FieldRef<"AccountSocialLink", 'String'>
+    readonly handle: FieldRef<"AccountSocialLink", 'String'>
   }
     
 
   // Custom InputTypes
   /**
-   * LeadNote findUnique
+   * AccountSocialLink findUnique
    */
-  export type LeadNoteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountSocialLinkFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the LeadNote
+     * Select specific fields to fetch from the AccountSocialLink
      */
-    select?: LeadNoteSelect<ExtArgs> | null
+    select?: AccountSocialLinkSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the LeadNote
+     * Omit specific fields from the AccountSocialLink
      */
-    omit?: LeadNoteOmit<ExtArgs> | null
+    omit?: AccountSocialLinkOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadNoteInclude<ExtArgs> | null
+    include?: AccountSocialLinkInclude<ExtArgs> | null
     /**
-     * Filter, which LeadNote to fetch.
+     * Filter, which AccountSocialLink to fetch.
      */
-    where: LeadNoteWhereUniqueInput
+    where: AccountSocialLinkWhereUniqueInput
   }
 
   /**
-   * LeadNote findUniqueOrThrow
+   * AccountSocialLink findUniqueOrThrow
    */
-  export type LeadNoteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountSocialLinkFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the LeadNote
+     * Select specific fields to fetch from the AccountSocialLink
      */
-    select?: LeadNoteSelect<ExtArgs> | null
+    select?: AccountSocialLinkSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the LeadNote
+     * Omit specific fields from the AccountSocialLink
      */
-    omit?: LeadNoteOmit<ExtArgs> | null
+    omit?: AccountSocialLinkOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadNoteInclude<ExtArgs> | null
+    include?: AccountSocialLinkInclude<ExtArgs> | null
     /**
-     * Filter, which LeadNote to fetch.
+     * Filter, which AccountSocialLink to fetch.
      */
-    where: LeadNoteWhereUniqueInput
+    where: AccountSocialLinkWhereUniqueInput
   }
 
   /**
-   * LeadNote findFirst
+   * AccountSocialLink findFirst
    */
-  export type LeadNoteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountSocialLinkFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the LeadNote
+     * Select specific fields to fetch from the AccountSocialLink
      */
-    select?: LeadNoteSelect<ExtArgs> | null
+    select?: AccountSocialLinkSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the LeadNote
+     * Omit specific fields from the AccountSocialLink
      */
-    omit?: LeadNoteOmit<ExtArgs> | null
+    omit?: AccountSocialLinkOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadNoteInclude<ExtArgs> | null
+    include?: AccountSocialLinkInclude<ExtArgs> | null
     /**
-     * Filter, which LeadNote to fetch.
+     * Filter, which AccountSocialLink to fetch.
      */
-    where?: LeadNoteWhereInput
+    where?: AccountSocialLinkWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of LeadNotes to fetch.
+     * Determine the order of AccountSocialLinks to fetch.
      */
-    orderBy?: LeadNoteOrderByWithRelationInput | LeadNoteOrderByWithRelationInput[]
+    orderBy?: AccountSocialLinkOrderByWithRelationInput | AccountSocialLinkOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for LeadNotes.
+     * Sets the position for searching for AccountSocialLinks.
      */
-    cursor?: LeadNoteWhereUniqueInput
+    cursor?: AccountSocialLinkWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` LeadNotes from the position of the cursor.
+     * Take `±n` AccountSocialLinks from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` LeadNotes.
+     * Skip the first `n` AccountSocialLinks.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of LeadNotes.
+     * Filter by unique combinations of AccountSocialLinks.
      */
-    distinct?: LeadNoteScalarFieldEnum | LeadNoteScalarFieldEnum[]
+    distinct?: AccountSocialLinkScalarFieldEnum | AccountSocialLinkScalarFieldEnum[]
   }
 
   /**
-   * LeadNote findFirstOrThrow
+   * AccountSocialLink findFirstOrThrow
    */
-  export type LeadNoteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountSocialLinkFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the LeadNote
+     * Select specific fields to fetch from the AccountSocialLink
      */
-    select?: LeadNoteSelect<ExtArgs> | null
+    select?: AccountSocialLinkSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the LeadNote
+     * Omit specific fields from the AccountSocialLink
      */
-    omit?: LeadNoteOmit<ExtArgs> | null
+    omit?: AccountSocialLinkOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadNoteInclude<ExtArgs> | null
+    include?: AccountSocialLinkInclude<ExtArgs> | null
     /**
-     * Filter, which LeadNote to fetch.
+     * Filter, which AccountSocialLink to fetch.
      */
-    where?: LeadNoteWhereInput
+    where?: AccountSocialLinkWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of LeadNotes to fetch.
+     * Determine the order of AccountSocialLinks to fetch.
      */
-    orderBy?: LeadNoteOrderByWithRelationInput | LeadNoteOrderByWithRelationInput[]
+    orderBy?: AccountSocialLinkOrderByWithRelationInput | AccountSocialLinkOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for LeadNotes.
+     * Sets the position for searching for AccountSocialLinks.
      */
-    cursor?: LeadNoteWhereUniqueInput
+    cursor?: AccountSocialLinkWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` LeadNotes from the position of the cursor.
+     * Take `±n` AccountSocialLinks from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` LeadNotes.
+     * Skip the first `n` AccountSocialLinks.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of LeadNotes.
+     * Filter by unique combinations of AccountSocialLinks.
      */
-    distinct?: LeadNoteScalarFieldEnum | LeadNoteScalarFieldEnum[]
+    distinct?: AccountSocialLinkScalarFieldEnum | AccountSocialLinkScalarFieldEnum[]
   }
 
   /**
-   * LeadNote findMany
+   * AccountSocialLink findMany
    */
-  export type LeadNoteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountSocialLinkFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the LeadNote
+     * Select specific fields to fetch from the AccountSocialLink
      */
-    select?: LeadNoteSelect<ExtArgs> | null
+    select?: AccountSocialLinkSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the LeadNote
+     * Omit specific fields from the AccountSocialLink
      */
-    omit?: LeadNoteOmit<ExtArgs> | null
+    omit?: AccountSocialLinkOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadNoteInclude<ExtArgs> | null
+    include?: AccountSocialLinkInclude<ExtArgs> | null
     /**
-     * Filter, which LeadNotes to fetch.
+     * Filter, which AccountSocialLinks to fetch.
      */
-    where?: LeadNoteWhereInput
+    where?: AccountSocialLinkWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of LeadNotes to fetch.
+     * Determine the order of AccountSocialLinks to fetch.
      */
-    orderBy?: LeadNoteOrderByWithRelationInput | LeadNoteOrderByWithRelationInput[]
+    orderBy?: AccountSocialLinkOrderByWithRelationInput | AccountSocialLinkOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing LeadNotes.
+     * Sets the position for listing AccountSocialLinks.
      */
-    cursor?: LeadNoteWhereUniqueInput
+    cursor?: AccountSocialLinkWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` LeadNotes from the position of the cursor.
+     * Take `±n` AccountSocialLinks from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` LeadNotes.
+     * Skip the first `n` AccountSocialLinks.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of LeadNotes.
+     * Filter by unique combinations of AccountSocialLinks.
      */
-    distinct?: LeadNoteScalarFieldEnum | LeadNoteScalarFieldEnum[]
+    distinct?: AccountSocialLinkScalarFieldEnum | AccountSocialLinkScalarFieldEnum[]
   }
 
   /**
-   * LeadNote create
+   * AccountSocialLink create
    */
-  export type LeadNoteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountSocialLinkCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the LeadNote
+     * Select specific fields to fetch from the AccountSocialLink
      */
-    select?: LeadNoteSelect<ExtArgs> | null
+    select?: AccountSocialLinkSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the LeadNote
+     * Omit specific fields from the AccountSocialLink
      */
-    omit?: LeadNoteOmit<ExtArgs> | null
+    omit?: AccountSocialLinkOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadNoteInclude<ExtArgs> | null
+    include?: AccountSocialLinkInclude<ExtArgs> | null
     /**
-     * The data needed to create a LeadNote.
+     * The data needed to create a AccountSocialLink.
      */
-    data: XOR<LeadNoteCreateInput, LeadNoteUncheckedCreateInput>
+    data: XOR<AccountSocialLinkCreateInput, AccountSocialLinkUncheckedCreateInput>
   }
 
   /**
-   * LeadNote createMany
+   * AccountSocialLink createMany
    */
-  export type LeadNoteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountSocialLinkCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many LeadNotes.
+     * The data used to create many AccountSocialLinks.
      */
-    data: LeadNoteCreateManyInput | LeadNoteCreateManyInput[]
+    data: AccountSocialLinkCreateManyInput | AccountSocialLinkCreateManyInput[]
   }
 
   /**
-   * LeadNote createManyAndReturn
+   * AccountSocialLink createManyAndReturn
    */
-  export type LeadNoteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountSocialLinkCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the LeadNote
+     * Select specific fields to fetch from the AccountSocialLink
      */
-    select?: LeadNoteSelectCreateManyAndReturn<ExtArgs> | null
+    select?: AccountSocialLinkSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the LeadNote
+     * Omit specific fields from the AccountSocialLink
      */
-    omit?: LeadNoteOmit<ExtArgs> | null
+    omit?: AccountSocialLinkOmit<ExtArgs> | null
     /**
-     * The data used to create many LeadNotes.
+     * The data used to create many AccountSocialLinks.
      */
-    data: LeadNoteCreateManyInput | LeadNoteCreateManyInput[]
+    data: AccountSocialLinkCreateManyInput | AccountSocialLinkCreateManyInput[]
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadNoteIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: AccountSocialLinkIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * LeadNote update
+   * AccountSocialLink update
    */
-  export type LeadNoteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountSocialLinkUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the LeadNote
+     * Select specific fields to fetch from the AccountSocialLink
      */
-    select?: LeadNoteSelect<ExtArgs> | null
+    select?: AccountSocialLinkSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the LeadNote
+     * Omit specific fields from the AccountSocialLink
      */
-    omit?: LeadNoteOmit<ExtArgs> | null
+    omit?: AccountSocialLinkOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadNoteInclude<ExtArgs> | null
+    include?: AccountSocialLinkInclude<ExtArgs> | null
     /**
-     * The data needed to update a LeadNote.
+     * The data needed to update a AccountSocialLink.
      */
-    data: XOR<LeadNoteUpdateInput, LeadNoteUncheckedUpdateInput>
+    data: XOR<AccountSocialLinkUpdateInput, AccountSocialLinkUncheckedUpdateInput>
     /**
-     * Choose, which LeadNote to update.
+     * Choose, which AccountSocialLink to update.
      */
-    where: LeadNoteWhereUniqueInput
+    where: AccountSocialLinkWhereUniqueInput
   }
 
   /**
-   * LeadNote updateMany
+   * AccountSocialLink updateMany
    */
-  export type LeadNoteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountSocialLinkUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update LeadNotes.
+     * The data used to update AccountSocialLinks.
      */
-    data: XOR<LeadNoteUpdateManyMutationInput, LeadNoteUncheckedUpdateManyInput>
+    data: XOR<AccountSocialLinkUpdateManyMutationInput, AccountSocialLinkUncheckedUpdateManyInput>
     /**
-     * Filter which LeadNotes to update
+     * Filter which AccountSocialLinks to update
      */
-    where?: LeadNoteWhereInput
+    where?: AccountSocialLinkWhereInput
     /**
-     * Limit how many LeadNotes to update.
+     * Limit how many AccountSocialLinks to update.
      */
     limit?: number
   }
 
   /**
-   * LeadNote updateManyAndReturn
+   * AccountSocialLink updateManyAndReturn
    */
-  export type LeadNoteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountSocialLinkUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the LeadNote
+     * Select specific fields to fetch from the AccountSocialLink
      */
-    select?: LeadNoteSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: AccountSocialLinkSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the LeadNote
+     * Omit specific fields from the AccountSocialLink
      */
-    omit?: LeadNoteOmit<ExtArgs> | null
+    omit?: AccountSocialLinkOmit<ExtArgs> | null
     /**
-     * The data used to update LeadNotes.
+     * The data used to update AccountSocialLinks.
      */
-    data: XOR<LeadNoteUpdateManyMutationInput, LeadNoteUncheckedUpdateManyInput>
+    data: XOR<AccountSocialLinkUpdateManyMutationInput, AccountSocialLinkUncheckedUpdateManyInput>
     /**
-     * Filter which LeadNotes to update
+     * Filter which AccountSocialLinks to update
      */
-    where?: LeadNoteWhereInput
+    where?: AccountSocialLinkWhereInput
     /**
-     * Limit how many LeadNotes to update.
+     * Limit how many AccountSocialLinks to update.
      */
     limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadNoteIncludeUpdateManyAndReturn<ExtArgs> | null
+    include?: AccountSocialLinkIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * LeadNote upsert
+   * AccountSocialLink upsert
    */
-  export type LeadNoteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountSocialLinkUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the LeadNote
+     * Select specific fields to fetch from the AccountSocialLink
      */
-    select?: LeadNoteSelect<ExtArgs> | null
+    select?: AccountSocialLinkSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the LeadNote
+     * Omit specific fields from the AccountSocialLink
      */
-    omit?: LeadNoteOmit<ExtArgs> | null
+    omit?: AccountSocialLinkOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadNoteInclude<ExtArgs> | null
+    include?: AccountSocialLinkInclude<ExtArgs> | null
     /**
-     * The filter to search for the LeadNote to update in case it exists.
+     * The filter to search for the AccountSocialLink to update in case it exists.
      */
-    where: LeadNoteWhereUniqueInput
+    where: AccountSocialLinkWhereUniqueInput
     /**
-     * In case the LeadNote found by the `where` argument doesn't exist, create a new LeadNote with this data.
+     * In case the AccountSocialLink found by the `where` argument doesn't exist, create a new AccountSocialLink with this data.
      */
-    create: XOR<LeadNoteCreateInput, LeadNoteUncheckedCreateInput>
+    create: XOR<AccountSocialLinkCreateInput, AccountSocialLinkUncheckedCreateInput>
     /**
-     * In case the LeadNote was found with the provided `where` argument, update it with this data.
+     * In case the AccountSocialLink was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<LeadNoteUpdateInput, LeadNoteUncheckedUpdateInput>
+    update: XOR<AccountSocialLinkUpdateInput, AccountSocialLinkUncheckedUpdateInput>
   }
 
   /**
-   * LeadNote delete
+   * AccountSocialLink delete
    */
-  export type LeadNoteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountSocialLinkDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the LeadNote
+     * Select specific fields to fetch from the AccountSocialLink
      */
-    select?: LeadNoteSelect<ExtArgs> | null
+    select?: AccountSocialLinkSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the LeadNote
+     * Omit specific fields from the AccountSocialLink
      */
-    omit?: LeadNoteOmit<ExtArgs> | null
+    omit?: AccountSocialLinkOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadNoteInclude<ExtArgs> | null
+    include?: AccountSocialLinkInclude<ExtArgs> | null
     /**
-     * Filter which LeadNote to delete.
+     * Filter which AccountSocialLink to delete.
      */
-    where: LeadNoteWhereUniqueInput
+    where: AccountSocialLinkWhereUniqueInput
   }
 
   /**
-   * LeadNote deleteMany
+   * AccountSocialLink deleteMany
    */
-  export type LeadNoteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountSocialLinkDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which LeadNotes to delete
+     * Filter which AccountSocialLinks to delete
      */
-    where?: LeadNoteWhereInput
+    where?: AccountSocialLinkWhereInput
     /**
-     * Limit how many LeadNotes to delete.
+     * Limit how many AccountSocialLinks to delete.
      */
     limit?: number
   }
 
   /**
-   * LeadNote without action
+   * AccountSocialLink without action
    */
-  export type LeadNoteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AccountSocialLinkDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the LeadNote
+     * Select specific fields to fetch from the AccountSocialLink
      */
-    select?: LeadNoteSelect<ExtArgs> | null
+    select?: AccountSocialLinkSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the LeadNote
+     * Omit specific fields from the AccountSocialLink
      */
-    omit?: LeadNoteOmit<ExtArgs> | null
+    omit?: AccountSocialLinkOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: LeadNoteInclude<ExtArgs> | null
+    include?: AccountSocialLinkInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AccountNote
+   */
+
+  export type AggregateAccountNote = {
+    _count: AccountNoteCountAggregateOutputType | null
+    _min: AccountNoteMinAggregateOutputType | null
+    _max: AccountNoteMaxAggregateOutputType | null
+  }
+
+  export type AccountNoteMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    text: string | null
+    accountId: string | null
+    createdAt: Date | null
+  }
+
+  export type AccountNoteMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    text: string | null
+    accountId: string | null
+    createdAt: Date | null
+  }
+
+  export type AccountNoteCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    text: number
+    accountId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AccountNoteMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    text?: true
+    accountId?: true
+    createdAt?: true
+  }
+
+  export type AccountNoteMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    text?: true
+    accountId?: true
+    createdAt?: true
+  }
+
+  export type AccountNoteCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    text?: true
+    accountId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AccountNoteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AccountNote to aggregate.
+     */
+    where?: AccountNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccountNotes to fetch.
+     */
+    orderBy?: AccountNoteOrderByWithRelationInput | AccountNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AccountNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccountNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccountNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AccountNotes
+    **/
+    _count?: true | AccountNoteCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AccountNoteMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AccountNoteMaxAggregateInputType
+  }
+
+  export type GetAccountNoteAggregateType<T extends AccountNoteAggregateArgs> = {
+        [P in keyof T & keyof AggregateAccountNote]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAccountNote[P]>
+      : GetScalarType<T[P], AggregateAccountNote[P]>
+  }
+
+
+
+
+  export type AccountNoteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccountNoteWhereInput
+    orderBy?: AccountNoteOrderByWithAggregationInput | AccountNoteOrderByWithAggregationInput[]
+    by: AccountNoteScalarFieldEnum[] | AccountNoteScalarFieldEnum
+    having?: AccountNoteScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AccountNoteCountAggregateInputType | true
+    _min?: AccountNoteMinAggregateInputType
+    _max?: AccountNoteMaxAggregateInputType
+  }
+
+  export type AccountNoteGroupByOutputType = {
+    id: string
+    organizationId: string
+    text: string
+    accountId: string
+    createdAt: Date
+    _count: AccountNoteCountAggregateOutputType | null
+    _min: AccountNoteMinAggregateOutputType | null
+    _max: AccountNoteMaxAggregateOutputType | null
+  }
+
+  type GetAccountNoteGroupByPayload<T extends AccountNoteGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AccountNoteGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AccountNoteGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AccountNoteGroupByOutputType[P]>
+            : GetScalarType<T[P], AccountNoteGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AccountNoteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    text?: boolean
+    accountId?: boolean
+    createdAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["accountNote"]>
+
+  export type AccountNoteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    text?: boolean
+    accountId?: boolean
+    createdAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["accountNote"]>
+
+  export type AccountNoteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    text?: boolean
+    accountId?: boolean
+    createdAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["accountNote"]>
+
+  export type AccountNoteSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    text?: boolean
+    accountId?: boolean
+    createdAt?: boolean
+  }
+
+  export type AccountNoteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "text" | "accountId" | "createdAt", ExtArgs["result"]["accountNote"]>
+  export type AccountNoteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }
+  export type AccountNoteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }
+  export type AccountNoteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }
+
+  export type $AccountNotePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AccountNote"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      account: Prisma.$AccountPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      text: string
+      accountId: string
+      createdAt: Date
+    }, ExtArgs["result"]["accountNote"]>
+    composites: {}
+  }
+
+  type AccountNoteGetPayload<S extends boolean | null | undefined | AccountNoteDefaultArgs> = $Result.GetResult<Prisma.$AccountNotePayload, S>
+
+  type AccountNoteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AccountNoteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AccountNoteCountAggregateInputType | true
+    }
+
+  export interface AccountNoteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AccountNote'], meta: { name: 'AccountNote' } }
+    /**
+     * Find zero or one AccountNote that matches the filter.
+     * @param {AccountNoteFindUniqueArgs} args - Arguments to find a AccountNote
+     * @example
+     * // Get one AccountNote
+     * const accountNote = await prisma.accountNote.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AccountNoteFindUniqueArgs>(args: SelectSubset<T, AccountNoteFindUniqueArgs<ExtArgs>>): Prisma__AccountNoteClient<$Result.GetResult<Prisma.$AccountNotePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AccountNote that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AccountNoteFindUniqueOrThrowArgs} args - Arguments to find a AccountNote
+     * @example
+     * // Get one AccountNote
+     * const accountNote = await prisma.accountNote.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AccountNoteFindUniqueOrThrowArgs>(args: SelectSubset<T, AccountNoteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AccountNoteClient<$Result.GetResult<Prisma.$AccountNotePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AccountNote that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountNoteFindFirstArgs} args - Arguments to find a AccountNote
+     * @example
+     * // Get one AccountNote
+     * const accountNote = await prisma.accountNote.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AccountNoteFindFirstArgs>(args?: SelectSubset<T, AccountNoteFindFirstArgs<ExtArgs>>): Prisma__AccountNoteClient<$Result.GetResult<Prisma.$AccountNotePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AccountNote that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountNoteFindFirstOrThrowArgs} args - Arguments to find a AccountNote
+     * @example
+     * // Get one AccountNote
+     * const accountNote = await prisma.accountNote.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AccountNoteFindFirstOrThrowArgs>(args?: SelectSubset<T, AccountNoteFindFirstOrThrowArgs<ExtArgs>>): Prisma__AccountNoteClient<$Result.GetResult<Prisma.$AccountNotePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AccountNotes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountNoteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AccountNotes
+     * const accountNotes = await prisma.accountNote.findMany()
+     * 
+     * // Get first 10 AccountNotes
+     * const accountNotes = await prisma.accountNote.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const accountNoteWithIdOnly = await prisma.accountNote.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AccountNoteFindManyArgs>(args?: SelectSubset<T, AccountNoteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AccountNote.
+     * @param {AccountNoteCreateArgs} args - Arguments to create a AccountNote.
+     * @example
+     * // Create one AccountNote
+     * const AccountNote = await prisma.accountNote.create({
+     *   data: {
+     *     // ... data to create a AccountNote
+     *   }
+     * })
+     * 
+     */
+    create<T extends AccountNoteCreateArgs>(args: SelectSubset<T, AccountNoteCreateArgs<ExtArgs>>): Prisma__AccountNoteClient<$Result.GetResult<Prisma.$AccountNotePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AccountNotes.
+     * @param {AccountNoteCreateManyArgs} args - Arguments to create many AccountNotes.
+     * @example
+     * // Create many AccountNotes
+     * const accountNote = await prisma.accountNote.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AccountNoteCreateManyArgs>(args?: SelectSubset<T, AccountNoteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AccountNotes and returns the data saved in the database.
+     * @param {AccountNoteCreateManyAndReturnArgs} args - Arguments to create many AccountNotes.
+     * @example
+     * // Create many AccountNotes
+     * const accountNote = await prisma.accountNote.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AccountNotes and only return the `id`
+     * const accountNoteWithIdOnly = await prisma.accountNote.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AccountNoteCreateManyAndReturnArgs>(args?: SelectSubset<T, AccountNoteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountNotePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AccountNote.
+     * @param {AccountNoteDeleteArgs} args - Arguments to delete one AccountNote.
+     * @example
+     * // Delete one AccountNote
+     * const AccountNote = await prisma.accountNote.delete({
+     *   where: {
+     *     // ... filter to delete one AccountNote
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AccountNoteDeleteArgs>(args: SelectSubset<T, AccountNoteDeleteArgs<ExtArgs>>): Prisma__AccountNoteClient<$Result.GetResult<Prisma.$AccountNotePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AccountNote.
+     * @param {AccountNoteUpdateArgs} args - Arguments to update one AccountNote.
+     * @example
+     * // Update one AccountNote
+     * const accountNote = await prisma.accountNote.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AccountNoteUpdateArgs>(args: SelectSubset<T, AccountNoteUpdateArgs<ExtArgs>>): Prisma__AccountNoteClient<$Result.GetResult<Prisma.$AccountNotePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AccountNotes.
+     * @param {AccountNoteDeleteManyArgs} args - Arguments to filter AccountNotes to delete.
+     * @example
+     * // Delete a few AccountNotes
+     * const { count } = await prisma.accountNote.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AccountNoteDeleteManyArgs>(args?: SelectSubset<T, AccountNoteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AccountNotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountNoteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AccountNotes
+     * const accountNote = await prisma.accountNote.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AccountNoteUpdateManyArgs>(args: SelectSubset<T, AccountNoteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AccountNotes and returns the data updated in the database.
+     * @param {AccountNoteUpdateManyAndReturnArgs} args - Arguments to update many AccountNotes.
+     * @example
+     * // Update many AccountNotes
+     * const accountNote = await prisma.accountNote.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AccountNotes and only return the `id`
+     * const accountNoteWithIdOnly = await prisma.accountNote.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AccountNoteUpdateManyAndReturnArgs>(args: SelectSubset<T, AccountNoteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountNotePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AccountNote.
+     * @param {AccountNoteUpsertArgs} args - Arguments to update or create a AccountNote.
+     * @example
+     * // Update or create a AccountNote
+     * const accountNote = await prisma.accountNote.upsert({
+     *   create: {
+     *     // ... data to create a AccountNote
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AccountNote we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AccountNoteUpsertArgs>(args: SelectSubset<T, AccountNoteUpsertArgs<ExtArgs>>): Prisma__AccountNoteClient<$Result.GetResult<Prisma.$AccountNotePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AccountNotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountNoteCountArgs} args - Arguments to filter AccountNotes to count.
+     * @example
+     * // Count the number of AccountNotes
+     * const count = await prisma.accountNote.count({
+     *   where: {
+     *     // ... the filter for the AccountNotes we want to count
+     *   }
+     * })
+    **/
+    count<T extends AccountNoteCountArgs>(
+      args?: Subset<T, AccountNoteCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AccountNoteCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AccountNote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountNoteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AccountNoteAggregateArgs>(args: Subset<T, AccountNoteAggregateArgs>): Prisma.PrismaPromise<GetAccountNoteAggregateType<T>>
+
+    /**
+     * Group by AccountNote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountNoteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AccountNoteGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AccountNoteGroupByArgs['orderBy'] }
+        : { orderBy?: AccountNoteGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AccountNoteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAccountNoteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AccountNote model
+   */
+  readonly fields: AccountNoteFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AccountNote.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AccountNoteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    account<T extends AccountDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AccountDefaultArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AccountNote model
+   */
+  interface AccountNoteFieldRefs {
+    readonly id: FieldRef<"AccountNote", 'String'>
+    readonly organizationId: FieldRef<"AccountNote", 'String'>
+    readonly text: FieldRef<"AccountNote", 'String'>
+    readonly accountId: FieldRef<"AccountNote", 'String'>
+    readonly createdAt: FieldRef<"AccountNote", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AccountNote findUnique
+   */
+  export type AccountNoteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountNote
+     */
+    select?: AccountNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountNote
+     */
+    omit?: AccountNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which AccountNote to fetch.
+     */
+    where: AccountNoteWhereUniqueInput
+  }
+
+  /**
+   * AccountNote findUniqueOrThrow
+   */
+  export type AccountNoteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountNote
+     */
+    select?: AccountNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountNote
+     */
+    omit?: AccountNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which AccountNote to fetch.
+     */
+    where: AccountNoteWhereUniqueInput
+  }
+
+  /**
+   * AccountNote findFirst
+   */
+  export type AccountNoteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountNote
+     */
+    select?: AccountNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountNote
+     */
+    omit?: AccountNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which AccountNote to fetch.
+     */
+    where?: AccountNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccountNotes to fetch.
+     */
+    orderBy?: AccountNoteOrderByWithRelationInput | AccountNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AccountNotes.
+     */
+    cursor?: AccountNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccountNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccountNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccountNotes.
+     */
+    distinct?: AccountNoteScalarFieldEnum | AccountNoteScalarFieldEnum[]
+  }
+
+  /**
+   * AccountNote findFirstOrThrow
+   */
+  export type AccountNoteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountNote
+     */
+    select?: AccountNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountNote
+     */
+    omit?: AccountNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which AccountNote to fetch.
+     */
+    where?: AccountNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccountNotes to fetch.
+     */
+    orderBy?: AccountNoteOrderByWithRelationInput | AccountNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AccountNotes.
+     */
+    cursor?: AccountNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccountNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccountNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccountNotes.
+     */
+    distinct?: AccountNoteScalarFieldEnum | AccountNoteScalarFieldEnum[]
+  }
+
+  /**
+   * AccountNote findMany
+   */
+  export type AccountNoteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountNote
+     */
+    select?: AccountNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountNote
+     */
+    omit?: AccountNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which AccountNotes to fetch.
+     */
+    where?: AccountNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccountNotes to fetch.
+     */
+    orderBy?: AccountNoteOrderByWithRelationInput | AccountNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AccountNotes.
+     */
+    cursor?: AccountNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccountNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccountNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccountNotes.
+     */
+    distinct?: AccountNoteScalarFieldEnum | AccountNoteScalarFieldEnum[]
+  }
+
+  /**
+   * AccountNote create
+   */
+  export type AccountNoteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountNote
+     */
+    select?: AccountNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountNote
+     */
+    omit?: AccountNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountNoteInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AccountNote.
+     */
+    data: XOR<AccountNoteCreateInput, AccountNoteUncheckedCreateInput>
+  }
+
+  /**
+   * AccountNote createMany
+   */
+  export type AccountNoteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AccountNotes.
+     */
+    data: AccountNoteCreateManyInput | AccountNoteCreateManyInput[]
+  }
+
+  /**
+   * AccountNote createManyAndReturn
+   */
+  export type AccountNoteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountNote
+     */
+    select?: AccountNoteSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountNote
+     */
+    omit?: AccountNoteOmit<ExtArgs> | null
+    /**
+     * The data used to create many AccountNotes.
+     */
+    data: AccountNoteCreateManyInput | AccountNoteCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountNoteIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AccountNote update
+   */
+  export type AccountNoteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountNote
+     */
+    select?: AccountNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountNote
+     */
+    omit?: AccountNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountNoteInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AccountNote.
+     */
+    data: XOR<AccountNoteUpdateInput, AccountNoteUncheckedUpdateInput>
+    /**
+     * Choose, which AccountNote to update.
+     */
+    where: AccountNoteWhereUniqueInput
+  }
+
+  /**
+   * AccountNote updateMany
+   */
+  export type AccountNoteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AccountNotes.
+     */
+    data: XOR<AccountNoteUpdateManyMutationInput, AccountNoteUncheckedUpdateManyInput>
+    /**
+     * Filter which AccountNotes to update
+     */
+    where?: AccountNoteWhereInput
+    /**
+     * Limit how many AccountNotes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AccountNote updateManyAndReturn
+   */
+  export type AccountNoteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountNote
+     */
+    select?: AccountNoteSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountNote
+     */
+    omit?: AccountNoteOmit<ExtArgs> | null
+    /**
+     * The data used to update AccountNotes.
+     */
+    data: XOR<AccountNoteUpdateManyMutationInput, AccountNoteUncheckedUpdateManyInput>
+    /**
+     * Filter which AccountNotes to update
+     */
+    where?: AccountNoteWhereInput
+    /**
+     * Limit how many AccountNotes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountNoteIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AccountNote upsert
+   */
+  export type AccountNoteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountNote
+     */
+    select?: AccountNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountNote
+     */
+    omit?: AccountNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountNoteInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AccountNote to update in case it exists.
+     */
+    where: AccountNoteWhereUniqueInput
+    /**
+     * In case the AccountNote found by the `where` argument doesn't exist, create a new AccountNote with this data.
+     */
+    create: XOR<AccountNoteCreateInput, AccountNoteUncheckedCreateInput>
+    /**
+     * In case the AccountNote was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AccountNoteUpdateInput, AccountNoteUncheckedUpdateInput>
+  }
+
+  /**
+   * AccountNote delete
+   */
+  export type AccountNoteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountNote
+     */
+    select?: AccountNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountNote
+     */
+    omit?: AccountNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountNoteInclude<ExtArgs> | null
+    /**
+     * Filter which AccountNote to delete.
+     */
+    where: AccountNoteWhereUniqueInput
+  }
+
+  /**
+   * AccountNote deleteMany
+   */
+  export type AccountNoteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AccountNotes to delete
+     */
+    where?: AccountNoteWhereInput
+    /**
+     * Limit how many AccountNotes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AccountNote without action
+   */
+  export type AccountNoteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountNote
+     */
+    select?: AccountNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountNote
+     */
+    omit?: AccountNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountNoteInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Contact
+   */
+
+  export type AggregateContact = {
+    _count: ContactCountAggregateOutputType | null
+    _min: ContactMinAggregateOutputType | null
+    _max: ContactMaxAggregateOutputType | null
+  }
+
+  export type ContactMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    accountId: string | null
+    firstName: string | null
+    lastName: string | null
+    title: string | null
+    email: string | null
+    phone: string | null
+    officePhone: string | null
+    isVip: boolean | null
+    source: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ContactMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    accountId: string | null
+    firstName: string | null
+    lastName: string | null
+    title: string | null
+    email: string | null
+    phone: string | null
+    officePhone: string | null
+    isVip: boolean | null
+    source: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ContactCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    accountId: number
+    firstName: number
+    lastName: number
+    title: number
+    email: number
+    phone: number
+    officePhone: number
+    isVip: number
+    source: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ContactMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    accountId?: true
+    firstName?: true
+    lastName?: true
+    title?: true
+    email?: true
+    phone?: true
+    officePhone?: true
+    isVip?: true
+    source?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ContactMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    accountId?: true
+    firstName?: true
+    lastName?: true
+    title?: true
+    email?: true
+    phone?: true
+    officePhone?: true
+    isVip?: true
+    source?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ContactCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    accountId?: true
+    firstName?: true
+    lastName?: true
+    title?: true
+    email?: true
+    phone?: true
+    officePhone?: true
+    isVip?: true
+    source?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ContactAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Contact to aggregate.
+     */
+    where?: ContactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contacts to fetch.
+     */
+    orderBy?: ContactOrderByWithRelationInput | ContactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ContactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Contacts
+    **/
+    _count?: true | ContactCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ContactMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ContactMaxAggregateInputType
+  }
+
+  export type GetContactAggregateType<T extends ContactAggregateArgs> = {
+        [P in keyof T & keyof AggregateContact]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateContact[P]>
+      : GetScalarType<T[P], AggregateContact[P]>
+  }
+
+
+
+
+  export type ContactGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContactWhereInput
+    orderBy?: ContactOrderByWithAggregationInput | ContactOrderByWithAggregationInput[]
+    by: ContactScalarFieldEnum[] | ContactScalarFieldEnum
+    having?: ContactScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ContactCountAggregateInputType | true
+    _min?: ContactMinAggregateInputType
+    _max?: ContactMaxAggregateInputType
+  }
+
+  export type ContactGroupByOutputType = {
+    id: string
+    organizationId: string
+    accountId: string
+    firstName: string
+    lastName: string
+    title: string | null
+    email: string | null
+    phone: string | null
+    officePhone: string | null
+    isVip: boolean
+    source: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ContactCountAggregateOutputType | null
+    _min: ContactMinAggregateOutputType | null
+    _max: ContactMaxAggregateOutputType | null
+  }
+
+  type GetContactGroupByPayload<T extends ContactGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ContactGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ContactGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ContactGroupByOutputType[P]>
+            : GetScalarType<T[P], ContactGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ContactSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    accountId?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    title?: boolean
+    email?: boolean
+    phone?: boolean
+    officePhone?: boolean
+    isVip?: boolean
+    source?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+    touches?: boolean | Contact$touchesArgs<ExtArgs>
+    notes?: boolean | Contact$notesArgs<ExtArgs>
+    _count?: boolean | ContactCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["contact"]>
+
+  export type ContactSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    accountId?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    title?: boolean
+    email?: boolean
+    phone?: boolean
+    officePhone?: boolean
+    isVip?: boolean
+    source?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["contact"]>
+
+  export type ContactSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    accountId?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    title?: boolean
+    email?: boolean
+    phone?: boolean
+    officePhone?: boolean
+    isVip?: boolean
+    source?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["contact"]>
+
+  export type ContactSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    accountId?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    title?: boolean
+    email?: boolean
+    phone?: boolean
+    officePhone?: boolean
+    isVip?: boolean
+    source?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ContactOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "accountId" | "firstName" | "lastName" | "title" | "email" | "phone" | "officePhone" | "isVip" | "source" | "createdAt" | "updatedAt", ExtArgs["result"]["contact"]>
+  export type ContactInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+    touches?: boolean | Contact$touchesArgs<ExtArgs>
+    notes?: boolean | Contact$notesArgs<ExtArgs>
+    _count?: boolean | ContactCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ContactIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }
+  export type ContactIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }
+
+  export type $ContactPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Contact"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      account: Prisma.$AccountPayload<ExtArgs>
+      touches: Prisma.$TouchPayload<ExtArgs>[]
+      notes: Prisma.$ContactNotePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      accountId: string
+      firstName: string
+      lastName: string
+      title: string | null
+      email: string | null
+      /**
+       * Cell / mobile number.
+       */
+      phone: string | null
+      /**
+       * Office / desk number.
+       */
+      officePhone: string | null
+      isVip: boolean
+      source: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["contact"]>
+    composites: {}
+  }
+
+  type ContactGetPayload<S extends boolean | null | undefined | ContactDefaultArgs> = $Result.GetResult<Prisma.$ContactPayload, S>
+
+  type ContactCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ContactFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ContactCountAggregateInputType | true
+    }
+
+  export interface ContactDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Contact'], meta: { name: 'Contact' } }
+    /**
+     * Find zero or one Contact that matches the filter.
+     * @param {ContactFindUniqueArgs} args - Arguments to find a Contact
+     * @example
+     * // Get one Contact
+     * const contact = await prisma.contact.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ContactFindUniqueArgs>(args: SelectSubset<T, ContactFindUniqueArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Contact that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ContactFindUniqueOrThrowArgs} args - Arguments to find a Contact
+     * @example
+     * // Get one Contact
+     * const contact = await prisma.contact.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ContactFindUniqueOrThrowArgs>(args: SelectSubset<T, ContactFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Contact that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactFindFirstArgs} args - Arguments to find a Contact
+     * @example
+     * // Get one Contact
+     * const contact = await prisma.contact.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ContactFindFirstArgs>(args?: SelectSubset<T, ContactFindFirstArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Contact that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactFindFirstOrThrowArgs} args - Arguments to find a Contact
+     * @example
+     * // Get one Contact
+     * const contact = await prisma.contact.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ContactFindFirstOrThrowArgs>(args?: SelectSubset<T, ContactFindFirstOrThrowArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Contacts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Contacts
+     * const contacts = await prisma.contact.findMany()
+     * 
+     * // Get first 10 Contacts
+     * const contacts = await prisma.contact.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const contactWithIdOnly = await prisma.contact.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ContactFindManyArgs>(args?: SelectSubset<T, ContactFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Contact.
+     * @param {ContactCreateArgs} args - Arguments to create a Contact.
+     * @example
+     * // Create one Contact
+     * const Contact = await prisma.contact.create({
+     *   data: {
+     *     // ... data to create a Contact
+     *   }
+     * })
+     * 
+     */
+    create<T extends ContactCreateArgs>(args: SelectSubset<T, ContactCreateArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Contacts.
+     * @param {ContactCreateManyArgs} args - Arguments to create many Contacts.
+     * @example
+     * // Create many Contacts
+     * const contact = await prisma.contact.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ContactCreateManyArgs>(args?: SelectSubset<T, ContactCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Contacts and returns the data saved in the database.
+     * @param {ContactCreateManyAndReturnArgs} args - Arguments to create many Contacts.
+     * @example
+     * // Create many Contacts
+     * const contact = await prisma.contact.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Contacts and only return the `id`
+     * const contactWithIdOnly = await prisma.contact.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ContactCreateManyAndReturnArgs>(args?: SelectSubset<T, ContactCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Contact.
+     * @param {ContactDeleteArgs} args - Arguments to delete one Contact.
+     * @example
+     * // Delete one Contact
+     * const Contact = await prisma.contact.delete({
+     *   where: {
+     *     // ... filter to delete one Contact
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ContactDeleteArgs>(args: SelectSubset<T, ContactDeleteArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Contact.
+     * @param {ContactUpdateArgs} args - Arguments to update one Contact.
+     * @example
+     * // Update one Contact
+     * const contact = await prisma.contact.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ContactUpdateArgs>(args: SelectSubset<T, ContactUpdateArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Contacts.
+     * @param {ContactDeleteManyArgs} args - Arguments to filter Contacts to delete.
+     * @example
+     * // Delete a few Contacts
+     * const { count } = await prisma.contact.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ContactDeleteManyArgs>(args?: SelectSubset<T, ContactDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Contacts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Contacts
+     * const contact = await prisma.contact.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ContactUpdateManyArgs>(args: SelectSubset<T, ContactUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Contacts and returns the data updated in the database.
+     * @param {ContactUpdateManyAndReturnArgs} args - Arguments to update many Contacts.
+     * @example
+     * // Update many Contacts
+     * const contact = await prisma.contact.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Contacts and only return the `id`
+     * const contactWithIdOnly = await prisma.contact.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ContactUpdateManyAndReturnArgs>(args: SelectSubset<T, ContactUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Contact.
+     * @param {ContactUpsertArgs} args - Arguments to update or create a Contact.
+     * @example
+     * // Update or create a Contact
+     * const contact = await prisma.contact.upsert({
+     *   create: {
+     *     // ... data to create a Contact
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Contact we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ContactUpsertArgs>(args: SelectSubset<T, ContactUpsertArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Contacts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactCountArgs} args - Arguments to filter Contacts to count.
+     * @example
+     * // Count the number of Contacts
+     * const count = await prisma.contact.count({
+     *   where: {
+     *     // ... the filter for the Contacts we want to count
+     *   }
+     * })
+    **/
+    count<T extends ContactCountArgs>(
+      args?: Subset<T, ContactCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ContactCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Contact.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ContactAggregateArgs>(args: Subset<T, ContactAggregateArgs>): Prisma.PrismaPromise<GetContactAggregateType<T>>
+
+    /**
+     * Group by Contact.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ContactGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ContactGroupByArgs['orderBy'] }
+        : { orderBy?: ContactGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ContactGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetContactGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Contact model
+   */
+  readonly fields: ContactFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Contact.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ContactClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    account<T extends AccountDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AccountDefaultArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    touches<T extends Contact$touchesArgs<ExtArgs> = {}>(args?: Subset<T, Contact$touchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TouchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    notes<T extends Contact$notesArgs<ExtArgs> = {}>(args?: Subset<T, Contact$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Contact model
+   */
+  interface ContactFieldRefs {
+    readonly id: FieldRef<"Contact", 'String'>
+    readonly organizationId: FieldRef<"Contact", 'String'>
+    readonly accountId: FieldRef<"Contact", 'String'>
+    readonly firstName: FieldRef<"Contact", 'String'>
+    readonly lastName: FieldRef<"Contact", 'String'>
+    readonly title: FieldRef<"Contact", 'String'>
+    readonly email: FieldRef<"Contact", 'String'>
+    readonly phone: FieldRef<"Contact", 'String'>
+    readonly officePhone: FieldRef<"Contact", 'String'>
+    readonly isVip: FieldRef<"Contact", 'Boolean'>
+    readonly source: FieldRef<"Contact", 'String'>
+    readonly createdAt: FieldRef<"Contact", 'DateTime'>
+    readonly updatedAt: FieldRef<"Contact", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Contact findUnique
+   */
+  export type ContactFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contact
+     */
+    omit?: ContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactInclude<ExtArgs> | null
+    /**
+     * Filter, which Contact to fetch.
+     */
+    where: ContactWhereUniqueInput
+  }
+
+  /**
+   * Contact findUniqueOrThrow
+   */
+  export type ContactFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contact
+     */
+    omit?: ContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactInclude<ExtArgs> | null
+    /**
+     * Filter, which Contact to fetch.
+     */
+    where: ContactWhereUniqueInput
+  }
+
+  /**
+   * Contact findFirst
+   */
+  export type ContactFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contact
+     */
+    omit?: ContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactInclude<ExtArgs> | null
+    /**
+     * Filter, which Contact to fetch.
+     */
+    where?: ContactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contacts to fetch.
+     */
+    orderBy?: ContactOrderByWithRelationInput | ContactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Contacts.
+     */
+    cursor?: ContactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Contacts.
+     */
+    distinct?: ContactScalarFieldEnum | ContactScalarFieldEnum[]
+  }
+
+  /**
+   * Contact findFirstOrThrow
+   */
+  export type ContactFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contact
+     */
+    omit?: ContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactInclude<ExtArgs> | null
+    /**
+     * Filter, which Contact to fetch.
+     */
+    where?: ContactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contacts to fetch.
+     */
+    orderBy?: ContactOrderByWithRelationInput | ContactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Contacts.
+     */
+    cursor?: ContactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Contacts.
+     */
+    distinct?: ContactScalarFieldEnum | ContactScalarFieldEnum[]
+  }
+
+  /**
+   * Contact findMany
+   */
+  export type ContactFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contact
+     */
+    omit?: ContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactInclude<ExtArgs> | null
+    /**
+     * Filter, which Contacts to fetch.
+     */
+    where?: ContactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contacts to fetch.
+     */
+    orderBy?: ContactOrderByWithRelationInput | ContactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Contacts.
+     */
+    cursor?: ContactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Contacts.
+     */
+    distinct?: ContactScalarFieldEnum | ContactScalarFieldEnum[]
+  }
+
+  /**
+   * Contact create
+   */
+  export type ContactCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contact
+     */
+    omit?: ContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Contact.
+     */
+    data: XOR<ContactCreateInput, ContactUncheckedCreateInput>
+  }
+
+  /**
+   * Contact createMany
+   */
+  export type ContactCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Contacts.
+     */
+    data: ContactCreateManyInput | ContactCreateManyInput[]
+  }
+
+  /**
+   * Contact createManyAndReturn
+   */
+  export type ContactCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contact
+     */
+    omit?: ContactOmit<ExtArgs> | null
+    /**
+     * The data used to create many Contacts.
+     */
+    data: ContactCreateManyInput | ContactCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Contact update
+   */
+  export type ContactUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contact
+     */
+    omit?: ContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Contact.
+     */
+    data: XOR<ContactUpdateInput, ContactUncheckedUpdateInput>
+    /**
+     * Choose, which Contact to update.
+     */
+    where: ContactWhereUniqueInput
+  }
+
+  /**
+   * Contact updateMany
+   */
+  export type ContactUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Contacts.
+     */
+    data: XOR<ContactUpdateManyMutationInput, ContactUncheckedUpdateManyInput>
+    /**
+     * Filter which Contacts to update
+     */
+    where?: ContactWhereInput
+    /**
+     * Limit how many Contacts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Contact updateManyAndReturn
+   */
+  export type ContactUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contact
+     */
+    omit?: ContactOmit<ExtArgs> | null
+    /**
+     * The data used to update Contacts.
+     */
+    data: XOR<ContactUpdateManyMutationInput, ContactUncheckedUpdateManyInput>
+    /**
+     * Filter which Contacts to update
+     */
+    where?: ContactWhereInput
+    /**
+     * Limit how many Contacts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Contact upsert
+   */
+  export type ContactUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contact
+     */
+    omit?: ContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Contact to update in case it exists.
+     */
+    where: ContactWhereUniqueInput
+    /**
+     * In case the Contact found by the `where` argument doesn't exist, create a new Contact with this data.
+     */
+    create: XOR<ContactCreateInput, ContactUncheckedCreateInput>
+    /**
+     * In case the Contact was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ContactUpdateInput, ContactUncheckedUpdateInput>
+  }
+
+  /**
+   * Contact delete
+   */
+  export type ContactDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contact
+     */
+    omit?: ContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactInclude<ExtArgs> | null
+    /**
+     * Filter which Contact to delete.
+     */
+    where: ContactWhereUniqueInput
+  }
+
+  /**
+   * Contact deleteMany
+   */
+  export type ContactDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Contacts to delete
+     */
+    where?: ContactWhereInput
+    /**
+     * Limit how many Contacts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Contact.touches
+   */
+  export type Contact$touchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Touch
+     */
+    select?: TouchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Touch
+     */
+    omit?: TouchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TouchInclude<ExtArgs> | null
+    where?: TouchWhereInput
+    orderBy?: TouchOrderByWithRelationInput | TouchOrderByWithRelationInput[]
+    cursor?: TouchWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TouchScalarFieldEnum | TouchScalarFieldEnum[]
+  }
+
+  /**
+   * Contact.notes
+   */
+  export type Contact$notesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactNote
+     */
+    select?: ContactNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ContactNote
+     */
+    omit?: ContactNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactNoteInclude<ExtArgs> | null
+    where?: ContactNoteWhereInput
+    orderBy?: ContactNoteOrderByWithRelationInput | ContactNoteOrderByWithRelationInput[]
+    cursor?: ContactNoteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ContactNoteScalarFieldEnum | ContactNoteScalarFieldEnum[]
+  }
+
+  /**
+   * Contact without action
+   */
+  export type ContactDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contact
+     */
+    omit?: ContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ContactNote
+   */
+
+  export type AggregateContactNote = {
+    _count: ContactNoteCountAggregateOutputType | null
+    _min: ContactNoteMinAggregateOutputType | null
+    _max: ContactNoteMaxAggregateOutputType | null
+  }
+
+  export type ContactNoteMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    text: string | null
+    contactId: string | null
+    createdAt: Date | null
+  }
+
+  export type ContactNoteMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    text: string | null
+    contactId: string | null
+    createdAt: Date | null
+  }
+
+  export type ContactNoteCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    text: number
+    contactId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ContactNoteMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    text?: true
+    contactId?: true
+    createdAt?: true
+  }
+
+  export type ContactNoteMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    text?: true
+    contactId?: true
+    createdAt?: true
+  }
+
+  export type ContactNoteCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    text?: true
+    contactId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ContactNoteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ContactNote to aggregate.
+     */
+    where?: ContactNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ContactNotes to fetch.
+     */
+    orderBy?: ContactNoteOrderByWithRelationInput | ContactNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ContactNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ContactNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ContactNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ContactNotes
+    **/
+    _count?: true | ContactNoteCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ContactNoteMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ContactNoteMaxAggregateInputType
+  }
+
+  export type GetContactNoteAggregateType<T extends ContactNoteAggregateArgs> = {
+        [P in keyof T & keyof AggregateContactNote]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateContactNote[P]>
+      : GetScalarType<T[P], AggregateContactNote[P]>
+  }
+
+
+
+
+  export type ContactNoteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContactNoteWhereInput
+    orderBy?: ContactNoteOrderByWithAggregationInput | ContactNoteOrderByWithAggregationInput[]
+    by: ContactNoteScalarFieldEnum[] | ContactNoteScalarFieldEnum
+    having?: ContactNoteScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ContactNoteCountAggregateInputType | true
+    _min?: ContactNoteMinAggregateInputType
+    _max?: ContactNoteMaxAggregateInputType
+  }
+
+  export type ContactNoteGroupByOutputType = {
+    id: string
+    organizationId: string
+    text: string
+    contactId: string
+    createdAt: Date
+    _count: ContactNoteCountAggregateOutputType | null
+    _min: ContactNoteMinAggregateOutputType | null
+    _max: ContactNoteMaxAggregateOutputType | null
+  }
+
+  type GetContactNoteGroupByPayload<T extends ContactNoteGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ContactNoteGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ContactNoteGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ContactNoteGroupByOutputType[P]>
+            : GetScalarType<T[P], ContactNoteGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ContactNoteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    text?: boolean
+    contactId?: boolean
+    createdAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    contact?: boolean | ContactDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["contactNote"]>
+
+  export type ContactNoteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    text?: boolean
+    contactId?: boolean
+    createdAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    contact?: boolean | ContactDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["contactNote"]>
+
+  export type ContactNoteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    text?: boolean
+    contactId?: boolean
+    createdAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    contact?: boolean | ContactDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["contactNote"]>
+
+  export type ContactNoteSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    text?: boolean
+    contactId?: boolean
+    createdAt?: boolean
+  }
+
+  export type ContactNoteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "text" | "contactId" | "createdAt", ExtArgs["result"]["contactNote"]>
+  export type ContactNoteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    contact?: boolean | ContactDefaultArgs<ExtArgs>
+  }
+  export type ContactNoteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    contact?: boolean | ContactDefaultArgs<ExtArgs>
+  }
+  export type ContactNoteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    contact?: boolean | ContactDefaultArgs<ExtArgs>
+  }
+
+  export type $ContactNotePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ContactNote"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      contact: Prisma.$ContactPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      text: string
+      contactId: string
+      createdAt: Date
+    }, ExtArgs["result"]["contactNote"]>
+    composites: {}
+  }
+
+  type ContactNoteGetPayload<S extends boolean | null | undefined | ContactNoteDefaultArgs> = $Result.GetResult<Prisma.$ContactNotePayload, S>
+
+  type ContactNoteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ContactNoteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ContactNoteCountAggregateInputType | true
+    }
+
+  export interface ContactNoteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ContactNote'], meta: { name: 'ContactNote' } }
+    /**
+     * Find zero or one ContactNote that matches the filter.
+     * @param {ContactNoteFindUniqueArgs} args - Arguments to find a ContactNote
+     * @example
+     * // Get one ContactNote
+     * const contactNote = await prisma.contactNote.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ContactNoteFindUniqueArgs>(args: SelectSubset<T, ContactNoteFindUniqueArgs<ExtArgs>>): Prisma__ContactNoteClient<$Result.GetResult<Prisma.$ContactNotePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ContactNote that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ContactNoteFindUniqueOrThrowArgs} args - Arguments to find a ContactNote
+     * @example
+     * // Get one ContactNote
+     * const contactNote = await prisma.contactNote.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ContactNoteFindUniqueOrThrowArgs>(args: SelectSubset<T, ContactNoteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ContactNoteClient<$Result.GetResult<Prisma.$ContactNotePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ContactNote that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactNoteFindFirstArgs} args - Arguments to find a ContactNote
+     * @example
+     * // Get one ContactNote
+     * const contactNote = await prisma.contactNote.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ContactNoteFindFirstArgs>(args?: SelectSubset<T, ContactNoteFindFirstArgs<ExtArgs>>): Prisma__ContactNoteClient<$Result.GetResult<Prisma.$ContactNotePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ContactNote that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactNoteFindFirstOrThrowArgs} args - Arguments to find a ContactNote
+     * @example
+     * // Get one ContactNote
+     * const contactNote = await prisma.contactNote.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ContactNoteFindFirstOrThrowArgs>(args?: SelectSubset<T, ContactNoteFindFirstOrThrowArgs<ExtArgs>>): Prisma__ContactNoteClient<$Result.GetResult<Prisma.$ContactNotePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ContactNotes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactNoteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ContactNotes
+     * const contactNotes = await prisma.contactNote.findMany()
+     * 
+     * // Get first 10 ContactNotes
+     * const contactNotes = await prisma.contactNote.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const contactNoteWithIdOnly = await prisma.contactNote.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ContactNoteFindManyArgs>(args?: SelectSubset<T, ContactNoteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ContactNote.
+     * @param {ContactNoteCreateArgs} args - Arguments to create a ContactNote.
+     * @example
+     * // Create one ContactNote
+     * const ContactNote = await prisma.contactNote.create({
+     *   data: {
+     *     // ... data to create a ContactNote
+     *   }
+     * })
+     * 
+     */
+    create<T extends ContactNoteCreateArgs>(args: SelectSubset<T, ContactNoteCreateArgs<ExtArgs>>): Prisma__ContactNoteClient<$Result.GetResult<Prisma.$ContactNotePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ContactNotes.
+     * @param {ContactNoteCreateManyArgs} args - Arguments to create many ContactNotes.
+     * @example
+     * // Create many ContactNotes
+     * const contactNote = await prisma.contactNote.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ContactNoteCreateManyArgs>(args?: SelectSubset<T, ContactNoteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ContactNotes and returns the data saved in the database.
+     * @param {ContactNoteCreateManyAndReturnArgs} args - Arguments to create many ContactNotes.
+     * @example
+     * // Create many ContactNotes
+     * const contactNote = await prisma.contactNote.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ContactNotes and only return the `id`
+     * const contactNoteWithIdOnly = await prisma.contactNote.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ContactNoteCreateManyAndReturnArgs>(args?: SelectSubset<T, ContactNoteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactNotePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ContactNote.
+     * @param {ContactNoteDeleteArgs} args - Arguments to delete one ContactNote.
+     * @example
+     * // Delete one ContactNote
+     * const ContactNote = await prisma.contactNote.delete({
+     *   where: {
+     *     // ... filter to delete one ContactNote
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ContactNoteDeleteArgs>(args: SelectSubset<T, ContactNoteDeleteArgs<ExtArgs>>): Prisma__ContactNoteClient<$Result.GetResult<Prisma.$ContactNotePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ContactNote.
+     * @param {ContactNoteUpdateArgs} args - Arguments to update one ContactNote.
+     * @example
+     * // Update one ContactNote
+     * const contactNote = await prisma.contactNote.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ContactNoteUpdateArgs>(args: SelectSubset<T, ContactNoteUpdateArgs<ExtArgs>>): Prisma__ContactNoteClient<$Result.GetResult<Prisma.$ContactNotePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ContactNotes.
+     * @param {ContactNoteDeleteManyArgs} args - Arguments to filter ContactNotes to delete.
+     * @example
+     * // Delete a few ContactNotes
+     * const { count } = await prisma.contactNote.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ContactNoteDeleteManyArgs>(args?: SelectSubset<T, ContactNoteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ContactNotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactNoteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ContactNotes
+     * const contactNote = await prisma.contactNote.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ContactNoteUpdateManyArgs>(args: SelectSubset<T, ContactNoteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ContactNotes and returns the data updated in the database.
+     * @param {ContactNoteUpdateManyAndReturnArgs} args - Arguments to update many ContactNotes.
+     * @example
+     * // Update many ContactNotes
+     * const contactNote = await prisma.contactNote.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ContactNotes and only return the `id`
+     * const contactNoteWithIdOnly = await prisma.contactNote.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ContactNoteUpdateManyAndReturnArgs>(args: SelectSubset<T, ContactNoteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactNotePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ContactNote.
+     * @param {ContactNoteUpsertArgs} args - Arguments to update or create a ContactNote.
+     * @example
+     * // Update or create a ContactNote
+     * const contactNote = await prisma.contactNote.upsert({
+     *   create: {
+     *     // ... data to create a ContactNote
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ContactNote we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ContactNoteUpsertArgs>(args: SelectSubset<T, ContactNoteUpsertArgs<ExtArgs>>): Prisma__ContactNoteClient<$Result.GetResult<Prisma.$ContactNotePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ContactNotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactNoteCountArgs} args - Arguments to filter ContactNotes to count.
+     * @example
+     * // Count the number of ContactNotes
+     * const count = await prisma.contactNote.count({
+     *   where: {
+     *     // ... the filter for the ContactNotes we want to count
+     *   }
+     * })
+    **/
+    count<T extends ContactNoteCountArgs>(
+      args?: Subset<T, ContactNoteCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ContactNoteCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ContactNote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactNoteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ContactNoteAggregateArgs>(args: Subset<T, ContactNoteAggregateArgs>): Prisma.PrismaPromise<GetContactNoteAggregateType<T>>
+
+    /**
+     * Group by ContactNote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContactNoteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ContactNoteGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ContactNoteGroupByArgs['orderBy'] }
+        : { orderBy?: ContactNoteGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ContactNoteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetContactNoteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ContactNote model
+   */
+  readonly fields: ContactNoteFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ContactNote.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ContactNoteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    contact<T extends ContactDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ContactDefaultArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ContactNote model
+   */
+  interface ContactNoteFieldRefs {
+    readonly id: FieldRef<"ContactNote", 'String'>
+    readonly organizationId: FieldRef<"ContactNote", 'String'>
+    readonly text: FieldRef<"ContactNote", 'String'>
+    readonly contactId: FieldRef<"ContactNote", 'String'>
+    readonly createdAt: FieldRef<"ContactNote", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ContactNote findUnique
+   */
+  export type ContactNoteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactNote
+     */
+    select?: ContactNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ContactNote
+     */
+    omit?: ContactNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which ContactNote to fetch.
+     */
+    where: ContactNoteWhereUniqueInput
+  }
+
+  /**
+   * ContactNote findUniqueOrThrow
+   */
+  export type ContactNoteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactNote
+     */
+    select?: ContactNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ContactNote
+     */
+    omit?: ContactNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which ContactNote to fetch.
+     */
+    where: ContactNoteWhereUniqueInput
+  }
+
+  /**
+   * ContactNote findFirst
+   */
+  export type ContactNoteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactNote
+     */
+    select?: ContactNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ContactNote
+     */
+    omit?: ContactNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which ContactNote to fetch.
+     */
+    where?: ContactNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ContactNotes to fetch.
+     */
+    orderBy?: ContactNoteOrderByWithRelationInput | ContactNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ContactNotes.
+     */
+    cursor?: ContactNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ContactNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ContactNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ContactNotes.
+     */
+    distinct?: ContactNoteScalarFieldEnum | ContactNoteScalarFieldEnum[]
+  }
+
+  /**
+   * ContactNote findFirstOrThrow
+   */
+  export type ContactNoteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactNote
+     */
+    select?: ContactNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ContactNote
+     */
+    omit?: ContactNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which ContactNote to fetch.
+     */
+    where?: ContactNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ContactNotes to fetch.
+     */
+    orderBy?: ContactNoteOrderByWithRelationInput | ContactNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ContactNotes.
+     */
+    cursor?: ContactNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ContactNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ContactNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ContactNotes.
+     */
+    distinct?: ContactNoteScalarFieldEnum | ContactNoteScalarFieldEnum[]
+  }
+
+  /**
+   * ContactNote findMany
+   */
+  export type ContactNoteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactNote
+     */
+    select?: ContactNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ContactNote
+     */
+    omit?: ContactNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which ContactNotes to fetch.
+     */
+    where?: ContactNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ContactNotes to fetch.
+     */
+    orderBy?: ContactNoteOrderByWithRelationInput | ContactNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ContactNotes.
+     */
+    cursor?: ContactNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ContactNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ContactNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ContactNotes.
+     */
+    distinct?: ContactNoteScalarFieldEnum | ContactNoteScalarFieldEnum[]
+  }
+
+  /**
+   * ContactNote create
+   */
+  export type ContactNoteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactNote
+     */
+    select?: ContactNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ContactNote
+     */
+    omit?: ContactNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactNoteInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ContactNote.
+     */
+    data: XOR<ContactNoteCreateInput, ContactNoteUncheckedCreateInput>
+  }
+
+  /**
+   * ContactNote createMany
+   */
+  export type ContactNoteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ContactNotes.
+     */
+    data: ContactNoteCreateManyInput | ContactNoteCreateManyInput[]
+  }
+
+  /**
+   * ContactNote createManyAndReturn
+   */
+  export type ContactNoteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactNote
+     */
+    select?: ContactNoteSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ContactNote
+     */
+    omit?: ContactNoteOmit<ExtArgs> | null
+    /**
+     * The data used to create many ContactNotes.
+     */
+    data: ContactNoteCreateManyInput | ContactNoteCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactNoteIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ContactNote update
+   */
+  export type ContactNoteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactNote
+     */
+    select?: ContactNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ContactNote
+     */
+    omit?: ContactNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactNoteInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ContactNote.
+     */
+    data: XOR<ContactNoteUpdateInput, ContactNoteUncheckedUpdateInput>
+    /**
+     * Choose, which ContactNote to update.
+     */
+    where: ContactNoteWhereUniqueInput
+  }
+
+  /**
+   * ContactNote updateMany
+   */
+  export type ContactNoteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ContactNotes.
+     */
+    data: XOR<ContactNoteUpdateManyMutationInput, ContactNoteUncheckedUpdateManyInput>
+    /**
+     * Filter which ContactNotes to update
+     */
+    where?: ContactNoteWhereInput
+    /**
+     * Limit how many ContactNotes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ContactNote updateManyAndReturn
+   */
+  export type ContactNoteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactNote
+     */
+    select?: ContactNoteSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ContactNote
+     */
+    omit?: ContactNoteOmit<ExtArgs> | null
+    /**
+     * The data used to update ContactNotes.
+     */
+    data: XOR<ContactNoteUpdateManyMutationInput, ContactNoteUncheckedUpdateManyInput>
+    /**
+     * Filter which ContactNotes to update
+     */
+    where?: ContactNoteWhereInput
+    /**
+     * Limit how many ContactNotes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactNoteIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ContactNote upsert
+   */
+  export type ContactNoteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactNote
+     */
+    select?: ContactNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ContactNote
+     */
+    omit?: ContactNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactNoteInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ContactNote to update in case it exists.
+     */
+    where: ContactNoteWhereUniqueInput
+    /**
+     * In case the ContactNote found by the `where` argument doesn't exist, create a new ContactNote with this data.
+     */
+    create: XOR<ContactNoteCreateInput, ContactNoteUncheckedCreateInput>
+    /**
+     * In case the ContactNote was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ContactNoteUpdateInput, ContactNoteUncheckedUpdateInput>
+  }
+
+  /**
+   * ContactNote delete
+   */
+  export type ContactNoteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactNote
+     */
+    select?: ContactNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ContactNote
+     */
+    omit?: ContactNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactNoteInclude<ExtArgs> | null
+    /**
+     * Filter which ContactNote to delete.
+     */
+    where: ContactNoteWhereUniqueInput
+  }
+
+  /**
+   * ContactNote deleteMany
+   */
+  export type ContactNoteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ContactNotes to delete
+     */
+    where?: ContactNoteWhereInput
+    /**
+     * Limit how many ContactNotes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ContactNote without action
+   */
+  export type ContactNoteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ContactNote
+     */
+    select?: ContactNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ContactNote
+     */
+    omit?: ContactNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactNoteInclude<ExtArgs> | null
   }
 
 
@@ -10293,35 +12208,59 @@ export namespace Prisma {
 
   export type TouchMinAggregateOutputType = {
     id: string | null
+    organizationId: string | null
+    accountId: string | null
+    contactId: string | null
+    createdByUserId: string | null
     date: Date | null
     type: string | null
+    outcome: string | null
+    source: string | null
+    isAutomated: boolean | null
     notes: string | null
     amount: number | null
     estimateNumber: string | null
     socialPlatform: string | null
-    leadId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type TouchMaxAggregateOutputType = {
     id: string | null
+    organizationId: string | null
+    accountId: string | null
+    contactId: string | null
+    createdByUserId: string | null
     date: Date | null
     type: string | null
+    outcome: string | null
+    source: string | null
+    isAutomated: boolean | null
     notes: string | null
     amount: number | null
     estimateNumber: string | null
     socialPlatform: string | null
-    leadId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type TouchCountAggregateOutputType = {
     id: number
+    organizationId: number
+    accountId: number
+    contactId: number
+    createdByUserId: number
     date: number
     type: number
+    outcome: number
+    source: number
+    isAutomated: number
     notes: number
     amount: number
     estimateNumber: number
     socialPlatform: number
-    leadId: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -10336,35 +12275,59 @@ export namespace Prisma {
 
   export type TouchMinAggregateInputType = {
     id?: true
+    organizationId?: true
+    accountId?: true
+    contactId?: true
+    createdByUserId?: true
     date?: true
     type?: true
+    outcome?: true
+    source?: true
+    isAutomated?: true
     notes?: true
     amount?: true
     estimateNumber?: true
     socialPlatform?: true
-    leadId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type TouchMaxAggregateInputType = {
     id?: true
+    organizationId?: true
+    accountId?: true
+    contactId?: true
+    createdByUserId?: true
     date?: true
     type?: true
+    outcome?: true
+    source?: true
+    isAutomated?: true
     notes?: true
     amount?: true
     estimateNumber?: true
     socialPlatform?: true
-    leadId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type TouchCountAggregateInputType = {
     id?: true
+    organizationId?: true
+    accountId?: true
+    contactId?: true
+    createdByUserId?: true
     date?: true
     type?: true
+    outcome?: true
+    source?: true
+    isAutomated?: true
     notes?: true
     amount?: true
     estimateNumber?: true
     socialPlatform?: true
-    leadId?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -10456,13 +12419,21 @@ export namespace Prisma {
 
   export type TouchGroupByOutputType = {
     id: string
+    organizationId: string
+    accountId: string
+    contactId: string | null
+    createdByUserId: string | null
     date: Date
     type: string
+    outcome: string | null
+    source: string | null
+    isAutomated: boolean
     notes: string
     amount: number | null
     estimateNumber: string | null
     socialPlatform: string | null
-    leadId: string
+    createdAt: Date
+    updatedAt: Date
     _count: TouchCountAggregateOutputType | null
     _avg: TouchAvgAggregateOutputType | null
     _sum: TouchSumAggregateOutputType | null
@@ -10486,91 +12457,145 @@ export namespace Prisma {
 
   export type TouchSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    organizationId?: boolean
+    accountId?: boolean
+    contactId?: boolean
+    createdByUserId?: boolean
     date?: boolean
     type?: boolean
+    outcome?: boolean
+    source?: boolean
+    isAutomated?: boolean
     notes?: boolean
     amount?: boolean
     estimateNumber?: boolean
     socialPlatform?: boolean
-    leadId?: boolean
-    lead?: boolean | LeadDefaultArgs<ExtArgs>
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+    contact?: boolean | Touch$contactArgs<ExtArgs>
   }, ExtArgs["result"]["touch"]>
 
   export type TouchSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    organizationId?: boolean
+    accountId?: boolean
+    contactId?: boolean
+    createdByUserId?: boolean
     date?: boolean
     type?: boolean
+    outcome?: boolean
+    source?: boolean
+    isAutomated?: boolean
     notes?: boolean
     amount?: boolean
     estimateNumber?: boolean
     socialPlatform?: boolean
-    leadId?: boolean
-    lead?: boolean | LeadDefaultArgs<ExtArgs>
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+    contact?: boolean | Touch$contactArgs<ExtArgs>
   }, ExtArgs["result"]["touch"]>
 
   export type TouchSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    organizationId?: boolean
+    accountId?: boolean
+    contactId?: boolean
+    createdByUserId?: boolean
     date?: boolean
     type?: boolean
+    outcome?: boolean
+    source?: boolean
+    isAutomated?: boolean
     notes?: boolean
     amount?: boolean
     estimateNumber?: boolean
     socialPlatform?: boolean
-    leadId?: boolean
-    lead?: boolean | LeadDefaultArgs<ExtArgs>
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+    contact?: boolean | Touch$contactArgs<ExtArgs>
   }, ExtArgs["result"]["touch"]>
 
   export type TouchSelectScalar = {
     id?: boolean
+    organizationId?: boolean
+    accountId?: boolean
+    contactId?: boolean
+    createdByUserId?: boolean
     date?: boolean
     type?: boolean
+    outcome?: boolean
+    source?: boolean
+    isAutomated?: boolean
     notes?: boolean
     amount?: boolean
     estimateNumber?: boolean
     socialPlatform?: boolean
-    leadId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type TouchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "date" | "type" | "notes" | "amount" | "estimateNumber" | "socialPlatform" | "leadId", ExtArgs["result"]["touch"]>
+  export type TouchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "accountId" | "contactId" | "createdByUserId" | "date" | "type" | "outcome" | "source" | "isAutomated" | "notes" | "amount" | "estimateNumber" | "socialPlatform" | "createdAt" | "updatedAt", ExtArgs["result"]["touch"]>
   export type TouchInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    lead?: boolean | LeadDefaultArgs<ExtArgs>
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+    contact?: boolean | Touch$contactArgs<ExtArgs>
   }
   export type TouchIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    lead?: boolean | LeadDefaultArgs<ExtArgs>
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+    contact?: boolean | Touch$contactArgs<ExtArgs>
   }
   export type TouchIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    lead?: boolean | LeadDefaultArgs<ExtArgs>
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+    contact?: boolean | Touch$contactArgs<ExtArgs>
   }
 
   export type $TouchPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Touch"
     objects: {
-      lead: Prisma.$LeadPayload<ExtArgs>
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      account: Prisma.$AccountPayload<ExtArgs>
+      contact: Prisma.$ContactPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      organizationId: string
+      accountId: string
+      contactId: string | null
+      createdByUserId: string | null
       date: Date
       /**
        * Outreach channel — must match a TouchType.name (see Settings).
-       * Scorecard categories map from names like Phone/PHONE, Email/EMAIL,
-       * Meeting/MEETING/Face to Face, Estimate/ESTIMATE, Sale/SALE/DEAL_WON.
        */
       type: string
+      /**
+       * Structured outcome (No answer, Voicemail, etc.). Optional.
+       */
+      outcome: string | null
+      /**
+       * Origin of the touch (manual, apollo, import, etc.).
+       */
+      source: string | null
+      /**
+       * When true, may later be excluded/weighted in Account freshness.
+       */
+      isAutomated: boolean
       notes: string
       /**
        * Optional dollar value for Estimate / Sale touches.
-       * Estimate amounts feed estimate pipeline $ only — never revenue.
        */
       amount: number | null
-      /**
-       * POS / estimate reference number (Estimate touches only).
-       */
       estimateNumber: string | null
-      /**
-       * Platform name when type is Social Media (must match SocialPlatform.name).
-       */
       socialPlatform: string | null
-      leadId: string
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["touch"]>
     composites: {}
   }
@@ -10965,7 +12990,9 @@ export namespace Prisma {
    */
   export interface Prisma__TouchClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    lead<T extends LeadDefaultArgs<ExtArgs> = {}>(args?: Subset<T, LeadDefaultArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    account<T extends AccountDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AccountDefaultArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    contact<T extends Touch$contactArgs<ExtArgs> = {}>(args?: Subset<T, Touch$contactArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10996,13 +13023,21 @@ export namespace Prisma {
    */
   interface TouchFieldRefs {
     readonly id: FieldRef<"Touch", 'String'>
+    readonly organizationId: FieldRef<"Touch", 'String'>
+    readonly accountId: FieldRef<"Touch", 'String'>
+    readonly contactId: FieldRef<"Touch", 'String'>
+    readonly createdByUserId: FieldRef<"Touch", 'String'>
     readonly date: FieldRef<"Touch", 'DateTime'>
     readonly type: FieldRef<"Touch", 'String'>
+    readonly outcome: FieldRef<"Touch", 'String'>
+    readonly source: FieldRef<"Touch", 'String'>
+    readonly isAutomated: FieldRef<"Touch", 'Boolean'>
     readonly notes: FieldRef<"Touch", 'String'>
     readonly amount: FieldRef<"Touch", 'Float'>
     readonly estimateNumber: FieldRef<"Touch", 'String'>
     readonly socialPlatform: FieldRef<"Touch", 'String'>
-    readonly leadId: FieldRef<"Touch", 'String'>
+    readonly createdAt: FieldRef<"Touch", 'DateTime'>
+    readonly updatedAt: FieldRef<"Touch", 'DateTime'>
   }
     
 
@@ -11402,6 +13437,25 @@ export namespace Prisma {
   }
 
   /**
+   * Touch.contact
+   */
+  export type Touch$contactArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contact
+     */
+    omit?: ContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactInclude<ExtArgs> | null
+    where?: ContactWhereInput
+  }
+
+  /**
    * Touch without action
    */
   export type TouchDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11431,8 +13485,20 @@ export namespace Prisma {
   export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+  export const OrganizationScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    slug: 'slug',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
+
+
   export const IndustryScalarFieldEnum: {
     id: 'id',
+    organizationId: 'organizationId',
     name: 'name',
     isSystem: 'isSystem'
   };
@@ -11442,6 +13508,7 @@ export namespace Prisma {
 
   export const TouchTypeScalarFieldEnum: {
     id: 'id',
+    organizationId: 'organizationId',
     name: 'name',
     isSystem: 'isSystem'
   };
@@ -11451,6 +13518,7 @@ export namespace Prisma {
 
   export const SocialPlatformScalarFieldEnum: {
     id: 'id',
+    organizationId: 'organizationId',
     name: 'name',
     isSystem: 'isSystem'
   };
@@ -11458,77 +13526,98 @@ export namespace Prisma {
   export type SocialPlatformScalarFieldEnum = (typeof SocialPlatformScalarFieldEnum)[keyof typeof SocialPlatformScalarFieldEnum]
 
 
-  export const CompanyScalarFieldEnum: {
+  export const AccountScalarFieldEnum: {
     id: 'id',
+    organizationId: 'organizationId',
     name: 'name',
     address: 'address',
     phone: 'phone',
     website: 'website',
+    status: 'status',
     isVip: 'isVip',
+    source: 'source',
+    ownerUserId: 'ownerUserId',
+    createdByUserId: 'createdByUserId',
+    nextTouchAt: 'nextTouchAt',
+    nextTouchType: 'nextTouchType',
+    nextTouchNote: 'nextTouchNote',
     industryId: 'industryId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
-  export type CompanyScalarFieldEnum = (typeof CompanyScalarFieldEnum)[keyof typeof CompanyScalarFieldEnum]
+  export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
 
 
-  export const CompanySocialLinkScalarFieldEnum: {
+  export const AccountSocialLinkScalarFieldEnum: {
     id: 'id',
-    companyId: 'companyId',
+    organizationId: 'organizationId',
+    accountId: 'accountId',
     platform: 'platform',
     handle: 'handle'
   };
 
-  export type CompanySocialLinkScalarFieldEnum = (typeof CompanySocialLinkScalarFieldEnum)[keyof typeof CompanySocialLinkScalarFieldEnum]
+  export type AccountSocialLinkScalarFieldEnum = (typeof AccountSocialLinkScalarFieldEnum)[keyof typeof AccountSocialLinkScalarFieldEnum]
 
 
-  export const CompanyNoteScalarFieldEnum: {
+  export const AccountNoteScalarFieldEnum: {
     id: 'id',
+    organizationId: 'organizationId',
     text: 'text',
-    companyId: 'companyId',
+    accountId: 'accountId',
     createdAt: 'createdAt'
   };
 
-  export type CompanyNoteScalarFieldEnum = (typeof CompanyNoteScalarFieldEnum)[keyof typeof CompanyNoteScalarFieldEnum]
+  export type AccountNoteScalarFieldEnum = (typeof AccountNoteScalarFieldEnum)[keyof typeof AccountNoteScalarFieldEnum]
 
 
-  export const LeadScalarFieldEnum: {
+  export const ContactScalarFieldEnum: {
     id: 'id',
+    organizationId: 'organizationId',
+    accountId: 'accountId',
     firstName: 'firstName',
     lastName: 'lastName',
     title: 'title',
     email: 'email',
     phone: 'phone',
     officePhone: 'officePhone',
-    status: 'status',
     isVip: 'isVip',
-    companyId: 'companyId',
-    createdAt: 'createdAt'
+    source: 'source',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
-  export type LeadScalarFieldEnum = (typeof LeadScalarFieldEnum)[keyof typeof LeadScalarFieldEnum]
+  export type ContactScalarFieldEnum = (typeof ContactScalarFieldEnum)[keyof typeof ContactScalarFieldEnum]
 
 
-  export const LeadNoteScalarFieldEnum: {
+  export const ContactNoteScalarFieldEnum: {
     id: 'id',
+    organizationId: 'organizationId',
     text: 'text',
-    leadId: 'leadId',
+    contactId: 'contactId',
     createdAt: 'createdAt'
   };
 
-  export type LeadNoteScalarFieldEnum = (typeof LeadNoteScalarFieldEnum)[keyof typeof LeadNoteScalarFieldEnum]
+  export type ContactNoteScalarFieldEnum = (typeof ContactNoteScalarFieldEnum)[keyof typeof ContactNoteScalarFieldEnum]
 
 
   export const TouchScalarFieldEnum: {
     id: 'id',
+    organizationId: 'organizationId',
+    accountId: 'accountId',
+    contactId: 'contactId',
+    createdByUserId: 'createdByUserId',
     date: 'date',
     type: 'type',
+    outcome: 'outcome',
+    source: 'source',
+    isAutomated: 'isAutomated',
     notes: 'notes',
     amount: 'amount',
     estimateNumber: 'estimateNumber',
     socialPlatform: 'socialPlatform',
-    leadId: 'leadId'
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type TouchScalarFieldEnum = (typeof TouchScalarFieldEnum)[keyof typeof TouchScalarFieldEnum]
@@ -11563,16 +13652,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Boolean'
+   * Reference to a field of type 'DateTime'
    */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
     
 
 
   /**
-   * Reference to a field of type 'DateTime'
+   * Reference to a field of type 'Boolean'
    */
-  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -11593,35 +13682,122 @@ export namespace Prisma {
    */
 
 
+  export type OrganizationWhereInput = {
+    AND?: OrganizationWhereInput | OrganizationWhereInput[]
+    OR?: OrganizationWhereInput[]
+    NOT?: OrganizationWhereInput | OrganizationWhereInput[]
+    id?: StringFilter<"Organization"> | string
+    name?: StringFilter<"Organization"> | string
+    slug?: StringNullableFilter<"Organization"> | string | null
+    createdAt?: DateTimeFilter<"Organization"> | Date | string
+    updatedAt?: DateTimeFilter<"Organization"> | Date | string
+    industries?: IndustryListRelationFilter
+    touchTypes?: TouchTypeListRelationFilter
+    socialPlatforms?: SocialPlatformListRelationFilter
+    accounts?: AccountListRelationFilter
+    contacts?: ContactListRelationFilter
+    touches?: TouchListRelationFilter
+    accountNotes?: AccountNoteListRelationFilter
+    contactNotes?: ContactNoteListRelationFilter
+    accountSocials?: AccountSocialLinkListRelationFilter
+  }
+
+  export type OrganizationOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    industries?: IndustryOrderByRelationAggregateInput
+    touchTypes?: TouchTypeOrderByRelationAggregateInput
+    socialPlatforms?: SocialPlatformOrderByRelationAggregateInput
+    accounts?: AccountOrderByRelationAggregateInput
+    contacts?: ContactOrderByRelationAggregateInput
+    touches?: TouchOrderByRelationAggregateInput
+    accountNotes?: AccountNoteOrderByRelationAggregateInput
+    contactNotes?: ContactNoteOrderByRelationAggregateInput
+    accountSocials?: AccountSocialLinkOrderByRelationAggregateInput
+  }
+
+  export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    slug?: string
+    AND?: OrganizationWhereInput | OrganizationWhereInput[]
+    OR?: OrganizationWhereInput[]
+    NOT?: OrganizationWhereInput | OrganizationWhereInput[]
+    name?: StringFilter<"Organization"> | string
+    createdAt?: DateTimeFilter<"Organization"> | Date | string
+    updatedAt?: DateTimeFilter<"Organization"> | Date | string
+    industries?: IndustryListRelationFilter
+    touchTypes?: TouchTypeListRelationFilter
+    socialPlatforms?: SocialPlatformListRelationFilter
+    accounts?: AccountListRelationFilter
+    contacts?: ContactListRelationFilter
+    touches?: TouchListRelationFilter
+    accountNotes?: AccountNoteListRelationFilter
+    contactNotes?: ContactNoteListRelationFilter
+    accountSocials?: AccountSocialLinkListRelationFilter
+  }, "id" | "slug">
+
+  export type OrganizationOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: OrganizationCountOrderByAggregateInput
+    _max?: OrganizationMaxOrderByAggregateInput
+    _min?: OrganizationMinOrderByAggregateInput
+  }
+
+  export type OrganizationScalarWhereWithAggregatesInput = {
+    AND?: OrganizationScalarWhereWithAggregatesInput | OrganizationScalarWhereWithAggregatesInput[]
+    OR?: OrganizationScalarWhereWithAggregatesInput[]
+    NOT?: OrganizationScalarWhereWithAggregatesInput | OrganizationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Organization"> | string
+    name?: StringWithAggregatesFilter<"Organization"> | string
+    slug?: StringNullableWithAggregatesFilter<"Organization"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Organization"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Organization"> | Date | string
+  }
+
   export type IndustryWhereInput = {
     AND?: IndustryWhereInput | IndustryWhereInput[]
     OR?: IndustryWhereInput[]
     NOT?: IndustryWhereInput | IndustryWhereInput[]
     id?: StringFilter<"Industry"> | string
+    organizationId?: StringFilter<"Industry"> | string
     name?: StringFilter<"Industry"> | string
     isSystem?: BoolFilter<"Industry"> | boolean
-    companies?: CompanyListRelationFilter
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    accounts?: AccountListRelationFilter
   }
 
   export type IndustryOrderByWithRelationInput = {
     id?: SortOrder
+    organizationId?: SortOrder
     name?: SortOrder
     isSystem?: SortOrder
-    companies?: CompanyOrderByRelationAggregateInput
+    organization?: OrganizationOrderByWithRelationInput
+    accounts?: AccountOrderByRelationAggregateInput
   }
 
   export type IndustryWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    name?: string
+    organizationId_name?: IndustryOrganizationIdNameCompoundUniqueInput
     AND?: IndustryWhereInput | IndustryWhereInput[]
     OR?: IndustryWhereInput[]
     NOT?: IndustryWhereInput | IndustryWhereInput[]
+    organizationId?: StringFilter<"Industry"> | string
+    name?: StringFilter<"Industry"> | string
     isSystem?: BoolFilter<"Industry"> | boolean
-    companies?: CompanyListRelationFilter
-  }, "id" | "name">
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    accounts?: AccountListRelationFilter
+  }, "id" | "organizationId_name">
 
   export type IndustryOrderByWithAggregationInput = {
     id?: SortOrder
+    organizationId?: SortOrder
     name?: SortOrder
     isSystem?: SortOrder
     _count?: IndustryCountOrderByAggregateInput
@@ -11634,6 +13810,7 @@ export namespace Prisma {
     OR?: IndustryScalarWhereWithAggregatesInput[]
     NOT?: IndustryScalarWhereWithAggregatesInput | IndustryScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Industry"> | string
+    organizationId?: StringWithAggregatesFilter<"Industry"> | string
     name?: StringWithAggregatesFilter<"Industry"> | string
     isSystem?: BoolWithAggregatesFilter<"Industry"> | boolean
   }
@@ -11643,27 +13820,35 @@ export namespace Prisma {
     OR?: TouchTypeWhereInput[]
     NOT?: TouchTypeWhereInput | TouchTypeWhereInput[]
     id?: StringFilter<"TouchType"> | string
+    organizationId?: StringFilter<"TouchType"> | string
     name?: StringFilter<"TouchType"> | string
     isSystem?: BoolFilter<"TouchType"> | boolean
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
   }
 
   export type TouchTypeOrderByWithRelationInput = {
     id?: SortOrder
+    organizationId?: SortOrder
     name?: SortOrder
     isSystem?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
   }
 
   export type TouchTypeWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    name?: string
+    organizationId_name?: TouchTypeOrganizationIdNameCompoundUniqueInput
     AND?: TouchTypeWhereInput | TouchTypeWhereInput[]
     OR?: TouchTypeWhereInput[]
     NOT?: TouchTypeWhereInput | TouchTypeWhereInput[]
+    organizationId?: StringFilter<"TouchType"> | string
+    name?: StringFilter<"TouchType"> | string
     isSystem?: BoolFilter<"TouchType"> | boolean
-  }, "id" | "name">
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }, "id" | "organizationId_name">
 
   export type TouchTypeOrderByWithAggregationInput = {
     id?: SortOrder
+    organizationId?: SortOrder
     name?: SortOrder
     isSystem?: SortOrder
     _count?: TouchTypeCountOrderByAggregateInput
@@ -11676,6 +13861,7 @@ export namespace Prisma {
     OR?: TouchTypeScalarWhereWithAggregatesInput[]
     NOT?: TouchTypeScalarWhereWithAggregatesInput | TouchTypeScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"TouchType"> | string
+    organizationId?: StringWithAggregatesFilter<"TouchType"> | string
     name?: StringWithAggregatesFilter<"TouchType"> | string
     isSystem?: BoolWithAggregatesFilter<"TouchType"> | boolean
   }
@@ -11685,27 +13871,35 @@ export namespace Prisma {
     OR?: SocialPlatformWhereInput[]
     NOT?: SocialPlatformWhereInput | SocialPlatformWhereInput[]
     id?: StringFilter<"SocialPlatform"> | string
+    organizationId?: StringFilter<"SocialPlatform"> | string
     name?: StringFilter<"SocialPlatform"> | string
     isSystem?: BoolFilter<"SocialPlatform"> | boolean
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
   }
 
   export type SocialPlatformOrderByWithRelationInput = {
     id?: SortOrder
+    organizationId?: SortOrder
     name?: SortOrder
     isSystem?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
   }
 
   export type SocialPlatformWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    name?: string
+    organizationId_name?: SocialPlatformOrganizationIdNameCompoundUniqueInput
     AND?: SocialPlatformWhereInput | SocialPlatformWhereInput[]
     OR?: SocialPlatformWhereInput[]
     NOT?: SocialPlatformWhereInput | SocialPlatformWhereInput[]
+    organizationId?: StringFilter<"SocialPlatform"> | string
+    name?: StringFilter<"SocialPlatform"> | string
     isSystem?: BoolFilter<"SocialPlatform"> | boolean
-  }, "id" | "name">
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }, "id" | "organizationId_name">
 
   export type SocialPlatformOrderByWithAggregationInput = {
     id?: SortOrder
+    organizationId?: SortOrder
     name?: SortOrder
     isSystem?: SortOrder
     _count?: SocialPlatformCountOrderByAggregateInput
@@ -11718,334 +13912,418 @@ export namespace Prisma {
     OR?: SocialPlatformScalarWhereWithAggregatesInput[]
     NOT?: SocialPlatformScalarWhereWithAggregatesInput | SocialPlatformScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"SocialPlatform"> | string
+    organizationId?: StringWithAggregatesFilter<"SocialPlatform"> | string
     name?: StringWithAggregatesFilter<"SocialPlatform"> | string
     isSystem?: BoolWithAggregatesFilter<"SocialPlatform"> | boolean
   }
 
-  export type CompanyWhereInput = {
-    AND?: CompanyWhereInput | CompanyWhereInput[]
-    OR?: CompanyWhereInput[]
-    NOT?: CompanyWhereInput | CompanyWhereInput[]
-    id?: StringFilter<"Company"> | string
-    name?: StringFilter<"Company"> | string
-    address?: StringNullableFilter<"Company"> | string | null
-    phone?: StringNullableFilter<"Company"> | string | null
-    website?: StringNullableFilter<"Company"> | string | null
-    isVip?: BoolFilter<"Company"> | boolean
-    industryId?: StringFilter<"Company"> | string
-    createdAt?: DateTimeFilter<"Company"> | Date | string
-    updatedAt?: DateTimeFilter<"Company"> | Date | string
+  export type AccountWhereInput = {
+    AND?: AccountWhereInput | AccountWhereInput[]
+    OR?: AccountWhereInput[]
+    NOT?: AccountWhereInput | AccountWhereInput[]
+    id?: StringFilter<"Account"> | string
+    organizationId?: StringFilter<"Account"> | string
+    name?: StringFilter<"Account"> | string
+    address?: StringNullableFilter<"Account"> | string | null
+    phone?: StringNullableFilter<"Account"> | string | null
+    website?: StringNullableFilter<"Account"> | string | null
+    status?: StringFilter<"Account"> | string
+    isVip?: BoolFilter<"Account"> | boolean
+    source?: StringNullableFilter<"Account"> | string | null
+    ownerUserId?: StringNullableFilter<"Account"> | string | null
+    createdByUserId?: StringNullableFilter<"Account"> | string | null
+    nextTouchAt?: DateTimeNullableFilter<"Account"> | Date | string | null
+    nextTouchType?: StringNullableFilter<"Account"> | string | null
+    nextTouchNote?: StringNullableFilter<"Account"> | string | null
+    industryId?: StringFilter<"Account"> | string
+    createdAt?: DateTimeFilter<"Account"> | Date | string
+    updatedAt?: DateTimeFilter<"Account"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     industry?: XOR<IndustryScalarRelationFilter, IndustryWhereInput>
-    leads?: LeadListRelationFilter
-    notes?: CompanyNoteListRelationFilter
-    socials?: CompanySocialLinkListRelationFilter
+    contacts?: ContactListRelationFilter
+    notes?: AccountNoteListRelationFilter
+    socials?: AccountSocialLinkListRelationFilter
+    touches?: TouchListRelationFilter
   }
 
-  export type CompanyOrderByWithRelationInput = {
+  export type AccountOrderByWithRelationInput = {
     id?: SortOrder
+    organizationId?: SortOrder
     name?: SortOrder
     address?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     website?: SortOrderInput | SortOrder
+    status?: SortOrder
     isVip?: SortOrder
+    source?: SortOrderInput | SortOrder
+    ownerUserId?: SortOrderInput | SortOrder
+    createdByUserId?: SortOrderInput | SortOrder
+    nextTouchAt?: SortOrderInput | SortOrder
+    nextTouchType?: SortOrderInput | SortOrder
+    nextTouchNote?: SortOrderInput | SortOrder
     industryId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
     industry?: IndustryOrderByWithRelationInput
-    leads?: LeadOrderByRelationAggregateInput
-    notes?: CompanyNoteOrderByRelationAggregateInput
-    socials?: CompanySocialLinkOrderByRelationAggregateInput
+    contacts?: ContactOrderByRelationAggregateInput
+    notes?: AccountNoteOrderByRelationAggregateInput
+    socials?: AccountSocialLinkOrderByRelationAggregateInput
+    touches?: TouchOrderByRelationAggregateInput
   }
 
-  export type CompanyWhereUniqueInput = Prisma.AtLeast<{
+  export type AccountWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    AND?: CompanyWhereInput | CompanyWhereInput[]
-    OR?: CompanyWhereInput[]
-    NOT?: CompanyWhereInput | CompanyWhereInput[]
-    name?: StringFilter<"Company"> | string
-    address?: StringNullableFilter<"Company"> | string | null
-    phone?: StringNullableFilter<"Company"> | string | null
-    website?: StringNullableFilter<"Company"> | string | null
-    isVip?: BoolFilter<"Company"> | boolean
-    industryId?: StringFilter<"Company"> | string
-    createdAt?: DateTimeFilter<"Company"> | Date | string
-    updatedAt?: DateTimeFilter<"Company"> | Date | string
+    AND?: AccountWhereInput | AccountWhereInput[]
+    OR?: AccountWhereInput[]
+    NOT?: AccountWhereInput | AccountWhereInput[]
+    organizationId?: StringFilter<"Account"> | string
+    name?: StringFilter<"Account"> | string
+    address?: StringNullableFilter<"Account"> | string | null
+    phone?: StringNullableFilter<"Account"> | string | null
+    website?: StringNullableFilter<"Account"> | string | null
+    status?: StringFilter<"Account"> | string
+    isVip?: BoolFilter<"Account"> | boolean
+    source?: StringNullableFilter<"Account"> | string | null
+    ownerUserId?: StringNullableFilter<"Account"> | string | null
+    createdByUserId?: StringNullableFilter<"Account"> | string | null
+    nextTouchAt?: DateTimeNullableFilter<"Account"> | Date | string | null
+    nextTouchType?: StringNullableFilter<"Account"> | string | null
+    nextTouchNote?: StringNullableFilter<"Account"> | string | null
+    industryId?: StringFilter<"Account"> | string
+    createdAt?: DateTimeFilter<"Account"> | Date | string
+    updatedAt?: DateTimeFilter<"Account"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     industry?: XOR<IndustryScalarRelationFilter, IndustryWhereInput>
-    leads?: LeadListRelationFilter
-    notes?: CompanyNoteListRelationFilter
-    socials?: CompanySocialLinkListRelationFilter
+    contacts?: ContactListRelationFilter
+    notes?: AccountNoteListRelationFilter
+    socials?: AccountSocialLinkListRelationFilter
+    touches?: TouchListRelationFilter
   }, "id">
 
-  export type CompanyOrderByWithAggregationInput = {
+  export type AccountOrderByWithAggregationInput = {
     id?: SortOrder
+    organizationId?: SortOrder
     name?: SortOrder
     address?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     website?: SortOrderInput | SortOrder
+    status?: SortOrder
     isVip?: SortOrder
+    source?: SortOrderInput | SortOrder
+    ownerUserId?: SortOrderInput | SortOrder
+    createdByUserId?: SortOrderInput | SortOrder
+    nextTouchAt?: SortOrderInput | SortOrder
+    nextTouchType?: SortOrderInput | SortOrder
+    nextTouchNote?: SortOrderInput | SortOrder
     industryId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    _count?: CompanyCountOrderByAggregateInput
-    _max?: CompanyMaxOrderByAggregateInput
-    _min?: CompanyMinOrderByAggregateInput
+    _count?: AccountCountOrderByAggregateInput
+    _max?: AccountMaxOrderByAggregateInput
+    _min?: AccountMinOrderByAggregateInput
   }
 
-  export type CompanyScalarWhereWithAggregatesInput = {
-    AND?: CompanyScalarWhereWithAggregatesInput | CompanyScalarWhereWithAggregatesInput[]
-    OR?: CompanyScalarWhereWithAggregatesInput[]
-    NOT?: CompanyScalarWhereWithAggregatesInput | CompanyScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Company"> | string
-    name?: StringWithAggregatesFilter<"Company"> | string
-    address?: StringNullableWithAggregatesFilter<"Company"> | string | null
-    phone?: StringNullableWithAggregatesFilter<"Company"> | string | null
-    website?: StringNullableWithAggregatesFilter<"Company"> | string | null
-    isVip?: BoolWithAggregatesFilter<"Company"> | boolean
-    industryId?: StringWithAggregatesFilter<"Company"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"Company"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Company"> | Date | string
+  export type AccountScalarWhereWithAggregatesInput = {
+    AND?: AccountScalarWhereWithAggregatesInput | AccountScalarWhereWithAggregatesInput[]
+    OR?: AccountScalarWhereWithAggregatesInput[]
+    NOT?: AccountScalarWhereWithAggregatesInput | AccountScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Account"> | string
+    organizationId?: StringWithAggregatesFilter<"Account"> | string
+    name?: StringWithAggregatesFilter<"Account"> | string
+    address?: StringNullableWithAggregatesFilter<"Account"> | string | null
+    phone?: StringNullableWithAggregatesFilter<"Account"> | string | null
+    website?: StringNullableWithAggregatesFilter<"Account"> | string | null
+    status?: StringWithAggregatesFilter<"Account"> | string
+    isVip?: BoolWithAggregatesFilter<"Account"> | boolean
+    source?: StringNullableWithAggregatesFilter<"Account"> | string | null
+    ownerUserId?: StringNullableWithAggregatesFilter<"Account"> | string | null
+    createdByUserId?: StringNullableWithAggregatesFilter<"Account"> | string | null
+    nextTouchAt?: DateTimeNullableWithAggregatesFilter<"Account"> | Date | string | null
+    nextTouchType?: StringNullableWithAggregatesFilter<"Account"> | string | null
+    nextTouchNote?: StringNullableWithAggregatesFilter<"Account"> | string | null
+    industryId?: StringWithAggregatesFilter<"Account"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Account"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Account"> | Date | string
   }
 
-  export type CompanySocialLinkWhereInput = {
-    AND?: CompanySocialLinkWhereInput | CompanySocialLinkWhereInput[]
-    OR?: CompanySocialLinkWhereInput[]
-    NOT?: CompanySocialLinkWhereInput | CompanySocialLinkWhereInput[]
-    id?: StringFilter<"CompanySocialLink"> | string
-    companyId?: StringFilter<"CompanySocialLink"> | string
-    platform?: StringFilter<"CompanySocialLink"> | string
-    handle?: StringFilter<"CompanySocialLink"> | string
-    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+  export type AccountSocialLinkWhereInput = {
+    AND?: AccountSocialLinkWhereInput | AccountSocialLinkWhereInput[]
+    OR?: AccountSocialLinkWhereInput[]
+    NOT?: AccountSocialLinkWhereInput | AccountSocialLinkWhereInput[]
+    id?: StringFilter<"AccountSocialLink"> | string
+    organizationId?: StringFilter<"AccountSocialLink"> | string
+    accountId?: StringFilter<"AccountSocialLink"> | string
+    platform?: StringFilter<"AccountSocialLink"> | string
+    handle?: StringFilter<"AccountSocialLink"> | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    account?: XOR<AccountScalarRelationFilter, AccountWhereInput>
   }
 
-  export type CompanySocialLinkOrderByWithRelationInput = {
+  export type AccountSocialLinkOrderByWithRelationInput = {
     id?: SortOrder
-    companyId?: SortOrder
+    organizationId?: SortOrder
+    accountId?: SortOrder
     platform?: SortOrder
     handle?: SortOrder
-    company?: CompanyOrderByWithRelationInput
+    organization?: OrganizationOrderByWithRelationInput
+    account?: AccountOrderByWithRelationInput
   }
 
-  export type CompanySocialLinkWhereUniqueInput = Prisma.AtLeast<{
+  export type AccountSocialLinkWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    companyId_platform?: CompanySocialLinkCompanyIdPlatformCompoundUniqueInput
-    AND?: CompanySocialLinkWhereInput | CompanySocialLinkWhereInput[]
-    OR?: CompanySocialLinkWhereInput[]
-    NOT?: CompanySocialLinkWhereInput | CompanySocialLinkWhereInput[]
-    companyId?: StringFilter<"CompanySocialLink"> | string
-    platform?: StringFilter<"CompanySocialLink"> | string
-    handle?: StringFilter<"CompanySocialLink"> | string
-    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
-  }, "id" | "companyId_platform">
+    accountId_platform?: AccountSocialLinkAccountIdPlatformCompoundUniqueInput
+    AND?: AccountSocialLinkWhereInput | AccountSocialLinkWhereInput[]
+    OR?: AccountSocialLinkWhereInput[]
+    NOT?: AccountSocialLinkWhereInput | AccountSocialLinkWhereInput[]
+    organizationId?: StringFilter<"AccountSocialLink"> | string
+    accountId?: StringFilter<"AccountSocialLink"> | string
+    platform?: StringFilter<"AccountSocialLink"> | string
+    handle?: StringFilter<"AccountSocialLink"> | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    account?: XOR<AccountScalarRelationFilter, AccountWhereInput>
+  }, "id" | "accountId_platform">
 
-  export type CompanySocialLinkOrderByWithAggregationInput = {
+  export type AccountSocialLinkOrderByWithAggregationInput = {
     id?: SortOrder
-    companyId?: SortOrder
+    organizationId?: SortOrder
+    accountId?: SortOrder
     platform?: SortOrder
     handle?: SortOrder
-    _count?: CompanySocialLinkCountOrderByAggregateInput
-    _max?: CompanySocialLinkMaxOrderByAggregateInput
-    _min?: CompanySocialLinkMinOrderByAggregateInput
+    _count?: AccountSocialLinkCountOrderByAggregateInput
+    _max?: AccountSocialLinkMaxOrderByAggregateInput
+    _min?: AccountSocialLinkMinOrderByAggregateInput
   }
 
-  export type CompanySocialLinkScalarWhereWithAggregatesInput = {
-    AND?: CompanySocialLinkScalarWhereWithAggregatesInput | CompanySocialLinkScalarWhereWithAggregatesInput[]
-    OR?: CompanySocialLinkScalarWhereWithAggregatesInput[]
-    NOT?: CompanySocialLinkScalarWhereWithAggregatesInput | CompanySocialLinkScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"CompanySocialLink"> | string
-    companyId?: StringWithAggregatesFilter<"CompanySocialLink"> | string
-    platform?: StringWithAggregatesFilter<"CompanySocialLink"> | string
-    handle?: StringWithAggregatesFilter<"CompanySocialLink"> | string
+  export type AccountSocialLinkScalarWhereWithAggregatesInput = {
+    AND?: AccountSocialLinkScalarWhereWithAggregatesInput | AccountSocialLinkScalarWhereWithAggregatesInput[]
+    OR?: AccountSocialLinkScalarWhereWithAggregatesInput[]
+    NOT?: AccountSocialLinkScalarWhereWithAggregatesInput | AccountSocialLinkScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AccountSocialLink"> | string
+    organizationId?: StringWithAggregatesFilter<"AccountSocialLink"> | string
+    accountId?: StringWithAggregatesFilter<"AccountSocialLink"> | string
+    platform?: StringWithAggregatesFilter<"AccountSocialLink"> | string
+    handle?: StringWithAggregatesFilter<"AccountSocialLink"> | string
   }
 
-  export type CompanyNoteWhereInput = {
-    AND?: CompanyNoteWhereInput | CompanyNoteWhereInput[]
-    OR?: CompanyNoteWhereInput[]
-    NOT?: CompanyNoteWhereInput | CompanyNoteWhereInput[]
-    id?: StringFilter<"CompanyNote"> | string
-    text?: StringFilter<"CompanyNote"> | string
-    companyId?: StringFilter<"CompanyNote"> | string
-    createdAt?: DateTimeFilter<"CompanyNote"> | Date | string
-    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+  export type AccountNoteWhereInput = {
+    AND?: AccountNoteWhereInput | AccountNoteWhereInput[]
+    OR?: AccountNoteWhereInput[]
+    NOT?: AccountNoteWhereInput | AccountNoteWhereInput[]
+    id?: StringFilter<"AccountNote"> | string
+    organizationId?: StringFilter<"AccountNote"> | string
+    text?: StringFilter<"AccountNote"> | string
+    accountId?: StringFilter<"AccountNote"> | string
+    createdAt?: DateTimeFilter<"AccountNote"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    account?: XOR<AccountScalarRelationFilter, AccountWhereInput>
   }
 
-  export type CompanyNoteOrderByWithRelationInput = {
+  export type AccountNoteOrderByWithRelationInput = {
     id?: SortOrder
+    organizationId?: SortOrder
     text?: SortOrder
-    companyId?: SortOrder
+    accountId?: SortOrder
     createdAt?: SortOrder
-    company?: CompanyOrderByWithRelationInput
+    organization?: OrganizationOrderByWithRelationInput
+    account?: AccountOrderByWithRelationInput
   }
 
-  export type CompanyNoteWhereUniqueInput = Prisma.AtLeast<{
+  export type AccountNoteWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    AND?: CompanyNoteWhereInput | CompanyNoteWhereInput[]
-    OR?: CompanyNoteWhereInput[]
-    NOT?: CompanyNoteWhereInput | CompanyNoteWhereInput[]
-    text?: StringFilter<"CompanyNote"> | string
-    companyId?: StringFilter<"CompanyNote"> | string
-    createdAt?: DateTimeFilter<"CompanyNote"> | Date | string
-    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    AND?: AccountNoteWhereInput | AccountNoteWhereInput[]
+    OR?: AccountNoteWhereInput[]
+    NOT?: AccountNoteWhereInput | AccountNoteWhereInput[]
+    organizationId?: StringFilter<"AccountNote"> | string
+    text?: StringFilter<"AccountNote"> | string
+    accountId?: StringFilter<"AccountNote"> | string
+    createdAt?: DateTimeFilter<"AccountNote"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    account?: XOR<AccountScalarRelationFilter, AccountWhereInput>
   }, "id">
 
-  export type CompanyNoteOrderByWithAggregationInput = {
+  export type AccountNoteOrderByWithAggregationInput = {
     id?: SortOrder
+    organizationId?: SortOrder
     text?: SortOrder
-    companyId?: SortOrder
+    accountId?: SortOrder
     createdAt?: SortOrder
-    _count?: CompanyNoteCountOrderByAggregateInput
-    _max?: CompanyNoteMaxOrderByAggregateInput
-    _min?: CompanyNoteMinOrderByAggregateInput
+    _count?: AccountNoteCountOrderByAggregateInput
+    _max?: AccountNoteMaxOrderByAggregateInput
+    _min?: AccountNoteMinOrderByAggregateInput
   }
 
-  export type CompanyNoteScalarWhereWithAggregatesInput = {
-    AND?: CompanyNoteScalarWhereWithAggregatesInput | CompanyNoteScalarWhereWithAggregatesInput[]
-    OR?: CompanyNoteScalarWhereWithAggregatesInput[]
-    NOT?: CompanyNoteScalarWhereWithAggregatesInput | CompanyNoteScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"CompanyNote"> | string
-    text?: StringWithAggregatesFilter<"CompanyNote"> | string
-    companyId?: StringWithAggregatesFilter<"CompanyNote"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"CompanyNote"> | Date | string
+  export type AccountNoteScalarWhereWithAggregatesInput = {
+    AND?: AccountNoteScalarWhereWithAggregatesInput | AccountNoteScalarWhereWithAggregatesInput[]
+    OR?: AccountNoteScalarWhereWithAggregatesInput[]
+    NOT?: AccountNoteScalarWhereWithAggregatesInput | AccountNoteScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AccountNote"> | string
+    organizationId?: StringWithAggregatesFilter<"AccountNote"> | string
+    text?: StringWithAggregatesFilter<"AccountNote"> | string
+    accountId?: StringWithAggregatesFilter<"AccountNote"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"AccountNote"> | Date | string
   }
 
-  export type LeadWhereInput = {
-    AND?: LeadWhereInput | LeadWhereInput[]
-    OR?: LeadWhereInput[]
-    NOT?: LeadWhereInput | LeadWhereInput[]
-    id?: StringFilter<"Lead"> | string
-    firstName?: StringFilter<"Lead"> | string
-    lastName?: StringFilter<"Lead"> | string
-    title?: StringNullableFilter<"Lead"> | string | null
-    email?: StringNullableFilter<"Lead"> | string | null
-    phone?: StringNullableFilter<"Lead"> | string | null
-    officePhone?: StringNullableFilter<"Lead"> | string | null
-    status?: StringFilter<"Lead"> | string
-    isVip?: BoolFilter<"Lead"> | boolean
-    companyId?: StringFilter<"Lead"> | string
-    createdAt?: DateTimeFilter<"Lead"> | Date | string
-    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+  export type ContactWhereInput = {
+    AND?: ContactWhereInput | ContactWhereInput[]
+    OR?: ContactWhereInput[]
+    NOT?: ContactWhereInput | ContactWhereInput[]
+    id?: StringFilter<"Contact"> | string
+    organizationId?: StringFilter<"Contact"> | string
+    accountId?: StringFilter<"Contact"> | string
+    firstName?: StringFilter<"Contact"> | string
+    lastName?: StringFilter<"Contact"> | string
+    title?: StringNullableFilter<"Contact"> | string | null
+    email?: StringNullableFilter<"Contact"> | string | null
+    phone?: StringNullableFilter<"Contact"> | string | null
+    officePhone?: StringNullableFilter<"Contact"> | string | null
+    isVip?: BoolFilter<"Contact"> | boolean
+    source?: StringNullableFilter<"Contact"> | string | null
+    createdAt?: DateTimeFilter<"Contact"> | Date | string
+    updatedAt?: DateTimeFilter<"Contact"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    account?: XOR<AccountScalarRelationFilter, AccountWhereInput>
     touches?: TouchListRelationFilter
-    notes?: LeadNoteListRelationFilter
+    notes?: ContactNoteListRelationFilter
   }
 
-  export type LeadOrderByWithRelationInput = {
+  export type ContactOrderByWithRelationInput = {
     id?: SortOrder
+    organizationId?: SortOrder
+    accountId?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
     title?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     officePhone?: SortOrderInput | SortOrder
-    status?: SortOrder
     isVip?: SortOrder
-    companyId?: SortOrder
+    source?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    company?: CompanyOrderByWithRelationInput
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    account?: AccountOrderByWithRelationInput
     touches?: TouchOrderByRelationAggregateInput
-    notes?: LeadNoteOrderByRelationAggregateInput
+    notes?: ContactNoteOrderByRelationAggregateInput
   }
 
-  export type LeadWhereUniqueInput = Prisma.AtLeast<{
+  export type ContactWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    AND?: LeadWhereInput | LeadWhereInput[]
-    OR?: LeadWhereInput[]
-    NOT?: LeadWhereInput | LeadWhereInput[]
-    firstName?: StringFilter<"Lead"> | string
-    lastName?: StringFilter<"Lead"> | string
-    title?: StringNullableFilter<"Lead"> | string | null
-    email?: StringNullableFilter<"Lead"> | string | null
-    phone?: StringNullableFilter<"Lead"> | string | null
-    officePhone?: StringNullableFilter<"Lead"> | string | null
-    status?: StringFilter<"Lead"> | string
-    isVip?: BoolFilter<"Lead"> | boolean
-    companyId?: StringFilter<"Lead"> | string
-    createdAt?: DateTimeFilter<"Lead"> | Date | string
-    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    AND?: ContactWhereInput | ContactWhereInput[]
+    OR?: ContactWhereInput[]
+    NOT?: ContactWhereInput | ContactWhereInput[]
+    organizationId?: StringFilter<"Contact"> | string
+    accountId?: StringFilter<"Contact"> | string
+    firstName?: StringFilter<"Contact"> | string
+    lastName?: StringFilter<"Contact"> | string
+    title?: StringNullableFilter<"Contact"> | string | null
+    email?: StringNullableFilter<"Contact"> | string | null
+    phone?: StringNullableFilter<"Contact"> | string | null
+    officePhone?: StringNullableFilter<"Contact"> | string | null
+    isVip?: BoolFilter<"Contact"> | boolean
+    source?: StringNullableFilter<"Contact"> | string | null
+    createdAt?: DateTimeFilter<"Contact"> | Date | string
+    updatedAt?: DateTimeFilter<"Contact"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    account?: XOR<AccountScalarRelationFilter, AccountWhereInput>
     touches?: TouchListRelationFilter
-    notes?: LeadNoteListRelationFilter
+    notes?: ContactNoteListRelationFilter
   }, "id">
 
-  export type LeadOrderByWithAggregationInput = {
+  export type ContactOrderByWithAggregationInput = {
     id?: SortOrder
+    organizationId?: SortOrder
+    accountId?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
     title?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     officePhone?: SortOrderInput | SortOrder
-    status?: SortOrder
     isVip?: SortOrder
-    companyId?: SortOrder
+    source?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    _count?: LeadCountOrderByAggregateInput
-    _max?: LeadMaxOrderByAggregateInput
-    _min?: LeadMinOrderByAggregateInput
+    updatedAt?: SortOrder
+    _count?: ContactCountOrderByAggregateInput
+    _max?: ContactMaxOrderByAggregateInput
+    _min?: ContactMinOrderByAggregateInput
   }
 
-  export type LeadScalarWhereWithAggregatesInput = {
-    AND?: LeadScalarWhereWithAggregatesInput | LeadScalarWhereWithAggregatesInput[]
-    OR?: LeadScalarWhereWithAggregatesInput[]
-    NOT?: LeadScalarWhereWithAggregatesInput | LeadScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Lead"> | string
-    firstName?: StringWithAggregatesFilter<"Lead"> | string
-    lastName?: StringWithAggregatesFilter<"Lead"> | string
-    title?: StringNullableWithAggregatesFilter<"Lead"> | string | null
-    email?: StringNullableWithAggregatesFilter<"Lead"> | string | null
-    phone?: StringNullableWithAggregatesFilter<"Lead"> | string | null
-    officePhone?: StringNullableWithAggregatesFilter<"Lead"> | string | null
-    status?: StringWithAggregatesFilter<"Lead"> | string
-    isVip?: BoolWithAggregatesFilter<"Lead"> | boolean
-    companyId?: StringWithAggregatesFilter<"Lead"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"Lead"> | Date | string
+  export type ContactScalarWhereWithAggregatesInput = {
+    AND?: ContactScalarWhereWithAggregatesInput | ContactScalarWhereWithAggregatesInput[]
+    OR?: ContactScalarWhereWithAggregatesInput[]
+    NOT?: ContactScalarWhereWithAggregatesInput | ContactScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Contact"> | string
+    organizationId?: StringWithAggregatesFilter<"Contact"> | string
+    accountId?: StringWithAggregatesFilter<"Contact"> | string
+    firstName?: StringWithAggregatesFilter<"Contact"> | string
+    lastName?: StringWithAggregatesFilter<"Contact"> | string
+    title?: StringNullableWithAggregatesFilter<"Contact"> | string | null
+    email?: StringNullableWithAggregatesFilter<"Contact"> | string | null
+    phone?: StringNullableWithAggregatesFilter<"Contact"> | string | null
+    officePhone?: StringNullableWithAggregatesFilter<"Contact"> | string | null
+    isVip?: BoolWithAggregatesFilter<"Contact"> | boolean
+    source?: StringNullableWithAggregatesFilter<"Contact"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Contact"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Contact"> | Date | string
   }
 
-  export type LeadNoteWhereInput = {
-    AND?: LeadNoteWhereInput | LeadNoteWhereInput[]
-    OR?: LeadNoteWhereInput[]
-    NOT?: LeadNoteWhereInput | LeadNoteWhereInput[]
-    id?: StringFilter<"LeadNote"> | string
-    text?: StringFilter<"LeadNote"> | string
-    leadId?: StringFilter<"LeadNote"> | string
-    createdAt?: DateTimeFilter<"LeadNote"> | Date | string
-    lead?: XOR<LeadScalarRelationFilter, LeadWhereInput>
+  export type ContactNoteWhereInput = {
+    AND?: ContactNoteWhereInput | ContactNoteWhereInput[]
+    OR?: ContactNoteWhereInput[]
+    NOT?: ContactNoteWhereInput | ContactNoteWhereInput[]
+    id?: StringFilter<"ContactNote"> | string
+    organizationId?: StringFilter<"ContactNote"> | string
+    text?: StringFilter<"ContactNote"> | string
+    contactId?: StringFilter<"ContactNote"> | string
+    createdAt?: DateTimeFilter<"ContactNote"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    contact?: XOR<ContactScalarRelationFilter, ContactWhereInput>
   }
 
-  export type LeadNoteOrderByWithRelationInput = {
+  export type ContactNoteOrderByWithRelationInput = {
     id?: SortOrder
+    organizationId?: SortOrder
     text?: SortOrder
-    leadId?: SortOrder
+    contactId?: SortOrder
     createdAt?: SortOrder
-    lead?: LeadOrderByWithRelationInput
+    organization?: OrganizationOrderByWithRelationInput
+    contact?: ContactOrderByWithRelationInput
   }
 
-  export type LeadNoteWhereUniqueInput = Prisma.AtLeast<{
+  export type ContactNoteWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    AND?: LeadNoteWhereInput | LeadNoteWhereInput[]
-    OR?: LeadNoteWhereInput[]
-    NOT?: LeadNoteWhereInput | LeadNoteWhereInput[]
-    text?: StringFilter<"LeadNote"> | string
-    leadId?: StringFilter<"LeadNote"> | string
-    createdAt?: DateTimeFilter<"LeadNote"> | Date | string
-    lead?: XOR<LeadScalarRelationFilter, LeadWhereInput>
+    AND?: ContactNoteWhereInput | ContactNoteWhereInput[]
+    OR?: ContactNoteWhereInput[]
+    NOT?: ContactNoteWhereInput | ContactNoteWhereInput[]
+    organizationId?: StringFilter<"ContactNote"> | string
+    text?: StringFilter<"ContactNote"> | string
+    contactId?: StringFilter<"ContactNote"> | string
+    createdAt?: DateTimeFilter<"ContactNote"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    contact?: XOR<ContactScalarRelationFilter, ContactWhereInput>
   }, "id">
 
-  export type LeadNoteOrderByWithAggregationInput = {
+  export type ContactNoteOrderByWithAggregationInput = {
     id?: SortOrder
+    organizationId?: SortOrder
     text?: SortOrder
-    leadId?: SortOrder
+    contactId?: SortOrder
     createdAt?: SortOrder
-    _count?: LeadNoteCountOrderByAggregateInput
-    _max?: LeadNoteMaxOrderByAggregateInput
-    _min?: LeadNoteMinOrderByAggregateInput
+    _count?: ContactNoteCountOrderByAggregateInput
+    _max?: ContactNoteMaxOrderByAggregateInput
+    _min?: ContactNoteMinOrderByAggregateInput
   }
 
-  export type LeadNoteScalarWhereWithAggregatesInput = {
-    AND?: LeadNoteScalarWhereWithAggregatesInput | LeadNoteScalarWhereWithAggregatesInput[]
-    OR?: LeadNoteScalarWhereWithAggregatesInput[]
-    NOT?: LeadNoteScalarWhereWithAggregatesInput | LeadNoteScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"LeadNote"> | string
-    text?: StringWithAggregatesFilter<"LeadNote"> | string
-    leadId?: StringWithAggregatesFilter<"LeadNote"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"LeadNote"> | Date | string
+  export type ContactNoteScalarWhereWithAggregatesInput = {
+    AND?: ContactNoteScalarWhereWithAggregatesInput | ContactNoteScalarWhereWithAggregatesInput[]
+    OR?: ContactNoteScalarWhereWithAggregatesInput[]
+    NOT?: ContactNoteScalarWhereWithAggregatesInput | ContactNoteScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ContactNote"> | string
+    organizationId?: StringWithAggregatesFilter<"ContactNote"> | string
+    text?: StringWithAggregatesFilter<"ContactNote"> | string
+    contactId?: StringWithAggregatesFilter<"ContactNote"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"ContactNote"> | Date | string
   }
 
   export type TouchWhereInput = {
@@ -12053,26 +14331,46 @@ export namespace Prisma {
     OR?: TouchWhereInput[]
     NOT?: TouchWhereInput | TouchWhereInput[]
     id?: StringFilter<"Touch"> | string
+    organizationId?: StringFilter<"Touch"> | string
+    accountId?: StringFilter<"Touch"> | string
+    contactId?: StringNullableFilter<"Touch"> | string | null
+    createdByUserId?: StringNullableFilter<"Touch"> | string | null
     date?: DateTimeFilter<"Touch"> | Date | string
     type?: StringFilter<"Touch"> | string
+    outcome?: StringNullableFilter<"Touch"> | string | null
+    source?: StringNullableFilter<"Touch"> | string | null
+    isAutomated?: BoolFilter<"Touch"> | boolean
     notes?: StringFilter<"Touch"> | string
     amount?: FloatNullableFilter<"Touch"> | number | null
     estimateNumber?: StringNullableFilter<"Touch"> | string | null
     socialPlatform?: StringNullableFilter<"Touch"> | string | null
-    leadId?: StringFilter<"Touch"> | string
-    lead?: XOR<LeadScalarRelationFilter, LeadWhereInput>
+    createdAt?: DateTimeFilter<"Touch"> | Date | string
+    updatedAt?: DateTimeFilter<"Touch"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    account?: XOR<AccountScalarRelationFilter, AccountWhereInput>
+    contact?: XOR<ContactNullableScalarRelationFilter, ContactWhereInput> | null
   }
 
   export type TouchOrderByWithRelationInput = {
     id?: SortOrder
+    organizationId?: SortOrder
+    accountId?: SortOrder
+    contactId?: SortOrderInput | SortOrder
+    createdByUserId?: SortOrderInput | SortOrder
     date?: SortOrder
     type?: SortOrder
+    outcome?: SortOrderInput | SortOrder
+    source?: SortOrderInput | SortOrder
+    isAutomated?: SortOrder
     notes?: SortOrder
     amount?: SortOrderInput | SortOrder
     estimateNumber?: SortOrderInput | SortOrder
     socialPlatform?: SortOrderInput | SortOrder
-    leadId?: SortOrder
-    lead?: LeadOrderByWithRelationInput
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    account?: AccountOrderByWithRelationInput
+    contact?: ContactOrderByWithRelationInput
   }
 
   export type TouchWhereUniqueInput = Prisma.AtLeast<{
@@ -12080,25 +14378,43 @@ export namespace Prisma {
     AND?: TouchWhereInput | TouchWhereInput[]
     OR?: TouchWhereInput[]
     NOT?: TouchWhereInput | TouchWhereInput[]
+    organizationId?: StringFilter<"Touch"> | string
+    accountId?: StringFilter<"Touch"> | string
+    contactId?: StringNullableFilter<"Touch"> | string | null
+    createdByUserId?: StringNullableFilter<"Touch"> | string | null
     date?: DateTimeFilter<"Touch"> | Date | string
     type?: StringFilter<"Touch"> | string
+    outcome?: StringNullableFilter<"Touch"> | string | null
+    source?: StringNullableFilter<"Touch"> | string | null
+    isAutomated?: BoolFilter<"Touch"> | boolean
     notes?: StringFilter<"Touch"> | string
     amount?: FloatNullableFilter<"Touch"> | number | null
     estimateNumber?: StringNullableFilter<"Touch"> | string | null
     socialPlatform?: StringNullableFilter<"Touch"> | string | null
-    leadId?: StringFilter<"Touch"> | string
-    lead?: XOR<LeadScalarRelationFilter, LeadWhereInput>
+    createdAt?: DateTimeFilter<"Touch"> | Date | string
+    updatedAt?: DateTimeFilter<"Touch"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    account?: XOR<AccountScalarRelationFilter, AccountWhereInput>
+    contact?: XOR<ContactNullableScalarRelationFilter, ContactWhereInput> | null
   }, "id">
 
   export type TouchOrderByWithAggregationInput = {
     id?: SortOrder
+    organizationId?: SortOrder
+    accountId?: SortOrder
+    contactId?: SortOrderInput | SortOrder
+    createdByUserId?: SortOrderInput | SortOrder
     date?: SortOrder
     type?: SortOrder
+    outcome?: SortOrderInput | SortOrder
+    source?: SortOrderInput | SortOrder
+    isAutomated?: SortOrder
     notes?: SortOrder
     amount?: SortOrderInput | SortOrder
     estimateNumber?: SortOrderInput | SortOrder
     socialPlatform?: SortOrderInput | SortOrder
-    leadId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: TouchCountOrderByAggregateInput
     _avg?: TouchAvgOrderByAggregateInput
     _max?: TouchMaxOrderByAggregateInput
@@ -12111,45 +14427,150 @@ export namespace Prisma {
     OR?: TouchScalarWhereWithAggregatesInput[]
     NOT?: TouchScalarWhereWithAggregatesInput | TouchScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Touch"> | string
+    organizationId?: StringWithAggregatesFilter<"Touch"> | string
+    accountId?: StringWithAggregatesFilter<"Touch"> | string
+    contactId?: StringNullableWithAggregatesFilter<"Touch"> | string | null
+    createdByUserId?: StringNullableWithAggregatesFilter<"Touch"> | string | null
     date?: DateTimeWithAggregatesFilter<"Touch"> | Date | string
     type?: StringWithAggregatesFilter<"Touch"> | string
+    outcome?: StringNullableWithAggregatesFilter<"Touch"> | string | null
+    source?: StringNullableWithAggregatesFilter<"Touch"> | string | null
+    isAutomated?: BoolWithAggregatesFilter<"Touch"> | boolean
     notes?: StringWithAggregatesFilter<"Touch"> | string
     amount?: FloatNullableWithAggregatesFilter<"Touch"> | number | null
     estimateNumber?: StringNullableWithAggregatesFilter<"Touch"> | string | null
     socialPlatform?: StringNullableWithAggregatesFilter<"Touch"> | string | null
-    leadId?: StringWithAggregatesFilter<"Touch"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Touch"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Touch"> | Date | string
+  }
+
+  export type OrganizationCreateInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryCreateNestedManyWithoutOrganizationInput
+    touchTypes?: TouchTypeCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactCreateNestedManyWithoutOrganizationInput
+    touches?: TouchCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryUncheckedCreateNestedManyWithoutOrganizationInput
+    touchTypes?: TouchTypeUncheckedCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutOrganizationInput
+    touches?: TouchUncheckedCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUpdateManyWithoutOrganizationNestedInput
+    touchTypes?: TouchTypeUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUncheckedUpdateManyWithoutOrganizationNestedInput
+    touchTypes?: TouchTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationCreateManyInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OrganizationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrganizationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type IndustryCreateInput = {
     id?: string
     name: string
     isSystem?: boolean
-    companies?: CompanyCreateNestedManyWithoutIndustryInput
+    organization: OrganizationCreateNestedOneWithoutIndustriesInput
+    accounts?: AccountCreateNestedManyWithoutIndustryInput
   }
 
   export type IndustryUncheckedCreateInput = {
     id?: string
+    organizationId: string
     name: string
     isSystem?: boolean
-    companies?: CompanyUncheckedCreateNestedManyWithoutIndustryInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutIndustryInput
   }
 
   export type IndustryUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     isSystem?: BoolFieldUpdateOperationsInput | boolean
-    companies?: CompanyUpdateManyWithoutIndustryNestedInput
+    organization?: OrganizationUpdateOneRequiredWithoutIndustriesNestedInput
+    accounts?: AccountUpdateManyWithoutIndustryNestedInput
   }
 
   export type IndustryUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     isSystem?: BoolFieldUpdateOperationsInput | boolean
-    companies?: CompanyUncheckedUpdateManyWithoutIndustryNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutIndustryNestedInput
   }
 
   export type IndustryCreateManyInput = {
     id?: string
+    organizationId: string
     name: string
     isSystem?: boolean
   }
@@ -12162,6 +14583,7 @@ export namespace Prisma {
 
   export type IndustryUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     isSystem?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -12170,10 +14592,12 @@ export namespace Prisma {
     id?: string
     name: string
     isSystem?: boolean
+    organization: OrganizationCreateNestedOneWithoutTouchTypesInput
   }
 
   export type TouchTypeUncheckedCreateInput = {
     id?: string
+    organizationId: string
     name: string
     isSystem?: boolean
   }
@@ -12182,16 +14606,19 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     isSystem?: BoolFieldUpdateOperationsInput | boolean
+    organization?: OrganizationUpdateOneRequiredWithoutTouchTypesNestedInput
   }
 
   export type TouchTypeUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     isSystem?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type TouchTypeCreateManyInput = {
     id?: string
+    organizationId: string
     name: string
     isSystem?: boolean
   }
@@ -12204,6 +14631,7 @@ export namespace Prisma {
 
   export type TouchTypeUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     isSystem?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -12212,10 +14640,12 @@ export namespace Prisma {
     id?: string
     name: string
     isSystem?: boolean
+    organization: OrganizationCreateNestedOneWithoutSocialPlatformsInput
   }
 
   export type SocialPlatformUncheckedCreateInput = {
     id?: string
+    organizationId: string
     name: string
     isSystem?: boolean
   }
@@ -12224,16 +14654,19 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     isSystem?: BoolFieldUpdateOperationsInput | boolean
+    organization?: OrganizationUpdateOneRequiredWithoutSocialPlatformsNestedInput
   }
 
   export type SocialPlatformUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     isSystem?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SocialPlatformCreateManyInput = {
     id?: string
+    organizationId: string
     name: string
     isSystem?: boolean
   }
@@ -12246,202 +14679,274 @@ export namespace Prisma {
 
   export type SocialPlatformUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     isSystem?: BoolFieldUpdateOperationsInput | boolean
   }
 
-  export type CompanyCreateInput = {
+  export type AccountCreateInput = {
     id?: string
     name: string
     address?: string | null
     phone?: string | null
     website?: string | null
+    status?: string
     isVip?: boolean
+    source?: string | null
+    ownerUserId?: string | null
+    createdByUserId?: string | null
+    nextTouchAt?: Date | string | null
+    nextTouchType?: string | null
+    nextTouchNote?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    industry: IndustryCreateNestedOneWithoutCompaniesInput
-    leads?: LeadCreateNestedManyWithoutCompanyInput
-    notes?: CompanyNoteCreateNestedManyWithoutCompanyInput
-    socials?: CompanySocialLinkCreateNestedManyWithoutCompanyInput
+    organization: OrganizationCreateNestedOneWithoutAccountsInput
+    industry: IndustryCreateNestedOneWithoutAccountsInput
+    contacts?: ContactCreateNestedManyWithoutAccountInput
+    notes?: AccountNoteCreateNestedManyWithoutAccountInput
+    socials?: AccountSocialLinkCreateNestedManyWithoutAccountInput
+    touches?: TouchCreateNestedManyWithoutAccountInput
   }
 
-  export type CompanyUncheckedCreateInput = {
+  export type AccountUncheckedCreateInput = {
     id?: string
+    organizationId: string
     name: string
     address?: string | null
     phone?: string | null
     website?: string | null
+    status?: string
     isVip?: boolean
+    source?: string | null
+    ownerUserId?: string | null
+    createdByUserId?: string | null
+    nextTouchAt?: Date | string | null
+    nextTouchType?: string | null
+    nextTouchNote?: string | null
     industryId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    leads?: LeadUncheckedCreateNestedManyWithoutCompanyInput
-    notes?: CompanyNoteUncheckedCreateNestedManyWithoutCompanyInput
-    socials?: CompanySocialLinkUncheckedCreateNestedManyWithoutCompanyInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutAccountInput
+    notes?: AccountNoteUncheckedCreateNestedManyWithoutAccountInput
+    socials?: AccountSocialLinkUncheckedCreateNestedManyWithoutAccountInput
+    touches?: TouchUncheckedCreateNestedManyWithoutAccountInput
   }
 
-  export type CompanyUpdateInput = {
+  export type AccountUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    industry?: IndustryUpdateOneRequiredWithoutCompaniesNestedInput
-    leads?: LeadUpdateManyWithoutCompanyNestedInput
-    notes?: CompanyNoteUpdateManyWithoutCompanyNestedInput
-    socials?: CompanySocialLinkUpdateManyWithoutCompanyNestedInput
+    organization?: OrganizationUpdateOneRequiredWithoutAccountsNestedInput
+    industry?: IndustryUpdateOneRequiredWithoutAccountsNestedInput
+    contacts?: ContactUpdateManyWithoutAccountNestedInput
+    notes?: AccountNoteUpdateManyWithoutAccountNestedInput
+    socials?: AccountSocialLinkUpdateManyWithoutAccountNestedInput
+    touches?: TouchUpdateManyWithoutAccountNestedInput
   }
 
-  export type CompanyUncheckedUpdateInput = {
+  export type AccountUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
     industryId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    leads?: LeadUncheckedUpdateManyWithoutCompanyNestedInput
-    notes?: CompanyNoteUncheckedUpdateManyWithoutCompanyNestedInput
-    socials?: CompanySocialLinkUncheckedUpdateManyWithoutCompanyNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutAccountNestedInput
+    notes?: AccountNoteUncheckedUpdateManyWithoutAccountNestedInput
+    socials?: AccountSocialLinkUncheckedUpdateManyWithoutAccountNestedInput
+    touches?: TouchUncheckedUpdateManyWithoutAccountNestedInput
   }
 
-  export type CompanyCreateManyInput = {
+  export type AccountCreateManyInput = {
     id?: string
+    organizationId: string
     name: string
     address?: string | null
     phone?: string | null
     website?: string | null
+    status?: string
     isVip?: boolean
+    source?: string | null
+    ownerUserId?: string | null
+    createdByUserId?: string | null
+    nextTouchAt?: Date | string | null
+    nextTouchType?: string | null
+    nextTouchNote?: string | null
     industryId: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
-  export type CompanyUpdateManyMutationInput = {
+  export type AccountUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CompanyUncheckedUpdateManyInput = {
+  export type AccountUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
     industryId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CompanySocialLinkCreateInput = {
+  export type AccountSocialLinkCreateInput = {
     id?: string
     platform: string
     handle: string
-    company: CompanyCreateNestedOneWithoutSocialsInput
+    organization: OrganizationCreateNestedOneWithoutAccountSocialsInput
+    account: AccountCreateNestedOneWithoutSocialsInput
   }
 
-  export type CompanySocialLinkUncheckedCreateInput = {
+  export type AccountSocialLinkUncheckedCreateInput = {
     id?: string
-    companyId: string
-    platform: string
-    handle: string
-  }
-
-  export type CompanySocialLinkUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    platform?: StringFieldUpdateOperationsInput | string
-    handle?: StringFieldUpdateOperationsInput | string
-    company?: CompanyUpdateOneRequiredWithoutSocialsNestedInput
-  }
-
-  export type CompanySocialLinkUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    companyId?: StringFieldUpdateOperationsInput | string
-    platform?: StringFieldUpdateOperationsInput | string
-    handle?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type CompanySocialLinkCreateManyInput = {
-    id?: string
-    companyId: string
+    organizationId: string
+    accountId: string
     platform: string
     handle: string
   }
 
-  export type CompanySocialLinkUpdateManyMutationInput = {
+  export type AccountSocialLinkUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    handle?: StringFieldUpdateOperationsInput | string
+    organization?: OrganizationUpdateOneRequiredWithoutAccountSocialsNestedInput
+    account?: AccountUpdateOneRequiredWithoutSocialsNestedInput
+  }
+
+  export type AccountSocialLinkUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    handle?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AccountSocialLinkCreateManyInput = {
+    id?: string
+    organizationId: string
+    accountId: string
+    platform: string
+    handle: string
+  }
+
+  export type AccountSocialLinkUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     platform?: StringFieldUpdateOperationsInput | string
     handle?: StringFieldUpdateOperationsInput | string
   }
 
-  export type CompanySocialLinkUncheckedUpdateManyInput = {
+  export type AccountSocialLinkUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    companyId?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
     platform?: StringFieldUpdateOperationsInput | string
     handle?: StringFieldUpdateOperationsInput | string
   }
 
-  export type CompanyNoteCreateInput = {
+  export type AccountNoteCreateInput = {
     id?: string
     text: string
     createdAt?: Date | string
-    company: CompanyCreateNestedOneWithoutNotesInput
+    organization: OrganizationCreateNestedOneWithoutAccountNotesInput
+    account: AccountCreateNestedOneWithoutNotesInput
   }
 
-  export type CompanyNoteUncheckedCreateInput = {
+  export type AccountNoteUncheckedCreateInput = {
     id?: string
+    organizationId: string
     text: string
-    companyId: string
+    accountId: string
     createdAt?: Date | string
   }
 
-  export type CompanyNoteUpdateInput = {
+  export type AccountNoteUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    company?: CompanyUpdateOneRequiredWithoutNotesNestedInput
+    organization?: OrganizationUpdateOneRequiredWithoutAccountNotesNestedInput
+    account?: AccountUpdateOneRequiredWithoutNotesNestedInput
   }
 
-  export type CompanyNoteUncheckedUpdateInput = {
+  export type AccountNoteUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
-    companyId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CompanyNoteCreateManyInput = {
+  export type AccountNoteCreateManyInput = {
     id?: string
+    organizationId: string
     text: string
-    companyId: string
+    accountId: string
     createdAt?: Date | string
   }
 
-  export type CompanyNoteUpdateManyMutationInput = {
+  export type AccountNoteUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CompanyNoteUncheckedUpdateManyInput = {
+  export type AccountNoteUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
-    companyId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type LeadCreateInput = {
+  export type ContactCreateInput = {
     id?: string
     firstName: string
     lastName: string
@@ -12449,31 +14954,35 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     officePhone?: string | null
-    status?: string
     isVip?: boolean
+    source?: string | null
     createdAt?: Date | string
-    company: CompanyCreateNestedOneWithoutLeadsInput
-    touches?: TouchCreateNestedManyWithoutLeadInput
-    notes?: LeadNoteCreateNestedManyWithoutLeadInput
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutContactsInput
+    account: AccountCreateNestedOneWithoutContactsInput
+    touches?: TouchCreateNestedManyWithoutContactInput
+    notes?: ContactNoteCreateNestedManyWithoutContactInput
   }
 
-  export type LeadUncheckedCreateInput = {
+  export type ContactUncheckedCreateInput = {
     id?: string
+    organizationId: string
+    accountId: string
     firstName: string
     lastName: string
     title?: string | null
     email?: string | null
     phone?: string | null
     officePhone?: string | null
-    status?: string
     isVip?: boolean
-    companyId: string
+    source?: string | null
     createdAt?: Date | string
-    touches?: TouchUncheckedCreateNestedManyWithoutLeadInput
-    notes?: LeadNoteUncheckedCreateNestedManyWithoutLeadInput
+    updatedAt?: Date | string
+    touches?: TouchUncheckedCreateNestedManyWithoutContactInput
+    notes?: ContactNoteUncheckedCreateNestedManyWithoutContactInput
   }
 
-  export type LeadUpdateInput = {
+  export type ContactUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
@@ -12481,45 +14990,51 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     officePhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    company?: CompanyUpdateOneRequiredWithoutLeadsNestedInput
-    touches?: TouchUpdateManyWithoutLeadNestedInput
-    notes?: LeadNoteUpdateManyWithoutLeadNestedInput
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutContactsNestedInput
+    account?: AccountUpdateOneRequiredWithoutContactsNestedInput
+    touches?: TouchUpdateManyWithoutContactNestedInput
+    notes?: ContactNoteUpdateManyWithoutContactNestedInput
   }
 
-  export type LeadUncheckedUpdateInput = {
+  export type ContactUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     officePhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
-    companyId?: StringFieldUpdateOperationsInput | string
+    source?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    touches?: TouchUncheckedUpdateManyWithoutLeadNestedInput
-    notes?: LeadNoteUncheckedUpdateManyWithoutLeadNestedInput
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    touches?: TouchUncheckedUpdateManyWithoutContactNestedInput
+    notes?: ContactNoteUncheckedUpdateManyWithoutContactNestedInput
   }
 
-  export type LeadCreateManyInput = {
+  export type ContactCreateManyInput = {
     id?: string
+    organizationId: string
+    accountId: string
     firstName: string
     lastName: string
     title?: string | null
     email?: string | null
     phone?: string | null
     officePhone?: string | null
-    status?: string
     isVip?: boolean
-    companyId: string
+    source?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type LeadUpdateManyMutationInput = {
+  export type ContactUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
@@ -12527,147 +15042,210 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     officePhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type LeadUncheckedUpdateManyInput = {
+  export type ContactUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     officePhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
     isVip?: BoolFieldUpdateOperationsInput | boolean
-    companyId?: StringFieldUpdateOperationsInput | string
+    source?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type LeadNoteCreateInput = {
+  export type ContactNoteCreateInput = {
     id?: string
     text: string
     createdAt?: Date | string
-    lead: LeadCreateNestedOneWithoutNotesInput
+    organization: OrganizationCreateNestedOneWithoutContactNotesInput
+    contact: ContactCreateNestedOneWithoutNotesInput
   }
 
-  export type LeadNoteUncheckedCreateInput = {
+  export type ContactNoteUncheckedCreateInput = {
     id?: string
+    organizationId: string
     text: string
-    leadId: string
+    contactId: string
     createdAt?: Date | string
   }
 
-  export type LeadNoteUpdateInput = {
+  export type ContactNoteUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lead?: LeadUpdateOneRequiredWithoutNotesNestedInput
+    organization?: OrganizationUpdateOneRequiredWithoutContactNotesNestedInput
+    contact?: ContactUpdateOneRequiredWithoutNotesNestedInput
   }
 
-  export type LeadNoteUncheckedUpdateInput = {
+  export type ContactNoteUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
-    leadId?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type LeadNoteCreateManyInput = {
+  export type ContactNoteCreateManyInput = {
     id?: string
+    organizationId: string
     text: string
-    leadId: string
+    contactId: string
     createdAt?: Date | string
   }
 
-  export type LeadNoteUpdateManyMutationInput = {
+  export type ContactNoteUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type LeadNoteUncheckedUpdateManyInput = {
+  export type ContactNoteUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
-    leadId?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TouchCreateInput = {
     id?: string
+    createdByUserId?: string | null
     date?: Date | string
     type: string
+    outcome?: string | null
+    source?: string | null
+    isAutomated?: boolean
     notes?: string
     amount?: number | null
     estimateNumber?: string | null
     socialPlatform?: string | null
-    lead: LeadCreateNestedOneWithoutTouchesInput
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTouchesInput
+    account: AccountCreateNestedOneWithoutTouchesInput
+    contact?: ContactCreateNestedOneWithoutTouchesInput
   }
 
   export type TouchUncheckedCreateInput = {
     id?: string
+    organizationId: string
+    accountId: string
+    contactId?: string | null
+    createdByUserId?: string | null
     date?: Date | string
     type: string
+    outcome?: string | null
+    source?: string | null
+    isAutomated?: boolean
     notes?: string
     amount?: number | null
     estimateNumber?: string | null
     socialPlatform?: string | null
-    leadId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type TouchUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: StringFieldUpdateOperationsInput | string
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    isAutomated?: BoolFieldUpdateOperationsInput | boolean
     notes?: StringFieldUpdateOperationsInput | string
     amount?: NullableFloatFieldUpdateOperationsInput | number | null
     estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
     socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
-    lead?: LeadUpdateOneRequiredWithoutTouchesNestedInput
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTouchesNestedInput
+    account?: AccountUpdateOneRequiredWithoutTouchesNestedInput
+    contact?: ContactUpdateOneWithoutTouchesNestedInput
   }
 
   export type TouchUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: StringFieldUpdateOperationsInput | string
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    isAutomated?: BoolFieldUpdateOperationsInput | boolean
     notes?: StringFieldUpdateOperationsInput | string
     amount?: NullableFloatFieldUpdateOperationsInput | number | null
     estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
     socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
-    leadId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TouchCreateManyInput = {
     id?: string
+    organizationId: string
+    accountId: string
+    contactId?: string | null
+    createdByUserId?: string | null
     date?: Date | string
     type: string
+    outcome?: string | null
+    source?: string | null
+    isAutomated?: boolean
     notes?: string
     amount?: number | null
     estimateNumber?: string | null
     socialPlatform?: string | null
-    leadId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type TouchUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: StringFieldUpdateOperationsInput | string
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    isAutomated?: BoolFieldUpdateOperationsInput | boolean
     notes?: StringFieldUpdateOperationsInput | string
     amount?: NullableFloatFieldUpdateOperationsInput | number | null
     estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
     socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TouchUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: StringFieldUpdateOperationsInput | string
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    isAutomated?: BoolFieldUpdateOperationsInput | boolean
     notes?: StringFieldUpdateOperationsInput | string
     amount?: NullableFloatFieldUpdateOperationsInput | number | null
     estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
     socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
-    leadId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -12682,100 +15260,6 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringFilter<$PrismaModel> | string
-  }
-
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type CompanyListRelationFilter = {
-    every?: CompanyWhereInput
-    some?: CompanyWhereInput
-    none?: CompanyWhereInput
-  }
-
-  export type CompanyOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type IndustryCountOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    isSystem?: SortOrder
-  }
-
-  export type IndustryMaxOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    isSystem?: SortOrder
-  }
-
-  export type IndustryMinOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    isSystem?: SortOrder
-  }
-
-  export type StringWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[]
-    notIn?: string[]
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedStringFilter<$PrismaModel>
-    _max?: NestedStringFilter<$PrismaModel>
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type TouchTypeCountOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    isSystem?: SortOrder
-  }
-
-  export type TouchTypeMaxOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    isSystem?: SortOrder
-  }
-
-  export type TouchTypeMinOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    isSystem?: SortOrder
-  }
-
-  export type SocialPlatformCountOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    isSystem?: SortOrder
-  }
-
-  export type SocialPlatformMaxOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    isSystem?: SortOrder
-  }
-
-  export type SocialPlatformMinOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    isSystem?: SortOrder
   }
 
   export type StringNullableFilter<$PrismaModel = never> = {
@@ -12803,27 +15287,58 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type IndustryScalarRelationFilter = {
-    is?: IndustryWhereInput
-    isNot?: IndustryWhereInput
+  export type IndustryListRelationFilter = {
+    every?: IndustryWhereInput
+    some?: IndustryWhereInput
+    none?: IndustryWhereInput
   }
 
-  export type LeadListRelationFilter = {
-    every?: LeadWhereInput
-    some?: LeadWhereInput
-    none?: LeadWhereInput
+  export type TouchTypeListRelationFilter = {
+    every?: TouchTypeWhereInput
+    some?: TouchTypeWhereInput
+    none?: TouchTypeWhereInput
   }
 
-  export type CompanyNoteListRelationFilter = {
-    every?: CompanyNoteWhereInput
-    some?: CompanyNoteWhereInput
-    none?: CompanyNoteWhereInput
+  export type SocialPlatformListRelationFilter = {
+    every?: SocialPlatformWhereInput
+    some?: SocialPlatformWhereInput
+    none?: SocialPlatformWhereInput
   }
 
-  export type CompanySocialLinkListRelationFilter = {
-    every?: CompanySocialLinkWhereInput
-    some?: CompanySocialLinkWhereInput
-    none?: CompanySocialLinkWhereInput
+  export type AccountListRelationFilter = {
+    every?: AccountWhereInput
+    some?: AccountWhereInput
+    none?: AccountWhereInput
+  }
+
+  export type ContactListRelationFilter = {
+    every?: ContactWhereInput
+    some?: ContactWhereInput
+    none?: ContactWhereInput
+  }
+
+  export type TouchListRelationFilter = {
+    every?: TouchWhereInput
+    some?: TouchWhereInput
+    none?: TouchWhereInput
+  }
+
+  export type AccountNoteListRelationFilter = {
+    every?: AccountNoteWhereInput
+    some?: AccountNoteWhereInput
+    none?: AccountNoteWhereInput
+  }
+
+  export type ContactNoteListRelationFilter = {
+    every?: ContactNoteWhereInput
+    some?: ContactNoteWhereInput
+    none?: ContactNoteWhereInput
+  }
+
+  export type AccountSocialLinkListRelationFilter = {
+    every?: AccountSocialLinkWhereInput
+    some?: AccountSocialLinkWhereInput
+    none?: AccountSocialLinkWhereInput
   }
 
   export type SortOrderInput = {
@@ -12831,52 +15346,81 @@ export namespace Prisma {
     nulls?: NullsOrder
   }
 
-  export type LeadOrderByRelationAggregateInput = {
+  export type IndustryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type CompanyNoteOrderByRelationAggregateInput = {
+  export type TouchTypeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type CompanySocialLinkOrderByRelationAggregateInput = {
+  export type SocialPlatformOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type CompanyCountOrderByAggregateInput = {
+  export type AccountOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ContactOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TouchOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AccountNoteOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ContactNoteOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AccountSocialLinkOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type OrganizationCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    address?: SortOrder
-    phone?: SortOrder
-    website?: SortOrder
-    isVip?: SortOrder
-    industryId?: SortOrder
+    slug?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type CompanyMaxOrderByAggregateInput = {
+  export type OrganizationMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    address?: SortOrder
-    phone?: SortOrder
-    website?: SortOrder
-    isVip?: SortOrder
-    industryId?: SortOrder
+    slug?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type CompanyMinOrderByAggregateInput = {
+  export type OrganizationMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    address?: SortOrder
-    phone?: SortOrder
-    website?: SortOrder
-    isVip?: SortOrder
-    industryId?: SortOrder
+    slug?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type StringWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -12910,143 +15454,324 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type CompanyScalarRelationFilter = {
-    is?: CompanyWhereInput
-    isNot?: CompanyWhereInput
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type CompanySocialLinkCompanyIdPlatformCompoundUniqueInput = {
-    companyId: string
+  export type OrganizationScalarRelationFilter = {
+    is?: OrganizationWhereInput
+    isNot?: OrganizationWhereInput
+  }
+
+  export type IndustryOrganizationIdNameCompoundUniqueInput = {
+    organizationId: string
+    name: string
+  }
+
+  export type IndustryCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+  }
+
+  export type IndustryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+  }
+
+  export type IndustryMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type TouchTypeOrganizationIdNameCompoundUniqueInput = {
+    organizationId: string
+    name: string
+  }
+
+  export type TouchTypeCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+  }
+
+  export type TouchTypeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+  }
+
+  export type TouchTypeMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+  }
+
+  export type SocialPlatformOrganizationIdNameCompoundUniqueInput = {
+    organizationId: string
+    name: string
+  }
+
+  export type SocialPlatformCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+  }
+
+  export type SocialPlatformMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+  }
+
+  export type SocialPlatformMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    isSystem?: SortOrder
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type IndustryScalarRelationFilter = {
+    is?: IndustryWhereInput
+    isNot?: IndustryWhereInput
+  }
+
+  export type AccountCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    address?: SortOrder
+    phone?: SortOrder
+    website?: SortOrder
+    status?: SortOrder
+    isVip?: SortOrder
+    source?: SortOrder
+    ownerUserId?: SortOrder
+    createdByUserId?: SortOrder
+    nextTouchAt?: SortOrder
+    nextTouchType?: SortOrder
+    nextTouchNote?: SortOrder
+    industryId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AccountMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    address?: SortOrder
+    phone?: SortOrder
+    website?: SortOrder
+    status?: SortOrder
+    isVip?: SortOrder
+    source?: SortOrder
+    ownerUserId?: SortOrder
+    createdByUserId?: SortOrder
+    nextTouchAt?: SortOrder
+    nextTouchType?: SortOrder
+    nextTouchNote?: SortOrder
+    industryId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AccountMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    address?: SortOrder
+    phone?: SortOrder
+    website?: SortOrder
+    status?: SortOrder
+    isVip?: SortOrder
+    source?: SortOrder
+    ownerUserId?: SortOrder
+    createdByUserId?: SortOrder
+    nextTouchAt?: SortOrder
+    nextTouchType?: SortOrder
+    nextTouchNote?: SortOrder
+    industryId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type AccountScalarRelationFilter = {
+    is?: AccountWhereInput
+    isNot?: AccountWhereInput
+  }
+
+  export type AccountSocialLinkAccountIdPlatformCompoundUniqueInput = {
+    accountId: string
     platform: string
   }
 
-  export type CompanySocialLinkCountOrderByAggregateInput = {
+  export type AccountSocialLinkCountOrderByAggregateInput = {
     id?: SortOrder
-    companyId?: SortOrder
+    organizationId?: SortOrder
+    accountId?: SortOrder
     platform?: SortOrder
     handle?: SortOrder
   }
 
-  export type CompanySocialLinkMaxOrderByAggregateInput = {
+  export type AccountSocialLinkMaxOrderByAggregateInput = {
     id?: SortOrder
-    companyId?: SortOrder
+    organizationId?: SortOrder
+    accountId?: SortOrder
     platform?: SortOrder
     handle?: SortOrder
   }
 
-  export type CompanySocialLinkMinOrderByAggregateInput = {
+  export type AccountSocialLinkMinOrderByAggregateInput = {
     id?: SortOrder
-    companyId?: SortOrder
+    organizationId?: SortOrder
+    accountId?: SortOrder
     platform?: SortOrder
     handle?: SortOrder
   }
 
-  export type CompanyNoteCountOrderByAggregateInput = {
+  export type AccountNoteCountOrderByAggregateInput = {
     id?: SortOrder
+    organizationId?: SortOrder
     text?: SortOrder
-    companyId?: SortOrder
+    accountId?: SortOrder
     createdAt?: SortOrder
   }
 
-  export type CompanyNoteMaxOrderByAggregateInput = {
+  export type AccountNoteMaxOrderByAggregateInput = {
     id?: SortOrder
+    organizationId?: SortOrder
     text?: SortOrder
-    companyId?: SortOrder
+    accountId?: SortOrder
     createdAt?: SortOrder
   }
 
-  export type CompanyNoteMinOrderByAggregateInput = {
+  export type AccountNoteMinOrderByAggregateInput = {
     id?: SortOrder
+    organizationId?: SortOrder
     text?: SortOrder
-    companyId?: SortOrder
+    accountId?: SortOrder
     createdAt?: SortOrder
   }
 
-  export type TouchListRelationFilter = {
-    every?: TouchWhereInput
-    some?: TouchWhereInput
-    none?: TouchWhereInput
-  }
-
-  export type LeadNoteListRelationFilter = {
-    every?: LeadNoteWhereInput
-    some?: LeadNoteWhereInput
-    none?: LeadNoteWhereInput
-  }
-
-  export type TouchOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type LeadNoteOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type LeadCountOrderByAggregateInput = {
+  export type ContactCountOrderByAggregateInput = {
     id?: SortOrder
+    organizationId?: SortOrder
+    accountId?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
     title?: SortOrder
     email?: SortOrder
     phone?: SortOrder
     officePhone?: SortOrder
-    status?: SortOrder
     isVip?: SortOrder
-    companyId?: SortOrder
+    source?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
-  export type LeadMaxOrderByAggregateInput = {
+  export type ContactMaxOrderByAggregateInput = {
     id?: SortOrder
+    organizationId?: SortOrder
+    accountId?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
     title?: SortOrder
     email?: SortOrder
     phone?: SortOrder
     officePhone?: SortOrder
-    status?: SortOrder
     isVip?: SortOrder
-    companyId?: SortOrder
+    source?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
-  export type LeadMinOrderByAggregateInput = {
+  export type ContactMinOrderByAggregateInput = {
     id?: SortOrder
+    organizationId?: SortOrder
+    accountId?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
     title?: SortOrder
     email?: SortOrder
     phone?: SortOrder
     officePhone?: SortOrder
-    status?: SortOrder
     isVip?: SortOrder
-    companyId?: SortOrder
+    source?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ContactScalarRelationFilter = {
+    is?: ContactWhereInput
+    isNot?: ContactWhereInput
+  }
+
+  export type ContactNoteCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    text?: SortOrder
+    contactId?: SortOrder
     createdAt?: SortOrder
   }
 
-  export type LeadScalarRelationFilter = {
-    is?: LeadWhereInput
-    isNot?: LeadWhereInput
-  }
-
-  export type LeadNoteCountOrderByAggregateInput = {
+  export type ContactNoteMaxOrderByAggregateInput = {
     id?: SortOrder
+    organizationId?: SortOrder
     text?: SortOrder
-    leadId?: SortOrder
+    contactId?: SortOrder
     createdAt?: SortOrder
   }
 
-  export type LeadNoteMaxOrderByAggregateInput = {
+  export type ContactNoteMinOrderByAggregateInput = {
     id?: SortOrder
+    organizationId?: SortOrder
     text?: SortOrder
-    leadId?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type LeadNoteMinOrderByAggregateInput = {
-    id?: SortOrder
-    text?: SortOrder
-    leadId?: SortOrder
+    contactId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -13061,15 +15786,28 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type ContactNullableScalarRelationFilter = {
+    is?: ContactWhereInput | null
+    isNot?: ContactWhereInput | null
+  }
+
   export type TouchCountOrderByAggregateInput = {
     id?: SortOrder
+    organizationId?: SortOrder
+    accountId?: SortOrder
+    contactId?: SortOrder
+    createdByUserId?: SortOrder
     date?: SortOrder
     type?: SortOrder
+    outcome?: SortOrder
+    source?: SortOrder
+    isAutomated?: SortOrder
     notes?: SortOrder
     amount?: SortOrder
     estimateNumber?: SortOrder
     socialPlatform?: SortOrder
-    leadId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type TouchAvgOrderByAggregateInput = {
@@ -13078,24 +15816,40 @@ export namespace Prisma {
 
   export type TouchMaxOrderByAggregateInput = {
     id?: SortOrder
+    organizationId?: SortOrder
+    accountId?: SortOrder
+    contactId?: SortOrder
+    createdByUserId?: SortOrder
     date?: SortOrder
     type?: SortOrder
+    outcome?: SortOrder
+    source?: SortOrder
+    isAutomated?: SortOrder
     notes?: SortOrder
     amount?: SortOrder
     estimateNumber?: SortOrder
     socialPlatform?: SortOrder
-    leadId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type TouchMinOrderByAggregateInput = {
     id?: SortOrder
+    organizationId?: SortOrder
+    accountId?: SortOrder
+    contactId?: SortOrder
+    createdByUserId?: SortOrder
     date?: SortOrder
     type?: SortOrder
+    outcome?: SortOrder
+    source?: SortOrder
+    isAutomated?: SortOrder
     notes?: SortOrder
     amount?: SortOrder
     estimateNumber?: SortOrder
     socialPlatform?: SortOrder
-    leadId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type TouchSumOrderByAggregateInput = {
@@ -13118,102 +15872,134 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
-  export type CompanyCreateNestedManyWithoutIndustryInput = {
-    create?: XOR<CompanyCreateWithoutIndustryInput, CompanyUncheckedCreateWithoutIndustryInput> | CompanyCreateWithoutIndustryInput[] | CompanyUncheckedCreateWithoutIndustryInput[]
-    connectOrCreate?: CompanyCreateOrConnectWithoutIndustryInput | CompanyCreateOrConnectWithoutIndustryInput[]
-    createMany?: CompanyCreateManyIndustryInputEnvelope
-    connect?: CompanyWhereUniqueInput | CompanyWhereUniqueInput[]
+  export type IndustryCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<IndustryCreateWithoutOrganizationInput, IndustryUncheckedCreateWithoutOrganizationInput> | IndustryCreateWithoutOrganizationInput[] | IndustryUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: IndustryCreateOrConnectWithoutOrganizationInput | IndustryCreateOrConnectWithoutOrganizationInput[]
+    createMany?: IndustryCreateManyOrganizationInputEnvelope
+    connect?: IndustryWhereUniqueInput | IndustryWhereUniqueInput[]
   }
 
-  export type CompanyUncheckedCreateNestedManyWithoutIndustryInput = {
-    create?: XOR<CompanyCreateWithoutIndustryInput, CompanyUncheckedCreateWithoutIndustryInput> | CompanyCreateWithoutIndustryInput[] | CompanyUncheckedCreateWithoutIndustryInput[]
-    connectOrCreate?: CompanyCreateOrConnectWithoutIndustryInput | CompanyCreateOrConnectWithoutIndustryInput[]
-    createMany?: CompanyCreateManyIndustryInputEnvelope
-    connect?: CompanyWhereUniqueInput | CompanyWhereUniqueInput[]
+  export type TouchTypeCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<TouchTypeCreateWithoutOrganizationInput, TouchTypeUncheckedCreateWithoutOrganizationInput> | TouchTypeCreateWithoutOrganizationInput[] | TouchTypeUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TouchTypeCreateOrConnectWithoutOrganizationInput | TouchTypeCreateOrConnectWithoutOrganizationInput[]
+    createMany?: TouchTypeCreateManyOrganizationInputEnvelope
+    connect?: TouchTypeWhereUniqueInput | TouchTypeWhereUniqueInput[]
+  }
+
+  export type SocialPlatformCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<SocialPlatformCreateWithoutOrganizationInput, SocialPlatformUncheckedCreateWithoutOrganizationInput> | SocialPlatformCreateWithoutOrganizationInput[] | SocialPlatformUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: SocialPlatformCreateOrConnectWithoutOrganizationInput | SocialPlatformCreateOrConnectWithoutOrganizationInput[]
+    createMany?: SocialPlatformCreateManyOrganizationInputEnvelope
+    connect?: SocialPlatformWhereUniqueInput | SocialPlatformWhereUniqueInput[]
+  }
+
+  export type AccountCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<AccountCreateWithoutOrganizationInput, AccountUncheckedCreateWithoutOrganizationInput> | AccountCreateWithoutOrganizationInput[] | AccountUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: AccountCreateOrConnectWithoutOrganizationInput | AccountCreateOrConnectWithoutOrganizationInput[]
+    createMany?: AccountCreateManyOrganizationInputEnvelope
+    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+  }
+
+  export type ContactCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ContactCreateWithoutOrganizationInput, ContactUncheckedCreateWithoutOrganizationInput> | ContactCreateWithoutOrganizationInput[] | ContactUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ContactCreateOrConnectWithoutOrganizationInput | ContactCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ContactCreateManyOrganizationInputEnvelope
+    connect?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+  }
+
+  export type TouchCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<TouchCreateWithoutOrganizationInput, TouchUncheckedCreateWithoutOrganizationInput> | TouchCreateWithoutOrganizationInput[] | TouchUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TouchCreateOrConnectWithoutOrganizationInput | TouchCreateOrConnectWithoutOrganizationInput[]
+    createMany?: TouchCreateManyOrganizationInputEnvelope
+    connect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+  }
+
+  export type AccountNoteCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<AccountNoteCreateWithoutOrganizationInput, AccountNoteUncheckedCreateWithoutOrganizationInput> | AccountNoteCreateWithoutOrganizationInput[] | AccountNoteUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: AccountNoteCreateOrConnectWithoutOrganizationInput | AccountNoteCreateOrConnectWithoutOrganizationInput[]
+    createMany?: AccountNoteCreateManyOrganizationInputEnvelope
+    connect?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+  }
+
+  export type ContactNoteCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ContactNoteCreateWithoutOrganizationInput, ContactNoteUncheckedCreateWithoutOrganizationInput> | ContactNoteCreateWithoutOrganizationInput[] | ContactNoteUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ContactNoteCreateOrConnectWithoutOrganizationInput | ContactNoteCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ContactNoteCreateManyOrganizationInputEnvelope
+    connect?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+  }
+
+  export type AccountSocialLinkCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<AccountSocialLinkCreateWithoutOrganizationInput, AccountSocialLinkUncheckedCreateWithoutOrganizationInput> | AccountSocialLinkCreateWithoutOrganizationInput[] | AccountSocialLinkUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: AccountSocialLinkCreateOrConnectWithoutOrganizationInput | AccountSocialLinkCreateOrConnectWithoutOrganizationInput[]
+    createMany?: AccountSocialLinkCreateManyOrganizationInputEnvelope
+    connect?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+  }
+
+  export type IndustryUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<IndustryCreateWithoutOrganizationInput, IndustryUncheckedCreateWithoutOrganizationInput> | IndustryCreateWithoutOrganizationInput[] | IndustryUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: IndustryCreateOrConnectWithoutOrganizationInput | IndustryCreateOrConnectWithoutOrganizationInput[]
+    createMany?: IndustryCreateManyOrganizationInputEnvelope
+    connect?: IndustryWhereUniqueInput | IndustryWhereUniqueInput[]
+  }
+
+  export type TouchTypeUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<TouchTypeCreateWithoutOrganizationInput, TouchTypeUncheckedCreateWithoutOrganizationInput> | TouchTypeCreateWithoutOrganizationInput[] | TouchTypeUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TouchTypeCreateOrConnectWithoutOrganizationInput | TouchTypeCreateOrConnectWithoutOrganizationInput[]
+    createMany?: TouchTypeCreateManyOrganizationInputEnvelope
+    connect?: TouchTypeWhereUniqueInput | TouchTypeWhereUniqueInput[]
+  }
+
+  export type SocialPlatformUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<SocialPlatformCreateWithoutOrganizationInput, SocialPlatformUncheckedCreateWithoutOrganizationInput> | SocialPlatformCreateWithoutOrganizationInput[] | SocialPlatformUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: SocialPlatformCreateOrConnectWithoutOrganizationInput | SocialPlatformCreateOrConnectWithoutOrganizationInput[]
+    createMany?: SocialPlatformCreateManyOrganizationInputEnvelope
+    connect?: SocialPlatformWhereUniqueInput | SocialPlatformWhereUniqueInput[]
+  }
+
+  export type AccountUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<AccountCreateWithoutOrganizationInput, AccountUncheckedCreateWithoutOrganizationInput> | AccountCreateWithoutOrganizationInput[] | AccountUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: AccountCreateOrConnectWithoutOrganizationInput | AccountCreateOrConnectWithoutOrganizationInput[]
+    createMany?: AccountCreateManyOrganizationInputEnvelope
+    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+  }
+
+  export type ContactUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ContactCreateWithoutOrganizationInput, ContactUncheckedCreateWithoutOrganizationInput> | ContactCreateWithoutOrganizationInput[] | ContactUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ContactCreateOrConnectWithoutOrganizationInput | ContactCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ContactCreateManyOrganizationInputEnvelope
+    connect?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+  }
+
+  export type TouchUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<TouchCreateWithoutOrganizationInput, TouchUncheckedCreateWithoutOrganizationInput> | TouchCreateWithoutOrganizationInput[] | TouchUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TouchCreateOrConnectWithoutOrganizationInput | TouchCreateOrConnectWithoutOrganizationInput[]
+    createMany?: TouchCreateManyOrganizationInputEnvelope
+    connect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+  }
+
+  export type AccountNoteUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<AccountNoteCreateWithoutOrganizationInput, AccountNoteUncheckedCreateWithoutOrganizationInput> | AccountNoteCreateWithoutOrganizationInput[] | AccountNoteUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: AccountNoteCreateOrConnectWithoutOrganizationInput | AccountNoteCreateOrConnectWithoutOrganizationInput[]
+    createMany?: AccountNoteCreateManyOrganizationInputEnvelope
+    connect?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+  }
+
+  export type ContactNoteUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ContactNoteCreateWithoutOrganizationInput, ContactNoteUncheckedCreateWithoutOrganizationInput> | ContactNoteCreateWithoutOrganizationInput[] | ContactNoteUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ContactNoteCreateOrConnectWithoutOrganizationInput | ContactNoteCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ContactNoteCreateManyOrganizationInputEnvelope
+    connect?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+  }
+
+  export type AccountSocialLinkUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<AccountSocialLinkCreateWithoutOrganizationInput, AccountSocialLinkUncheckedCreateWithoutOrganizationInput> | AccountSocialLinkCreateWithoutOrganizationInput[] | AccountSocialLinkUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: AccountSocialLinkCreateOrConnectWithoutOrganizationInput | AccountSocialLinkCreateOrConnectWithoutOrganizationInput[]
+    createMany?: AccountSocialLinkCreateManyOrganizationInputEnvelope
+    connect?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
     set?: string
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
-  }
-
-  export type CompanyUpdateManyWithoutIndustryNestedInput = {
-    create?: XOR<CompanyCreateWithoutIndustryInput, CompanyUncheckedCreateWithoutIndustryInput> | CompanyCreateWithoutIndustryInput[] | CompanyUncheckedCreateWithoutIndustryInput[]
-    connectOrCreate?: CompanyCreateOrConnectWithoutIndustryInput | CompanyCreateOrConnectWithoutIndustryInput[]
-    upsert?: CompanyUpsertWithWhereUniqueWithoutIndustryInput | CompanyUpsertWithWhereUniqueWithoutIndustryInput[]
-    createMany?: CompanyCreateManyIndustryInputEnvelope
-    set?: CompanyWhereUniqueInput | CompanyWhereUniqueInput[]
-    disconnect?: CompanyWhereUniqueInput | CompanyWhereUniqueInput[]
-    delete?: CompanyWhereUniqueInput | CompanyWhereUniqueInput[]
-    connect?: CompanyWhereUniqueInput | CompanyWhereUniqueInput[]
-    update?: CompanyUpdateWithWhereUniqueWithoutIndustryInput | CompanyUpdateWithWhereUniqueWithoutIndustryInput[]
-    updateMany?: CompanyUpdateManyWithWhereWithoutIndustryInput | CompanyUpdateManyWithWhereWithoutIndustryInput[]
-    deleteMany?: CompanyScalarWhereInput | CompanyScalarWhereInput[]
-  }
-
-  export type CompanyUncheckedUpdateManyWithoutIndustryNestedInput = {
-    create?: XOR<CompanyCreateWithoutIndustryInput, CompanyUncheckedCreateWithoutIndustryInput> | CompanyCreateWithoutIndustryInput[] | CompanyUncheckedCreateWithoutIndustryInput[]
-    connectOrCreate?: CompanyCreateOrConnectWithoutIndustryInput | CompanyCreateOrConnectWithoutIndustryInput[]
-    upsert?: CompanyUpsertWithWhereUniqueWithoutIndustryInput | CompanyUpsertWithWhereUniqueWithoutIndustryInput[]
-    createMany?: CompanyCreateManyIndustryInputEnvelope
-    set?: CompanyWhereUniqueInput | CompanyWhereUniqueInput[]
-    disconnect?: CompanyWhereUniqueInput | CompanyWhereUniqueInput[]
-    delete?: CompanyWhereUniqueInput | CompanyWhereUniqueInput[]
-    connect?: CompanyWhereUniqueInput | CompanyWhereUniqueInput[]
-    update?: CompanyUpdateWithWhereUniqueWithoutIndustryInput | CompanyUpdateWithWhereUniqueWithoutIndustryInput[]
-    updateMany?: CompanyUpdateManyWithWhereWithoutIndustryInput | CompanyUpdateManyWithWhereWithoutIndustryInput[]
-    deleteMany?: CompanyScalarWhereInput | CompanyScalarWhereInput[]
-  }
-
-  export type IndustryCreateNestedOneWithoutCompaniesInput = {
-    create?: XOR<IndustryCreateWithoutCompaniesInput, IndustryUncheckedCreateWithoutCompaniesInput>
-    connectOrCreate?: IndustryCreateOrConnectWithoutCompaniesInput
-    connect?: IndustryWhereUniqueInput
-  }
-
-  export type LeadCreateNestedManyWithoutCompanyInput = {
-    create?: XOR<LeadCreateWithoutCompanyInput, LeadUncheckedCreateWithoutCompanyInput> | LeadCreateWithoutCompanyInput[] | LeadUncheckedCreateWithoutCompanyInput[]
-    connectOrCreate?: LeadCreateOrConnectWithoutCompanyInput | LeadCreateOrConnectWithoutCompanyInput[]
-    createMany?: LeadCreateManyCompanyInputEnvelope
-    connect?: LeadWhereUniqueInput | LeadWhereUniqueInput[]
-  }
-
-  export type CompanyNoteCreateNestedManyWithoutCompanyInput = {
-    create?: XOR<CompanyNoteCreateWithoutCompanyInput, CompanyNoteUncheckedCreateWithoutCompanyInput> | CompanyNoteCreateWithoutCompanyInput[] | CompanyNoteUncheckedCreateWithoutCompanyInput[]
-    connectOrCreate?: CompanyNoteCreateOrConnectWithoutCompanyInput | CompanyNoteCreateOrConnectWithoutCompanyInput[]
-    createMany?: CompanyNoteCreateManyCompanyInputEnvelope
-    connect?: CompanyNoteWhereUniqueInput | CompanyNoteWhereUniqueInput[]
-  }
-
-  export type CompanySocialLinkCreateNestedManyWithoutCompanyInput = {
-    create?: XOR<CompanySocialLinkCreateWithoutCompanyInput, CompanySocialLinkUncheckedCreateWithoutCompanyInput> | CompanySocialLinkCreateWithoutCompanyInput[] | CompanySocialLinkUncheckedCreateWithoutCompanyInput[]
-    connectOrCreate?: CompanySocialLinkCreateOrConnectWithoutCompanyInput | CompanySocialLinkCreateOrConnectWithoutCompanyInput[]
-    createMany?: CompanySocialLinkCreateManyCompanyInputEnvelope
-    connect?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
-  }
-
-  export type LeadUncheckedCreateNestedManyWithoutCompanyInput = {
-    create?: XOR<LeadCreateWithoutCompanyInput, LeadUncheckedCreateWithoutCompanyInput> | LeadCreateWithoutCompanyInput[] | LeadUncheckedCreateWithoutCompanyInput[]
-    connectOrCreate?: LeadCreateOrConnectWithoutCompanyInput | LeadCreateOrConnectWithoutCompanyInput[]
-    createMany?: LeadCreateManyCompanyInputEnvelope
-    connect?: LeadWhereUniqueInput | LeadWhereUniqueInput[]
-  }
-
-  export type CompanyNoteUncheckedCreateNestedManyWithoutCompanyInput = {
-    create?: XOR<CompanyNoteCreateWithoutCompanyInput, CompanyNoteUncheckedCreateWithoutCompanyInput> | CompanyNoteCreateWithoutCompanyInput[] | CompanyNoteUncheckedCreateWithoutCompanyInput[]
-    connectOrCreate?: CompanyNoteCreateOrConnectWithoutCompanyInput | CompanyNoteCreateOrConnectWithoutCompanyInput[]
-    createMany?: CompanyNoteCreateManyCompanyInputEnvelope
-    connect?: CompanyNoteWhereUniqueInput | CompanyNoteWhereUniqueInput[]
-  }
-
-  export type CompanySocialLinkUncheckedCreateNestedManyWithoutCompanyInput = {
-    create?: XOR<CompanySocialLinkCreateWithoutCompanyInput, CompanySocialLinkUncheckedCreateWithoutCompanyInput> | CompanySocialLinkCreateWithoutCompanyInput[] | CompanySocialLinkUncheckedCreateWithoutCompanyInput[]
-    connectOrCreate?: CompanySocialLinkCreateOrConnectWithoutCompanyInput | CompanySocialLinkCreateOrConnectWithoutCompanyInput[]
-    createMany?: CompanySocialLinkCreateManyCompanyInputEnvelope
-    connect?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -13224,242 +16010,758 @@ export namespace Prisma {
     set?: Date | string
   }
 
-  export type IndustryUpdateOneRequiredWithoutCompaniesNestedInput = {
-    create?: XOR<IndustryCreateWithoutCompaniesInput, IndustryUncheckedCreateWithoutCompaniesInput>
-    connectOrCreate?: IndustryCreateOrConnectWithoutCompaniesInput
-    upsert?: IndustryUpsertWithoutCompaniesInput
+  export type IndustryUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<IndustryCreateWithoutOrganizationInput, IndustryUncheckedCreateWithoutOrganizationInput> | IndustryCreateWithoutOrganizationInput[] | IndustryUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: IndustryCreateOrConnectWithoutOrganizationInput | IndustryCreateOrConnectWithoutOrganizationInput[]
+    upsert?: IndustryUpsertWithWhereUniqueWithoutOrganizationInput | IndustryUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: IndustryCreateManyOrganizationInputEnvelope
+    set?: IndustryWhereUniqueInput | IndustryWhereUniqueInput[]
+    disconnect?: IndustryWhereUniqueInput | IndustryWhereUniqueInput[]
+    delete?: IndustryWhereUniqueInput | IndustryWhereUniqueInput[]
+    connect?: IndustryWhereUniqueInput | IndustryWhereUniqueInput[]
+    update?: IndustryUpdateWithWhereUniqueWithoutOrganizationInput | IndustryUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: IndustryUpdateManyWithWhereWithoutOrganizationInput | IndustryUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: IndustryScalarWhereInput | IndustryScalarWhereInput[]
+  }
+
+  export type TouchTypeUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<TouchTypeCreateWithoutOrganizationInput, TouchTypeUncheckedCreateWithoutOrganizationInput> | TouchTypeCreateWithoutOrganizationInput[] | TouchTypeUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TouchTypeCreateOrConnectWithoutOrganizationInput | TouchTypeCreateOrConnectWithoutOrganizationInput[]
+    upsert?: TouchTypeUpsertWithWhereUniqueWithoutOrganizationInput | TouchTypeUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: TouchTypeCreateManyOrganizationInputEnvelope
+    set?: TouchTypeWhereUniqueInput | TouchTypeWhereUniqueInput[]
+    disconnect?: TouchTypeWhereUniqueInput | TouchTypeWhereUniqueInput[]
+    delete?: TouchTypeWhereUniqueInput | TouchTypeWhereUniqueInput[]
+    connect?: TouchTypeWhereUniqueInput | TouchTypeWhereUniqueInput[]
+    update?: TouchTypeUpdateWithWhereUniqueWithoutOrganizationInput | TouchTypeUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: TouchTypeUpdateManyWithWhereWithoutOrganizationInput | TouchTypeUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: TouchTypeScalarWhereInput | TouchTypeScalarWhereInput[]
+  }
+
+  export type SocialPlatformUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<SocialPlatformCreateWithoutOrganizationInput, SocialPlatformUncheckedCreateWithoutOrganizationInput> | SocialPlatformCreateWithoutOrganizationInput[] | SocialPlatformUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: SocialPlatformCreateOrConnectWithoutOrganizationInput | SocialPlatformCreateOrConnectWithoutOrganizationInput[]
+    upsert?: SocialPlatformUpsertWithWhereUniqueWithoutOrganizationInput | SocialPlatformUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: SocialPlatformCreateManyOrganizationInputEnvelope
+    set?: SocialPlatformWhereUniqueInput | SocialPlatformWhereUniqueInput[]
+    disconnect?: SocialPlatformWhereUniqueInput | SocialPlatformWhereUniqueInput[]
+    delete?: SocialPlatformWhereUniqueInput | SocialPlatformWhereUniqueInput[]
+    connect?: SocialPlatformWhereUniqueInput | SocialPlatformWhereUniqueInput[]
+    update?: SocialPlatformUpdateWithWhereUniqueWithoutOrganizationInput | SocialPlatformUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: SocialPlatformUpdateManyWithWhereWithoutOrganizationInput | SocialPlatformUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: SocialPlatformScalarWhereInput | SocialPlatformScalarWhereInput[]
+  }
+
+  export type AccountUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<AccountCreateWithoutOrganizationInput, AccountUncheckedCreateWithoutOrganizationInput> | AccountCreateWithoutOrganizationInput[] | AccountUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: AccountCreateOrConnectWithoutOrganizationInput | AccountCreateOrConnectWithoutOrganizationInput[]
+    upsert?: AccountUpsertWithWhereUniqueWithoutOrganizationInput | AccountUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: AccountCreateManyOrganizationInputEnvelope
+    set?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    disconnect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    delete?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    update?: AccountUpdateWithWhereUniqueWithoutOrganizationInput | AccountUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: AccountUpdateManyWithWhereWithoutOrganizationInput | AccountUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
+  }
+
+  export type ContactUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ContactCreateWithoutOrganizationInput, ContactUncheckedCreateWithoutOrganizationInput> | ContactCreateWithoutOrganizationInput[] | ContactUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ContactCreateOrConnectWithoutOrganizationInput | ContactCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ContactUpsertWithWhereUniqueWithoutOrganizationInput | ContactUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ContactCreateManyOrganizationInputEnvelope
+    set?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+    disconnect?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+    delete?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+    connect?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+    update?: ContactUpdateWithWhereUniqueWithoutOrganizationInput | ContactUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ContactUpdateManyWithWhereWithoutOrganizationInput | ContactUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ContactScalarWhereInput | ContactScalarWhereInput[]
+  }
+
+  export type TouchUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<TouchCreateWithoutOrganizationInput, TouchUncheckedCreateWithoutOrganizationInput> | TouchCreateWithoutOrganizationInput[] | TouchUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TouchCreateOrConnectWithoutOrganizationInput | TouchCreateOrConnectWithoutOrganizationInput[]
+    upsert?: TouchUpsertWithWhereUniqueWithoutOrganizationInput | TouchUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: TouchCreateManyOrganizationInputEnvelope
+    set?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+    disconnect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+    delete?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+    connect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+    update?: TouchUpdateWithWhereUniqueWithoutOrganizationInput | TouchUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: TouchUpdateManyWithWhereWithoutOrganizationInput | TouchUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: TouchScalarWhereInput | TouchScalarWhereInput[]
+  }
+
+  export type AccountNoteUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<AccountNoteCreateWithoutOrganizationInput, AccountNoteUncheckedCreateWithoutOrganizationInput> | AccountNoteCreateWithoutOrganizationInput[] | AccountNoteUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: AccountNoteCreateOrConnectWithoutOrganizationInput | AccountNoteCreateOrConnectWithoutOrganizationInput[]
+    upsert?: AccountNoteUpsertWithWhereUniqueWithoutOrganizationInput | AccountNoteUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: AccountNoteCreateManyOrganizationInputEnvelope
+    set?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+    disconnect?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+    delete?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+    connect?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+    update?: AccountNoteUpdateWithWhereUniqueWithoutOrganizationInput | AccountNoteUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: AccountNoteUpdateManyWithWhereWithoutOrganizationInput | AccountNoteUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: AccountNoteScalarWhereInput | AccountNoteScalarWhereInput[]
+  }
+
+  export type ContactNoteUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ContactNoteCreateWithoutOrganizationInput, ContactNoteUncheckedCreateWithoutOrganizationInput> | ContactNoteCreateWithoutOrganizationInput[] | ContactNoteUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ContactNoteCreateOrConnectWithoutOrganizationInput | ContactNoteCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ContactNoteUpsertWithWhereUniqueWithoutOrganizationInput | ContactNoteUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ContactNoteCreateManyOrganizationInputEnvelope
+    set?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+    disconnect?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+    delete?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+    connect?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+    update?: ContactNoteUpdateWithWhereUniqueWithoutOrganizationInput | ContactNoteUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ContactNoteUpdateManyWithWhereWithoutOrganizationInput | ContactNoteUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ContactNoteScalarWhereInput | ContactNoteScalarWhereInput[]
+  }
+
+  export type AccountSocialLinkUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<AccountSocialLinkCreateWithoutOrganizationInput, AccountSocialLinkUncheckedCreateWithoutOrganizationInput> | AccountSocialLinkCreateWithoutOrganizationInput[] | AccountSocialLinkUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: AccountSocialLinkCreateOrConnectWithoutOrganizationInput | AccountSocialLinkCreateOrConnectWithoutOrganizationInput[]
+    upsert?: AccountSocialLinkUpsertWithWhereUniqueWithoutOrganizationInput | AccountSocialLinkUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: AccountSocialLinkCreateManyOrganizationInputEnvelope
+    set?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+    disconnect?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+    delete?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+    connect?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+    update?: AccountSocialLinkUpdateWithWhereUniqueWithoutOrganizationInput | AccountSocialLinkUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: AccountSocialLinkUpdateManyWithWhereWithoutOrganizationInput | AccountSocialLinkUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: AccountSocialLinkScalarWhereInput | AccountSocialLinkScalarWhereInput[]
+  }
+
+  export type IndustryUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<IndustryCreateWithoutOrganizationInput, IndustryUncheckedCreateWithoutOrganizationInput> | IndustryCreateWithoutOrganizationInput[] | IndustryUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: IndustryCreateOrConnectWithoutOrganizationInput | IndustryCreateOrConnectWithoutOrganizationInput[]
+    upsert?: IndustryUpsertWithWhereUniqueWithoutOrganizationInput | IndustryUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: IndustryCreateManyOrganizationInputEnvelope
+    set?: IndustryWhereUniqueInput | IndustryWhereUniqueInput[]
+    disconnect?: IndustryWhereUniqueInput | IndustryWhereUniqueInput[]
+    delete?: IndustryWhereUniqueInput | IndustryWhereUniqueInput[]
+    connect?: IndustryWhereUniqueInput | IndustryWhereUniqueInput[]
+    update?: IndustryUpdateWithWhereUniqueWithoutOrganizationInput | IndustryUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: IndustryUpdateManyWithWhereWithoutOrganizationInput | IndustryUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: IndustryScalarWhereInput | IndustryScalarWhereInput[]
+  }
+
+  export type TouchTypeUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<TouchTypeCreateWithoutOrganizationInput, TouchTypeUncheckedCreateWithoutOrganizationInput> | TouchTypeCreateWithoutOrganizationInput[] | TouchTypeUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TouchTypeCreateOrConnectWithoutOrganizationInput | TouchTypeCreateOrConnectWithoutOrganizationInput[]
+    upsert?: TouchTypeUpsertWithWhereUniqueWithoutOrganizationInput | TouchTypeUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: TouchTypeCreateManyOrganizationInputEnvelope
+    set?: TouchTypeWhereUniqueInput | TouchTypeWhereUniqueInput[]
+    disconnect?: TouchTypeWhereUniqueInput | TouchTypeWhereUniqueInput[]
+    delete?: TouchTypeWhereUniqueInput | TouchTypeWhereUniqueInput[]
+    connect?: TouchTypeWhereUniqueInput | TouchTypeWhereUniqueInput[]
+    update?: TouchTypeUpdateWithWhereUniqueWithoutOrganizationInput | TouchTypeUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: TouchTypeUpdateManyWithWhereWithoutOrganizationInput | TouchTypeUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: TouchTypeScalarWhereInput | TouchTypeScalarWhereInput[]
+  }
+
+  export type SocialPlatformUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<SocialPlatformCreateWithoutOrganizationInput, SocialPlatformUncheckedCreateWithoutOrganizationInput> | SocialPlatformCreateWithoutOrganizationInput[] | SocialPlatformUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: SocialPlatformCreateOrConnectWithoutOrganizationInput | SocialPlatformCreateOrConnectWithoutOrganizationInput[]
+    upsert?: SocialPlatformUpsertWithWhereUniqueWithoutOrganizationInput | SocialPlatformUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: SocialPlatformCreateManyOrganizationInputEnvelope
+    set?: SocialPlatformWhereUniqueInput | SocialPlatformWhereUniqueInput[]
+    disconnect?: SocialPlatformWhereUniqueInput | SocialPlatformWhereUniqueInput[]
+    delete?: SocialPlatformWhereUniqueInput | SocialPlatformWhereUniqueInput[]
+    connect?: SocialPlatformWhereUniqueInput | SocialPlatformWhereUniqueInput[]
+    update?: SocialPlatformUpdateWithWhereUniqueWithoutOrganizationInput | SocialPlatformUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: SocialPlatformUpdateManyWithWhereWithoutOrganizationInput | SocialPlatformUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: SocialPlatformScalarWhereInput | SocialPlatformScalarWhereInput[]
+  }
+
+  export type AccountUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<AccountCreateWithoutOrganizationInput, AccountUncheckedCreateWithoutOrganizationInput> | AccountCreateWithoutOrganizationInput[] | AccountUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: AccountCreateOrConnectWithoutOrganizationInput | AccountCreateOrConnectWithoutOrganizationInput[]
+    upsert?: AccountUpsertWithWhereUniqueWithoutOrganizationInput | AccountUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: AccountCreateManyOrganizationInputEnvelope
+    set?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    disconnect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    delete?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    update?: AccountUpdateWithWhereUniqueWithoutOrganizationInput | AccountUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: AccountUpdateManyWithWhereWithoutOrganizationInput | AccountUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
+  }
+
+  export type ContactUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ContactCreateWithoutOrganizationInput, ContactUncheckedCreateWithoutOrganizationInput> | ContactCreateWithoutOrganizationInput[] | ContactUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ContactCreateOrConnectWithoutOrganizationInput | ContactCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ContactUpsertWithWhereUniqueWithoutOrganizationInput | ContactUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ContactCreateManyOrganizationInputEnvelope
+    set?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+    disconnect?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+    delete?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+    connect?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+    update?: ContactUpdateWithWhereUniqueWithoutOrganizationInput | ContactUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ContactUpdateManyWithWhereWithoutOrganizationInput | ContactUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ContactScalarWhereInput | ContactScalarWhereInput[]
+  }
+
+  export type TouchUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<TouchCreateWithoutOrganizationInput, TouchUncheckedCreateWithoutOrganizationInput> | TouchCreateWithoutOrganizationInput[] | TouchUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TouchCreateOrConnectWithoutOrganizationInput | TouchCreateOrConnectWithoutOrganizationInput[]
+    upsert?: TouchUpsertWithWhereUniqueWithoutOrganizationInput | TouchUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: TouchCreateManyOrganizationInputEnvelope
+    set?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+    disconnect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+    delete?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+    connect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+    update?: TouchUpdateWithWhereUniqueWithoutOrganizationInput | TouchUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: TouchUpdateManyWithWhereWithoutOrganizationInput | TouchUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: TouchScalarWhereInput | TouchScalarWhereInput[]
+  }
+
+  export type AccountNoteUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<AccountNoteCreateWithoutOrganizationInput, AccountNoteUncheckedCreateWithoutOrganizationInput> | AccountNoteCreateWithoutOrganizationInput[] | AccountNoteUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: AccountNoteCreateOrConnectWithoutOrganizationInput | AccountNoteCreateOrConnectWithoutOrganizationInput[]
+    upsert?: AccountNoteUpsertWithWhereUniqueWithoutOrganizationInput | AccountNoteUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: AccountNoteCreateManyOrganizationInputEnvelope
+    set?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+    disconnect?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+    delete?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+    connect?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+    update?: AccountNoteUpdateWithWhereUniqueWithoutOrganizationInput | AccountNoteUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: AccountNoteUpdateManyWithWhereWithoutOrganizationInput | AccountNoteUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: AccountNoteScalarWhereInput | AccountNoteScalarWhereInput[]
+  }
+
+  export type ContactNoteUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ContactNoteCreateWithoutOrganizationInput, ContactNoteUncheckedCreateWithoutOrganizationInput> | ContactNoteCreateWithoutOrganizationInput[] | ContactNoteUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ContactNoteCreateOrConnectWithoutOrganizationInput | ContactNoteCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ContactNoteUpsertWithWhereUniqueWithoutOrganizationInput | ContactNoteUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ContactNoteCreateManyOrganizationInputEnvelope
+    set?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+    disconnect?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+    delete?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+    connect?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+    update?: ContactNoteUpdateWithWhereUniqueWithoutOrganizationInput | ContactNoteUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ContactNoteUpdateManyWithWhereWithoutOrganizationInput | ContactNoteUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ContactNoteScalarWhereInput | ContactNoteScalarWhereInput[]
+  }
+
+  export type AccountSocialLinkUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<AccountSocialLinkCreateWithoutOrganizationInput, AccountSocialLinkUncheckedCreateWithoutOrganizationInput> | AccountSocialLinkCreateWithoutOrganizationInput[] | AccountSocialLinkUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: AccountSocialLinkCreateOrConnectWithoutOrganizationInput | AccountSocialLinkCreateOrConnectWithoutOrganizationInput[]
+    upsert?: AccountSocialLinkUpsertWithWhereUniqueWithoutOrganizationInput | AccountSocialLinkUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: AccountSocialLinkCreateManyOrganizationInputEnvelope
+    set?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+    disconnect?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+    delete?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+    connect?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+    update?: AccountSocialLinkUpdateWithWhereUniqueWithoutOrganizationInput | AccountSocialLinkUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: AccountSocialLinkUpdateManyWithWhereWithoutOrganizationInput | AccountSocialLinkUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: AccountSocialLinkScalarWhereInput | AccountSocialLinkScalarWhereInput[]
+  }
+
+  export type OrganizationCreateNestedOneWithoutIndustriesInput = {
+    create?: XOR<OrganizationCreateWithoutIndustriesInput, OrganizationUncheckedCreateWithoutIndustriesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutIndustriesInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type AccountCreateNestedManyWithoutIndustryInput = {
+    create?: XOR<AccountCreateWithoutIndustryInput, AccountUncheckedCreateWithoutIndustryInput> | AccountCreateWithoutIndustryInput[] | AccountUncheckedCreateWithoutIndustryInput[]
+    connectOrCreate?: AccountCreateOrConnectWithoutIndustryInput | AccountCreateOrConnectWithoutIndustryInput[]
+    createMany?: AccountCreateManyIndustryInputEnvelope
+    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+  }
+
+  export type AccountUncheckedCreateNestedManyWithoutIndustryInput = {
+    create?: XOR<AccountCreateWithoutIndustryInput, AccountUncheckedCreateWithoutIndustryInput> | AccountCreateWithoutIndustryInput[] | AccountUncheckedCreateWithoutIndustryInput[]
+    connectOrCreate?: AccountCreateOrConnectWithoutIndustryInput | AccountCreateOrConnectWithoutIndustryInput[]
+    createMany?: AccountCreateManyIndustryInputEnvelope
+    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutIndustriesNestedInput = {
+    create?: XOR<OrganizationCreateWithoutIndustriesInput, OrganizationUncheckedCreateWithoutIndustriesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutIndustriesInput
+    upsert?: OrganizationUpsertWithoutIndustriesInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutIndustriesInput, OrganizationUpdateWithoutIndustriesInput>, OrganizationUncheckedUpdateWithoutIndustriesInput>
+  }
+
+  export type AccountUpdateManyWithoutIndustryNestedInput = {
+    create?: XOR<AccountCreateWithoutIndustryInput, AccountUncheckedCreateWithoutIndustryInput> | AccountCreateWithoutIndustryInput[] | AccountUncheckedCreateWithoutIndustryInput[]
+    connectOrCreate?: AccountCreateOrConnectWithoutIndustryInput | AccountCreateOrConnectWithoutIndustryInput[]
+    upsert?: AccountUpsertWithWhereUniqueWithoutIndustryInput | AccountUpsertWithWhereUniqueWithoutIndustryInput[]
+    createMany?: AccountCreateManyIndustryInputEnvelope
+    set?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    disconnect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    delete?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    update?: AccountUpdateWithWhereUniqueWithoutIndustryInput | AccountUpdateWithWhereUniqueWithoutIndustryInput[]
+    updateMany?: AccountUpdateManyWithWhereWithoutIndustryInput | AccountUpdateManyWithWhereWithoutIndustryInput[]
+    deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
+  }
+
+  export type AccountUncheckedUpdateManyWithoutIndustryNestedInput = {
+    create?: XOR<AccountCreateWithoutIndustryInput, AccountUncheckedCreateWithoutIndustryInput> | AccountCreateWithoutIndustryInput[] | AccountUncheckedCreateWithoutIndustryInput[]
+    connectOrCreate?: AccountCreateOrConnectWithoutIndustryInput | AccountCreateOrConnectWithoutIndustryInput[]
+    upsert?: AccountUpsertWithWhereUniqueWithoutIndustryInput | AccountUpsertWithWhereUniqueWithoutIndustryInput[]
+    createMany?: AccountCreateManyIndustryInputEnvelope
+    set?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    disconnect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    delete?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    update?: AccountUpdateWithWhereUniqueWithoutIndustryInput | AccountUpdateWithWhereUniqueWithoutIndustryInput[]
+    updateMany?: AccountUpdateManyWithWhereWithoutIndustryInput | AccountUpdateManyWithWhereWithoutIndustryInput[]
+    deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
+  }
+
+  export type OrganizationCreateNestedOneWithoutTouchTypesInput = {
+    create?: XOR<OrganizationCreateWithoutTouchTypesInput, OrganizationUncheckedCreateWithoutTouchTypesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutTouchTypesInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutTouchTypesNestedInput = {
+    create?: XOR<OrganizationCreateWithoutTouchTypesInput, OrganizationUncheckedCreateWithoutTouchTypesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutTouchTypesInput
+    upsert?: OrganizationUpsertWithoutTouchTypesInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutTouchTypesInput, OrganizationUpdateWithoutTouchTypesInput>, OrganizationUncheckedUpdateWithoutTouchTypesInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutSocialPlatformsInput = {
+    create?: XOR<OrganizationCreateWithoutSocialPlatformsInput, OrganizationUncheckedCreateWithoutSocialPlatformsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutSocialPlatformsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutSocialPlatformsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutSocialPlatformsInput, OrganizationUncheckedCreateWithoutSocialPlatformsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutSocialPlatformsInput
+    upsert?: OrganizationUpsertWithoutSocialPlatformsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutSocialPlatformsInput, OrganizationUpdateWithoutSocialPlatformsInput>, OrganizationUncheckedUpdateWithoutSocialPlatformsInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutAccountsInput = {
+    create?: XOR<OrganizationCreateWithoutAccountsInput, OrganizationUncheckedCreateWithoutAccountsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutAccountsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type IndustryCreateNestedOneWithoutAccountsInput = {
+    create?: XOR<IndustryCreateWithoutAccountsInput, IndustryUncheckedCreateWithoutAccountsInput>
+    connectOrCreate?: IndustryCreateOrConnectWithoutAccountsInput
     connect?: IndustryWhereUniqueInput
-    update?: XOR<XOR<IndustryUpdateToOneWithWhereWithoutCompaniesInput, IndustryUpdateWithoutCompaniesInput>, IndustryUncheckedUpdateWithoutCompaniesInput>
   }
 
-  export type LeadUpdateManyWithoutCompanyNestedInput = {
-    create?: XOR<LeadCreateWithoutCompanyInput, LeadUncheckedCreateWithoutCompanyInput> | LeadCreateWithoutCompanyInput[] | LeadUncheckedCreateWithoutCompanyInput[]
-    connectOrCreate?: LeadCreateOrConnectWithoutCompanyInput | LeadCreateOrConnectWithoutCompanyInput[]
-    upsert?: LeadUpsertWithWhereUniqueWithoutCompanyInput | LeadUpsertWithWhereUniqueWithoutCompanyInput[]
-    createMany?: LeadCreateManyCompanyInputEnvelope
-    set?: LeadWhereUniqueInput | LeadWhereUniqueInput[]
-    disconnect?: LeadWhereUniqueInput | LeadWhereUniqueInput[]
-    delete?: LeadWhereUniqueInput | LeadWhereUniqueInput[]
-    connect?: LeadWhereUniqueInput | LeadWhereUniqueInput[]
-    update?: LeadUpdateWithWhereUniqueWithoutCompanyInput | LeadUpdateWithWhereUniqueWithoutCompanyInput[]
-    updateMany?: LeadUpdateManyWithWhereWithoutCompanyInput | LeadUpdateManyWithWhereWithoutCompanyInput[]
-    deleteMany?: LeadScalarWhereInput | LeadScalarWhereInput[]
+  export type ContactCreateNestedManyWithoutAccountInput = {
+    create?: XOR<ContactCreateWithoutAccountInput, ContactUncheckedCreateWithoutAccountInput> | ContactCreateWithoutAccountInput[] | ContactUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: ContactCreateOrConnectWithoutAccountInput | ContactCreateOrConnectWithoutAccountInput[]
+    createMany?: ContactCreateManyAccountInputEnvelope
+    connect?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
   }
 
-  export type CompanyNoteUpdateManyWithoutCompanyNestedInput = {
-    create?: XOR<CompanyNoteCreateWithoutCompanyInput, CompanyNoteUncheckedCreateWithoutCompanyInput> | CompanyNoteCreateWithoutCompanyInput[] | CompanyNoteUncheckedCreateWithoutCompanyInput[]
-    connectOrCreate?: CompanyNoteCreateOrConnectWithoutCompanyInput | CompanyNoteCreateOrConnectWithoutCompanyInput[]
-    upsert?: CompanyNoteUpsertWithWhereUniqueWithoutCompanyInput | CompanyNoteUpsertWithWhereUniqueWithoutCompanyInput[]
-    createMany?: CompanyNoteCreateManyCompanyInputEnvelope
-    set?: CompanyNoteWhereUniqueInput | CompanyNoteWhereUniqueInput[]
-    disconnect?: CompanyNoteWhereUniqueInput | CompanyNoteWhereUniqueInput[]
-    delete?: CompanyNoteWhereUniqueInput | CompanyNoteWhereUniqueInput[]
-    connect?: CompanyNoteWhereUniqueInput | CompanyNoteWhereUniqueInput[]
-    update?: CompanyNoteUpdateWithWhereUniqueWithoutCompanyInput | CompanyNoteUpdateWithWhereUniqueWithoutCompanyInput[]
-    updateMany?: CompanyNoteUpdateManyWithWhereWithoutCompanyInput | CompanyNoteUpdateManyWithWhereWithoutCompanyInput[]
-    deleteMany?: CompanyNoteScalarWhereInput | CompanyNoteScalarWhereInput[]
+  export type AccountNoteCreateNestedManyWithoutAccountInput = {
+    create?: XOR<AccountNoteCreateWithoutAccountInput, AccountNoteUncheckedCreateWithoutAccountInput> | AccountNoteCreateWithoutAccountInput[] | AccountNoteUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: AccountNoteCreateOrConnectWithoutAccountInput | AccountNoteCreateOrConnectWithoutAccountInput[]
+    createMany?: AccountNoteCreateManyAccountInputEnvelope
+    connect?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
   }
 
-  export type CompanySocialLinkUpdateManyWithoutCompanyNestedInput = {
-    create?: XOR<CompanySocialLinkCreateWithoutCompanyInput, CompanySocialLinkUncheckedCreateWithoutCompanyInput> | CompanySocialLinkCreateWithoutCompanyInput[] | CompanySocialLinkUncheckedCreateWithoutCompanyInput[]
-    connectOrCreate?: CompanySocialLinkCreateOrConnectWithoutCompanyInput | CompanySocialLinkCreateOrConnectWithoutCompanyInput[]
-    upsert?: CompanySocialLinkUpsertWithWhereUniqueWithoutCompanyInput | CompanySocialLinkUpsertWithWhereUniqueWithoutCompanyInput[]
-    createMany?: CompanySocialLinkCreateManyCompanyInputEnvelope
-    set?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
-    disconnect?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
-    delete?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
-    connect?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
-    update?: CompanySocialLinkUpdateWithWhereUniqueWithoutCompanyInput | CompanySocialLinkUpdateWithWhereUniqueWithoutCompanyInput[]
-    updateMany?: CompanySocialLinkUpdateManyWithWhereWithoutCompanyInput | CompanySocialLinkUpdateManyWithWhereWithoutCompanyInput[]
-    deleteMany?: CompanySocialLinkScalarWhereInput | CompanySocialLinkScalarWhereInput[]
+  export type AccountSocialLinkCreateNestedManyWithoutAccountInput = {
+    create?: XOR<AccountSocialLinkCreateWithoutAccountInput, AccountSocialLinkUncheckedCreateWithoutAccountInput> | AccountSocialLinkCreateWithoutAccountInput[] | AccountSocialLinkUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: AccountSocialLinkCreateOrConnectWithoutAccountInput | AccountSocialLinkCreateOrConnectWithoutAccountInput[]
+    createMany?: AccountSocialLinkCreateManyAccountInputEnvelope
+    connect?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
   }
 
-  export type LeadUncheckedUpdateManyWithoutCompanyNestedInput = {
-    create?: XOR<LeadCreateWithoutCompanyInput, LeadUncheckedCreateWithoutCompanyInput> | LeadCreateWithoutCompanyInput[] | LeadUncheckedCreateWithoutCompanyInput[]
-    connectOrCreate?: LeadCreateOrConnectWithoutCompanyInput | LeadCreateOrConnectWithoutCompanyInput[]
-    upsert?: LeadUpsertWithWhereUniqueWithoutCompanyInput | LeadUpsertWithWhereUniqueWithoutCompanyInput[]
-    createMany?: LeadCreateManyCompanyInputEnvelope
-    set?: LeadWhereUniqueInput | LeadWhereUniqueInput[]
-    disconnect?: LeadWhereUniqueInput | LeadWhereUniqueInput[]
-    delete?: LeadWhereUniqueInput | LeadWhereUniqueInput[]
-    connect?: LeadWhereUniqueInput | LeadWhereUniqueInput[]
-    update?: LeadUpdateWithWhereUniqueWithoutCompanyInput | LeadUpdateWithWhereUniqueWithoutCompanyInput[]
-    updateMany?: LeadUpdateManyWithWhereWithoutCompanyInput | LeadUpdateManyWithWhereWithoutCompanyInput[]
-    deleteMany?: LeadScalarWhereInput | LeadScalarWhereInput[]
-  }
-
-  export type CompanyNoteUncheckedUpdateManyWithoutCompanyNestedInput = {
-    create?: XOR<CompanyNoteCreateWithoutCompanyInput, CompanyNoteUncheckedCreateWithoutCompanyInput> | CompanyNoteCreateWithoutCompanyInput[] | CompanyNoteUncheckedCreateWithoutCompanyInput[]
-    connectOrCreate?: CompanyNoteCreateOrConnectWithoutCompanyInput | CompanyNoteCreateOrConnectWithoutCompanyInput[]
-    upsert?: CompanyNoteUpsertWithWhereUniqueWithoutCompanyInput | CompanyNoteUpsertWithWhereUniqueWithoutCompanyInput[]
-    createMany?: CompanyNoteCreateManyCompanyInputEnvelope
-    set?: CompanyNoteWhereUniqueInput | CompanyNoteWhereUniqueInput[]
-    disconnect?: CompanyNoteWhereUniqueInput | CompanyNoteWhereUniqueInput[]
-    delete?: CompanyNoteWhereUniqueInput | CompanyNoteWhereUniqueInput[]
-    connect?: CompanyNoteWhereUniqueInput | CompanyNoteWhereUniqueInput[]
-    update?: CompanyNoteUpdateWithWhereUniqueWithoutCompanyInput | CompanyNoteUpdateWithWhereUniqueWithoutCompanyInput[]
-    updateMany?: CompanyNoteUpdateManyWithWhereWithoutCompanyInput | CompanyNoteUpdateManyWithWhereWithoutCompanyInput[]
-    deleteMany?: CompanyNoteScalarWhereInput | CompanyNoteScalarWhereInput[]
-  }
-
-  export type CompanySocialLinkUncheckedUpdateManyWithoutCompanyNestedInput = {
-    create?: XOR<CompanySocialLinkCreateWithoutCompanyInput, CompanySocialLinkUncheckedCreateWithoutCompanyInput> | CompanySocialLinkCreateWithoutCompanyInput[] | CompanySocialLinkUncheckedCreateWithoutCompanyInput[]
-    connectOrCreate?: CompanySocialLinkCreateOrConnectWithoutCompanyInput | CompanySocialLinkCreateOrConnectWithoutCompanyInput[]
-    upsert?: CompanySocialLinkUpsertWithWhereUniqueWithoutCompanyInput | CompanySocialLinkUpsertWithWhereUniqueWithoutCompanyInput[]
-    createMany?: CompanySocialLinkCreateManyCompanyInputEnvelope
-    set?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
-    disconnect?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
-    delete?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
-    connect?: CompanySocialLinkWhereUniqueInput | CompanySocialLinkWhereUniqueInput[]
-    update?: CompanySocialLinkUpdateWithWhereUniqueWithoutCompanyInput | CompanySocialLinkUpdateWithWhereUniqueWithoutCompanyInput[]
-    updateMany?: CompanySocialLinkUpdateManyWithWhereWithoutCompanyInput | CompanySocialLinkUpdateManyWithWhereWithoutCompanyInput[]
-    deleteMany?: CompanySocialLinkScalarWhereInput | CompanySocialLinkScalarWhereInput[]
-  }
-
-  export type CompanyCreateNestedOneWithoutSocialsInput = {
-    create?: XOR<CompanyCreateWithoutSocialsInput, CompanyUncheckedCreateWithoutSocialsInput>
-    connectOrCreate?: CompanyCreateOrConnectWithoutSocialsInput
-    connect?: CompanyWhereUniqueInput
-  }
-
-  export type CompanyUpdateOneRequiredWithoutSocialsNestedInput = {
-    create?: XOR<CompanyCreateWithoutSocialsInput, CompanyUncheckedCreateWithoutSocialsInput>
-    connectOrCreate?: CompanyCreateOrConnectWithoutSocialsInput
-    upsert?: CompanyUpsertWithoutSocialsInput
-    connect?: CompanyWhereUniqueInput
-    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutSocialsInput, CompanyUpdateWithoutSocialsInput>, CompanyUncheckedUpdateWithoutSocialsInput>
-  }
-
-  export type CompanyCreateNestedOneWithoutNotesInput = {
-    create?: XOR<CompanyCreateWithoutNotesInput, CompanyUncheckedCreateWithoutNotesInput>
-    connectOrCreate?: CompanyCreateOrConnectWithoutNotesInput
-    connect?: CompanyWhereUniqueInput
-  }
-
-  export type CompanyUpdateOneRequiredWithoutNotesNestedInput = {
-    create?: XOR<CompanyCreateWithoutNotesInput, CompanyUncheckedCreateWithoutNotesInput>
-    connectOrCreate?: CompanyCreateOrConnectWithoutNotesInput
-    upsert?: CompanyUpsertWithoutNotesInput
-    connect?: CompanyWhereUniqueInput
-    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutNotesInput, CompanyUpdateWithoutNotesInput>, CompanyUncheckedUpdateWithoutNotesInput>
-  }
-
-  export type CompanyCreateNestedOneWithoutLeadsInput = {
-    create?: XOR<CompanyCreateWithoutLeadsInput, CompanyUncheckedCreateWithoutLeadsInput>
-    connectOrCreate?: CompanyCreateOrConnectWithoutLeadsInput
-    connect?: CompanyWhereUniqueInput
-  }
-
-  export type TouchCreateNestedManyWithoutLeadInput = {
-    create?: XOR<TouchCreateWithoutLeadInput, TouchUncheckedCreateWithoutLeadInput> | TouchCreateWithoutLeadInput[] | TouchUncheckedCreateWithoutLeadInput[]
-    connectOrCreate?: TouchCreateOrConnectWithoutLeadInput | TouchCreateOrConnectWithoutLeadInput[]
-    createMany?: TouchCreateManyLeadInputEnvelope
+  export type TouchCreateNestedManyWithoutAccountInput = {
+    create?: XOR<TouchCreateWithoutAccountInput, TouchUncheckedCreateWithoutAccountInput> | TouchCreateWithoutAccountInput[] | TouchUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: TouchCreateOrConnectWithoutAccountInput | TouchCreateOrConnectWithoutAccountInput[]
+    createMany?: TouchCreateManyAccountInputEnvelope
     connect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
   }
 
-  export type LeadNoteCreateNestedManyWithoutLeadInput = {
-    create?: XOR<LeadNoteCreateWithoutLeadInput, LeadNoteUncheckedCreateWithoutLeadInput> | LeadNoteCreateWithoutLeadInput[] | LeadNoteUncheckedCreateWithoutLeadInput[]
-    connectOrCreate?: LeadNoteCreateOrConnectWithoutLeadInput | LeadNoteCreateOrConnectWithoutLeadInput[]
-    createMany?: LeadNoteCreateManyLeadInputEnvelope
-    connect?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
+  export type ContactUncheckedCreateNestedManyWithoutAccountInput = {
+    create?: XOR<ContactCreateWithoutAccountInput, ContactUncheckedCreateWithoutAccountInput> | ContactCreateWithoutAccountInput[] | ContactUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: ContactCreateOrConnectWithoutAccountInput | ContactCreateOrConnectWithoutAccountInput[]
+    createMany?: ContactCreateManyAccountInputEnvelope
+    connect?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
   }
 
-  export type TouchUncheckedCreateNestedManyWithoutLeadInput = {
-    create?: XOR<TouchCreateWithoutLeadInput, TouchUncheckedCreateWithoutLeadInput> | TouchCreateWithoutLeadInput[] | TouchUncheckedCreateWithoutLeadInput[]
-    connectOrCreate?: TouchCreateOrConnectWithoutLeadInput | TouchCreateOrConnectWithoutLeadInput[]
-    createMany?: TouchCreateManyLeadInputEnvelope
+  export type AccountNoteUncheckedCreateNestedManyWithoutAccountInput = {
+    create?: XOR<AccountNoteCreateWithoutAccountInput, AccountNoteUncheckedCreateWithoutAccountInput> | AccountNoteCreateWithoutAccountInput[] | AccountNoteUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: AccountNoteCreateOrConnectWithoutAccountInput | AccountNoteCreateOrConnectWithoutAccountInput[]
+    createMany?: AccountNoteCreateManyAccountInputEnvelope
+    connect?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+  }
+
+  export type AccountSocialLinkUncheckedCreateNestedManyWithoutAccountInput = {
+    create?: XOR<AccountSocialLinkCreateWithoutAccountInput, AccountSocialLinkUncheckedCreateWithoutAccountInput> | AccountSocialLinkCreateWithoutAccountInput[] | AccountSocialLinkUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: AccountSocialLinkCreateOrConnectWithoutAccountInput | AccountSocialLinkCreateOrConnectWithoutAccountInput[]
+    createMany?: AccountSocialLinkCreateManyAccountInputEnvelope
+    connect?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+  }
+
+  export type TouchUncheckedCreateNestedManyWithoutAccountInput = {
+    create?: XOR<TouchCreateWithoutAccountInput, TouchUncheckedCreateWithoutAccountInput> | TouchCreateWithoutAccountInput[] | TouchUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: TouchCreateOrConnectWithoutAccountInput | TouchCreateOrConnectWithoutAccountInput[]
+    createMany?: TouchCreateManyAccountInputEnvelope
     connect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
   }
 
-  export type LeadNoteUncheckedCreateNestedManyWithoutLeadInput = {
-    create?: XOR<LeadNoteCreateWithoutLeadInput, LeadNoteUncheckedCreateWithoutLeadInput> | LeadNoteCreateWithoutLeadInput[] | LeadNoteUncheckedCreateWithoutLeadInput[]
-    connectOrCreate?: LeadNoteCreateOrConnectWithoutLeadInput | LeadNoteCreateOrConnectWithoutLeadInput[]
-    createMany?: LeadNoteCreateManyLeadInputEnvelope
-    connect?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
-  export type CompanyUpdateOneRequiredWithoutLeadsNestedInput = {
-    create?: XOR<CompanyCreateWithoutLeadsInput, CompanyUncheckedCreateWithoutLeadsInput>
-    connectOrCreate?: CompanyCreateOrConnectWithoutLeadsInput
-    upsert?: CompanyUpsertWithoutLeadsInput
-    connect?: CompanyWhereUniqueInput
-    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutLeadsInput, CompanyUpdateWithoutLeadsInput>, CompanyUncheckedUpdateWithoutLeadsInput>
+  export type OrganizationUpdateOneRequiredWithoutAccountsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutAccountsInput, OrganizationUncheckedCreateWithoutAccountsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutAccountsInput
+    upsert?: OrganizationUpsertWithoutAccountsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutAccountsInput, OrganizationUpdateWithoutAccountsInput>, OrganizationUncheckedUpdateWithoutAccountsInput>
   }
 
-  export type TouchUpdateManyWithoutLeadNestedInput = {
-    create?: XOR<TouchCreateWithoutLeadInput, TouchUncheckedCreateWithoutLeadInput> | TouchCreateWithoutLeadInput[] | TouchUncheckedCreateWithoutLeadInput[]
-    connectOrCreate?: TouchCreateOrConnectWithoutLeadInput | TouchCreateOrConnectWithoutLeadInput[]
-    upsert?: TouchUpsertWithWhereUniqueWithoutLeadInput | TouchUpsertWithWhereUniqueWithoutLeadInput[]
-    createMany?: TouchCreateManyLeadInputEnvelope
+  export type IndustryUpdateOneRequiredWithoutAccountsNestedInput = {
+    create?: XOR<IndustryCreateWithoutAccountsInput, IndustryUncheckedCreateWithoutAccountsInput>
+    connectOrCreate?: IndustryCreateOrConnectWithoutAccountsInput
+    upsert?: IndustryUpsertWithoutAccountsInput
+    connect?: IndustryWhereUniqueInput
+    update?: XOR<XOR<IndustryUpdateToOneWithWhereWithoutAccountsInput, IndustryUpdateWithoutAccountsInput>, IndustryUncheckedUpdateWithoutAccountsInput>
+  }
+
+  export type ContactUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<ContactCreateWithoutAccountInput, ContactUncheckedCreateWithoutAccountInput> | ContactCreateWithoutAccountInput[] | ContactUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: ContactCreateOrConnectWithoutAccountInput | ContactCreateOrConnectWithoutAccountInput[]
+    upsert?: ContactUpsertWithWhereUniqueWithoutAccountInput | ContactUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: ContactCreateManyAccountInputEnvelope
+    set?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+    disconnect?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+    delete?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+    connect?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+    update?: ContactUpdateWithWhereUniqueWithoutAccountInput | ContactUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: ContactUpdateManyWithWhereWithoutAccountInput | ContactUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: ContactScalarWhereInput | ContactScalarWhereInput[]
+  }
+
+  export type AccountNoteUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<AccountNoteCreateWithoutAccountInput, AccountNoteUncheckedCreateWithoutAccountInput> | AccountNoteCreateWithoutAccountInput[] | AccountNoteUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: AccountNoteCreateOrConnectWithoutAccountInput | AccountNoteCreateOrConnectWithoutAccountInput[]
+    upsert?: AccountNoteUpsertWithWhereUniqueWithoutAccountInput | AccountNoteUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: AccountNoteCreateManyAccountInputEnvelope
+    set?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+    disconnect?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+    delete?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+    connect?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+    update?: AccountNoteUpdateWithWhereUniqueWithoutAccountInput | AccountNoteUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: AccountNoteUpdateManyWithWhereWithoutAccountInput | AccountNoteUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: AccountNoteScalarWhereInput | AccountNoteScalarWhereInput[]
+  }
+
+  export type AccountSocialLinkUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<AccountSocialLinkCreateWithoutAccountInput, AccountSocialLinkUncheckedCreateWithoutAccountInput> | AccountSocialLinkCreateWithoutAccountInput[] | AccountSocialLinkUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: AccountSocialLinkCreateOrConnectWithoutAccountInput | AccountSocialLinkCreateOrConnectWithoutAccountInput[]
+    upsert?: AccountSocialLinkUpsertWithWhereUniqueWithoutAccountInput | AccountSocialLinkUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: AccountSocialLinkCreateManyAccountInputEnvelope
+    set?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+    disconnect?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+    delete?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+    connect?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+    update?: AccountSocialLinkUpdateWithWhereUniqueWithoutAccountInput | AccountSocialLinkUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: AccountSocialLinkUpdateManyWithWhereWithoutAccountInput | AccountSocialLinkUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: AccountSocialLinkScalarWhereInput | AccountSocialLinkScalarWhereInput[]
+  }
+
+  export type TouchUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<TouchCreateWithoutAccountInput, TouchUncheckedCreateWithoutAccountInput> | TouchCreateWithoutAccountInput[] | TouchUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: TouchCreateOrConnectWithoutAccountInput | TouchCreateOrConnectWithoutAccountInput[]
+    upsert?: TouchUpsertWithWhereUniqueWithoutAccountInput | TouchUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: TouchCreateManyAccountInputEnvelope
     set?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
     disconnect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
     delete?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
     connect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
-    update?: TouchUpdateWithWhereUniqueWithoutLeadInput | TouchUpdateWithWhereUniqueWithoutLeadInput[]
-    updateMany?: TouchUpdateManyWithWhereWithoutLeadInput | TouchUpdateManyWithWhereWithoutLeadInput[]
+    update?: TouchUpdateWithWhereUniqueWithoutAccountInput | TouchUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: TouchUpdateManyWithWhereWithoutAccountInput | TouchUpdateManyWithWhereWithoutAccountInput[]
     deleteMany?: TouchScalarWhereInput | TouchScalarWhereInput[]
   }
 
-  export type LeadNoteUpdateManyWithoutLeadNestedInput = {
-    create?: XOR<LeadNoteCreateWithoutLeadInput, LeadNoteUncheckedCreateWithoutLeadInput> | LeadNoteCreateWithoutLeadInput[] | LeadNoteUncheckedCreateWithoutLeadInput[]
-    connectOrCreate?: LeadNoteCreateOrConnectWithoutLeadInput | LeadNoteCreateOrConnectWithoutLeadInput[]
-    upsert?: LeadNoteUpsertWithWhereUniqueWithoutLeadInput | LeadNoteUpsertWithWhereUniqueWithoutLeadInput[]
-    createMany?: LeadNoteCreateManyLeadInputEnvelope
-    set?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
-    disconnect?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
-    delete?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
-    connect?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
-    update?: LeadNoteUpdateWithWhereUniqueWithoutLeadInput | LeadNoteUpdateWithWhereUniqueWithoutLeadInput[]
-    updateMany?: LeadNoteUpdateManyWithWhereWithoutLeadInput | LeadNoteUpdateManyWithWhereWithoutLeadInput[]
-    deleteMany?: LeadNoteScalarWhereInput | LeadNoteScalarWhereInput[]
+  export type ContactUncheckedUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<ContactCreateWithoutAccountInput, ContactUncheckedCreateWithoutAccountInput> | ContactCreateWithoutAccountInput[] | ContactUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: ContactCreateOrConnectWithoutAccountInput | ContactCreateOrConnectWithoutAccountInput[]
+    upsert?: ContactUpsertWithWhereUniqueWithoutAccountInput | ContactUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: ContactCreateManyAccountInputEnvelope
+    set?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+    disconnect?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+    delete?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+    connect?: ContactWhereUniqueInput | ContactWhereUniqueInput[]
+    update?: ContactUpdateWithWhereUniqueWithoutAccountInput | ContactUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: ContactUpdateManyWithWhereWithoutAccountInput | ContactUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: ContactScalarWhereInput | ContactScalarWhereInput[]
   }
 
-  export type TouchUncheckedUpdateManyWithoutLeadNestedInput = {
-    create?: XOR<TouchCreateWithoutLeadInput, TouchUncheckedCreateWithoutLeadInput> | TouchCreateWithoutLeadInput[] | TouchUncheckedCreateWithoutLeadInput[]
-    connectOrCreate?: TouchCreateOrConnectWithoutLeadInput | TouchCreateOrConnectWithoutLeadInput[]
-    upsert?: TouchUpsertWithWhereUniqueWithoutLeadInput | TouchUpsertWithWhereUniqueWithoutLeadInput[]
-    createMany?: TouchCreateManyLeadInputEnvelope
+  export type AccountNoteUncheckedUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<AccountNoteCreateWithoutAccountInput, AccountNoteUncheckedCreateWithoutAccountInput> | AccountNoteCreateWithoutAccountInput[] | AccountNoteUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: AccountNoteCreateOrConnectWithoutAccountInput | AccountNoteCreateOrConnectWithoutAccountInput[]
+    upsert?: AccountNoteUpsertWithWhereUniqueWithoutAccountInput | AccountNoteUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: AccountNoteCreateManyAccountInputEnvelope
+    set?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+    disconnect?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+    delete?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+    connect?: AccountNoteWhereUniqueInput | AccountNoteWhereUniqueInput[]
+    update?: AccountNoteUpdateWithWhereUniqueWithoutAccountInput | AccountNoteUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: AccountNoteUpdateManyWithWhereWithoutAccountInput | AccountNoteUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: AccountNoteScalarWhereInput | AccountNoteScalarWhereInput[]
+  }
+
+  export type AccountSocialLinkUncheckedUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<AccountSocialLinkCreateWithoutAccountInput, AccountSocialLinkUncheckedCreateWithoutAccountInput> | AccountSocialLinkCreateWithoutAccountInput[] | AccountSocialLinkUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: AccountSocialLinkCreateOrConnectWithoutAccountInput | AccountSocialLinkCreateOrConnectWithoutAccountInput[]
+    upsert?: AccountSocialLinkUpsertWithWhereUniqueWithoutAccountInput | AccountSocialLinkUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: AccountSocialLinkCreateManyAccountInputEnvelope
+    set?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+    disconnect?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+    delete?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+    connect?: AccountSocialLinkWhereUniqueInput | AccountSocialLinkWhereUniqueInput[]
+    update?: AccountSocialLinkUpdateWithWhereUniqueWithoutAccountInput | AccountSocialLinkUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: AccountSocialLinkUpdateManyWithWhereWithoutAccountInput | AccountSocialLinkUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: AccountSocialLinkScalarWhereInput | AccountSocialLinkScalarWhereInput[]
+  }
+
+  export type TouchUncheckedUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<TouchCreateWithoutAccountInput, TouchUncheckedCreateWithoutAccountInput> | TouchCreateWithoutAccountInput[] | TouchUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: TouchCreateOrConnectWithoutAccountInput | TouchCreateOrConnectWithoutAccountInput[]
+    upsert?: TouchUpsertWithWhereUniqueWithoutAccountInput | TouchUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: TouchCreateManyAccountInputEnvelope
     set?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
     disconnect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
     delete?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
     connect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
-    update?: TouchUpdateWithWhereUniqueWithoutLeadInput | TouchUpdateWithWhereUniqueWithoutLeadInput[]
-    updateMany?: TouchUpdateManyWithWhereWithoutLeadInput | TouchUpdateManyWithWhereWithoutLeadInput[]
+    update?: TouchUpdateWithWhereUniqueWithoutAccountInput | TouchUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: TouchUpdateManyWithWhereWithoutAccountInput | TouchUpdateManyWithWhereWithoutAccountInput[]
     deleteMany?: TouchScalarWhereInput | TouchScalarWhereInput[]
   }
 
-  export type LeadNoteUncheckedUpdateManyWithoutLeadNestedInput = {
-    create?: XOR<LeadNoteCreateWithoutLeadInput, LeadNoteUncheckedCreateWithoutLeadInput> | LeadNoteCreateWithoutLeadInput[] | LeadNoteUncheckedCreateWithoutLeadInput[]
-    connectOrCreate?: LeadNoteCreateOrConnectWithoutLeadInput | LeadNoteCreateOrConnectWithoutLeadInput[]
-    upsert?: LeadNoteUpsertWithWhereUniqueWithoutLeadInput | LeadNoteUpsertWithWhereUniqueWithoutLeadInput[]
-    createMany?: LeadNoteCreateManyLeadInputEnvelope
-    set?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
-    disconnect?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
-    delete?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
-    connect?: LeadNoteWhereUniqueInput | LeadNoteWhereUniqueInput[]
-    update?: LeadNoteUpdateWithWhereUniqueWithoutLeadInput | LeadNoteUpdateWithWhereUniqueWithoutLeadInput[]
-    updateMany?: LeadNoteUpdateManyWithWhereWithoutLeadInput | LeadNoteUpdateManyWithWhereWithoutLeadInput[]
-    deleteMany?: LeadNoteScalarWhereInput | LeadNoteScalarWhereInput[]
+  export type OrganizationCreateNestedOneWithoutAccountSocialsInput = {
+    create?: XOR<OrganizationCreateWithoutAccountSocialsInput, OrganizationUncheckedCreateWithoutAccountSocialsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutAccountSocialsInput
+    connect?: OrganizationWhereUniqueInput
   }
 
-  export type LeadCreateNestedOneWithoutNotesInput = {
-    create?: XOR<LeadCreateWithoutNotesInput, LeadUncheckedCreateWithoutNotesInput>
-    connectOrCreate?: LeadCreateOrConnectWithoutNotesInput
-    connect?: LeadWhereUniqueInput
+  export type AccountCreateNestedOneWithoutSocialsInput = {
+    create?: XOR<AccountCreateWithoutSocialsInput, AccountUncheckedCreateWithoutSocialsInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutSocialsInput
+    connect?: AccountWhereUniqueInput
   }
 
-  export type LeadUpdateOneRequiredWithoutNotesNestedInput = {
-    create?: XOR<LeadCreateWithoutNotesInput, LeadUncheckedCreateWithoutNotesInput>
-    connectOrCreate?: LeadCreateOrConnectWithoutNotesInput
-    upsert?: LeadUpsertWithoutNotesInput
-    connect?: LeadWhereUniqueInput
-    update?: XOR<XOR<LeadUpdateToOneWithWhereWithoutNotesInput, LeadUpdateWithoutNotesInput>, LeadUncheckedUpdateWithoutNotesInput>
+  export type OrganizationUpdateOneRequiredWithoutAccountSocialsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutAccountSocialsInput, OrganizationUncheckedCreateWithoutAccountSocialsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutAccountSocialsInput
+    upsert?: OrganizationUpsertWithoutAccountSocialsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutAccountSocialsInput, OrganizationUpdateWithoutAccountSocialsInput>, OrganizationUncheckedUpdateWithoutAccountSocialsInput>
   }
 
-  export type LeadCreateNestedOneWithoutTouchesInput = {
-    create?: XOR<LeadCreateWithoutTouchesInput, LeadUncheckedCreateWithoutTouchesInput>
-    connectOrCreate?: LeadCreateOrConnectWithoutTouchesInput
-    connect?: LeadWhereUniqueInput
+  export type AccountUpdateOneRequiredWithoutSocialsNestedInput = {
+    create?: XOR<AccountCreateWithoutSocialsInput, AccountUncheckedCreateWithoutSocialsInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutSocialsInput
+    upsert?: AccountUpsertWithoutSocialsInput
+    connect?: AccountWhereUniqueInput
+    update?: XOR<XOR<AccountUpdateToOneWithWhereWithoutSocialsInput, AccountUpdateWithoutSocialsInput>, AccountUncheckedUpdateWithoutSocialsInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutAccountNotesInput = {
+    create?: XOR<OrganizationCreateWithoutAccountNotesInput, OrganizationUncheckedCreateWithoutAccountNotesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutAccountNotesInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type AccountCreateNestedOneWithoutNotesInput = {
+    create?: XOR<AccountCreateWithoutNotesInput, AccountUncheckedCreateWithoutNotesInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutNotesInput
+    connect?: AccountWhereUniqueInput
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutAccountNotesNestedInput = {
+    create?: XOR<OrganizationCreateWithoutAccountNotesInput, OrganizationUncheckedCreateWithoutAccountNotesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutAccountNotesInput
+    upsert?: OrganizationUpsertWithoutAccountNotesInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutAccountNotesInput, OrganizationUpdateWithoutAccountNotesInput>, OrganizationUncheckedUpdateWithoutAccountNotesInput>
+  }
+
+  export type AccountUpdateOneRequiredWithoutNotesNestedInput = {
+    create?: XOR<AccountCreateWithoutNotesInput, AccountUncheckedCreateWithoutNotesInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutNotesInput
+    upsert?: AccountUpsertWithoutNotesInput
+    connect?: AccountWhereUniqueInput
+    update?: XOR<XOR<AccountUpdateToOneWithWhereWithoutNotesInput, AccountUpdateWithoutNotesInput>, AccountUncheckedUpdateWithoutNotesInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutContactsInput = {
+    create?: XOR<OrganizationCreateWithoutContactsInput, OrganizationUncheckedCreateWithoutContactsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutContactsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type AccountCreateNestedOneWithoutContactsInput = {
+    create?: XOR<AccountCreateWithoutContactsInput, AccountUncheckedCreateWithoutContactsInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutContactsInput
+    connect?: AccountWhereUniqueInput
+  }
+
+  export type TouchCreateNestedManyWithoutContactInput = {
+    create?: XOR<TouchCreateWithoutContactInput, TouchUncheckedCreateWithoutContactInput> | TouchCreateWithoutContactInput[] | TouchUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: TouchCreateOrConnectWithoutContactInput | TouchCreateOrConnectWithoutContactInput[]
+    createMany?: TouchCreateManyContactInputEnvelope
+    connect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+  }
+
+  export type ContactNoteCreateNestedManyWithoutContactInput = {
+    create?: XOR<ContactNoteCreateWithoutContactInput, ContactNoteUncheckedCreateWithoutContactInput> | ContactNoteCreateWithoutContactInput[] | ContactNoteUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: ContactNoteCreateOrConnectWithoutContactInput | ContactNoteCreateOrConnectWithoutContactInput[]
+    createMany?: ContactNoteCreateManyContactInputEnvelope
+    connect?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+  }
+
+  export type TouchUncheckedCreateNestedManyWithoutContactInput = {
+    create?: XOR<TouchCreateWithoutContactInput, TouchUncheckedCreateWithoutContactInput> | TouchCreateWithoutContactInput[] | TouchUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: TouchCreateOrConnectWithoutContactInput | TouchCreateOrConnectWithoutContactInput[]
+    createMany?: TouchCreateManyContactInputEnvelope
+    connect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+  }
+
+  export type ContactNoteUncheckedCreateNestedManyWithoutContactInput = {
+    create?: XOR<ContactNoteCreateWithoutContactInput, ContactNoteUncheckedCreateWithoutContactInput> | ContactNoteCreateWithoutContactInput[] | ContactNoteUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: ContactNoteCreateOrConnectWithoutContactInput | ContactNoteCreateOrConnectWithoutContactInput[]
+    createMany?: ContactNoteCreateManyContactInputEnvelope
+    connect?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutContactsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutContactsInput, OrganizationUncheckedCreateWithoutContactsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutContactsInput
+    upsert?: OrganizationUpsertWithoutContactsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutContactsInput, OrganizationUpdateWithoutContactsInput>, OrganizationUncheckedUpdateWithoutContactsInput>
+  }
+
+  export type AccountUpdateOneRequiredWithoutContactsNestedInput = {
+    create?: XOR<AccountCreateWithoutContactsInput, AccountUncheckedCreateWithoutContactsInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutContactsInput
+    upsert?: AccountUpsertWithoutContactsInput
+    connect?: AccountWhereUniqueInput
+    update?: XOR<XOR<AccountUpdateToOneWithWhereWithoutContactsInput, AccountUpdateWithoutContactsInput>, AccountUncheckedUpdateWithoutContactsInput>
+  }
+
+  export type TouchUpdateManyWithoutContactNestedInput = {
+    create?: XOR<TouchCreateWithoutContactInput, TouchUncheckedCreateWithoutContactInput> | TouchCreateWithoutContactInput[] | TouchUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: TouchCreateOrConnectWithoutContactInput | TouchCreateOrConnectWithoutContactInput[]
+    upsert?: TouchUpsertWithWhereUniqueWithoutContactInput | TouchUpsertWithWhereUniqueWithoutContactInput[]
+    createMany?: TouchCreateManyContactInputEnvelope
+    set?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+    disconnect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+    delete?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+    connect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+    update?: TouchUpdateWithWhereUniqueWithoutContactInput | TouchUpdateWithWhereUniqueWithoutContactInput[]
+    updateMany?: TouchUpdateManyWithWhereWithoutContactInput | TouchUpdateManyWithWhereWithoutContactInput[]
+    deleteMany?: TouchScalarWhereInput | TouchScalarWhereInput[]
+  }
+
+  export type ContactNoteUpdateManyWithoutContactNestedInput = {
+    create?: XOR<ContactNoteCreateWithoutContactInput, ContactNoteUncheckedCreateWithoutContactInput> | ContactNoteCreateWithoutContactInput[] | ContactNoteUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: ContactNoteCreateOrConnectWithoutContactInput | ContactNoteCreateOrConnectWithoutContactInput[]
+    upsert?: ContactNoteUpsertWithWhereUniqueWithoutContactInput | ContactNoteUpsertWithWhereUniqueWithoutContactInput[]
+    createMany?: ContactNoteCreateManyContactInputEnvelope
+    set?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+    disconnect?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+    delete?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+    connect?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+    update?: ContactNoteUpdateWithWhereUniqueWithoutContactInput | ContactNoteUpdateWithWhereUniqueWithoutContactInput[]
+    updateMany?: ContactNoteUpdateManyWithWhereWithoutContactInput | ContactNoteUpdateManyWithWhereWithoutContactInput[]
+    deleteMany?: ContactNoteScalarWhereInput | ContactNoteScalarWhereInput[]
+  }
+
+  export type TouchUncheckedUpdateManyWithoutContactNestedInput = {
+    create?: XOR<TouchCreateWithoutContactInput, TouchUncheckedCreateWithoutContactInput> | TouchCreateWithoutContactInput[] | TouchUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: TouchCreateOrConnectWithoutContactInput | TouchCreateOrConnectWithoutContactInput[]
+    upsert?: TouchUpsertWithWhereUniqueWithoutContactInput | TouchUpsertWithWhereUniqueWithoutContactInput[]
+    createMany?: TouchCreateManyContactInputEnvelope
+    set?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+    disconnect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+    delete?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+    connect?: TouchWhereUniqueInput | TouchWhereUniqueInput[]
+    update?: TouchUpdateWithWhereUniqueWithoutContactInput | TouchUpdateWithWhereUniqueWithoutContactInput[]
+    updateMany?: TouchUpdateManyWithWhereWithoutContactInput | TouchUpdateManyWithWhereWithoutContactInput[]
+    deleteMany?: TouchScalarWhereInput | TouchScalarWhereInput[]
+  }
+
+  export type ContactNoteUncheckedUpdateManyWithoutContactNestedInput = {
+    create?: XOR<ContactNoteCreateWithoutContactInput, ContactNoteUncheckedCreateWithoutContactInput> | ContactNoteCreateWithoutContactInput[] | ContactNoteUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: ContactNoteCreateOrConnectWithoutContactInput | ContactNoteCreateOrConnectWithoutContactInput[]
+    upsert?: ContactNoteUpsertWithWhereUniqueWithoutContactInput | ContactNoteUpsertWithWhereUniqueWithoutContactInput[]
+    createMany?: ContactNoteCreateManyContactInputEnvelope
+    set?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+    disconnect?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+    delete?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+    connect?: ContactNoteWhereUniqueInput | ContactNoteWhereUniqueInput[]
+    update?: ContactNoteUpdateWithWhereUniqueWithoutContactInput | ContactNoteUpdateWithWhereUniqueWithoutContactInput[]
+    updateMany?: ContactNoteUpdateManyWithWhereWithoutContactInput | ContactNoteUpdateManyWithWhereWithoutContactInput[]
+    deleteMany?: ContactNoteScalarWhereInput | ContactNoteScalarWhereInput[]
+  }
+
+  export type OrganizationCreateNestedOneWithoutContactNotesInput = {
+    create?: XOR<OrganizationCreateWithoutContactNotesInput, OrganizationUncheckedCreateWithoutContactNotesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutContactNotesInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type ContactCreateNestedOneWithoutNotesInput = {
+    create?: XOR<ContactCreateWithoutNotesInput, ContactUncheckedCreateWithoutNotesInput>
+    connectOrCreate?: ContactCreateOrConnectWithoutNotesInput
+    connect?: ContactWhereUniqueInput
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutContactNotesNestedInput = {
+    create?: XOR<OrganizationCreateWithoutContactNotesInput, OrganizationUncheckedCreateWithoutContactNotesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutContactNotesInput
+    upsert?: OrganizationUpsertWithoutContactNotesInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutContactNotesInput, OrganizationUpdateWithoutContactNotesInput>, OrganizationUncheckedUpdateWithoutContactNotesInput>
+  }
+
+  export type ContactUpdateOneRequiredWithoutNotesNestedInput = {
+    create?: XOR<ContactCreateWithoutNotesInput, ContactUncheckedCreateWithoutNotesInput>
+    connectOrCreate?: ContactCreateOrConnectWithoutNotesInput
+    upsert?: ContactUpsertWithoutNotesInput
+    connect?: ContactWhereUniqueInput
+    update?: XOR<XOR<ContactUpdateToOneWithWhereWithoutNotesInput, ContactUpdateWithoutNotesInput>, ContactUncheckedUpdateWithoutNotesInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutTouchesInput = {
+    create?: XOR<OrganizationCreateWithoutTouchesInput, OrganizationUncheckedCreateWithoutTouchesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutTouchesInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type AccountCreateNestedOneWithoutTouchesInput = {
+    create?: XOR<AccountCreateWithoutTouchesInput, AccountUncheckedCreateWithoutTouchesInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutTouchesInput
+    connect?: AccountWhereUniqueInput
+  }
+
+  export type ContactCreateNestedOneWithoutTouchesInput = {
+    create?: XOR<ContactCreateWithoutTouchesInput, ContactUncheckedCreateWithoutTouchesInput>
+    connectOrCreate?: ContactCreateOrConnectWithoutTouchesInput
+    connect?: ContactWhereUniqueInput
   }
 
   export type NullableFloatFieldUpdateOperationsInput = {
@@ -13470,12 +16772,30 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type LeadUpdateOneRequiredWithoutTouchesNestedInput = {
-    create?: XOR<LeadCreateWithoutTouchesInput, LeadUncheckedCreateWithoutTouchesInput>
-    connectOrCreate?: LeadCreateOrConnectWithoutTouchesInput
-    upsert?: LeadUpsertWithoutTouchesInput
-    connect?: LeadWhereUniqueInput
-    update?: XOR<XOR<LeadUpdateToOneWithWhereWithoutTouchesInput, LeadUpdateWithoutTouchesInput>, LeadUncheckedUpdateWithoutTouchesInput>
+  export type OrganizationUpdateOneRequiredWithoutTouchesNestedInput = {
+    create?: XOR<OrganizationCreateWithoutTouchesInput, OrganizationUncheckedCreateWithoutTouchesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutTouchesInput
+    upsert?: OrganizationUpsertWithoutTouchesInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutTouchesInput, OrganizationUpdateWithoutTouchesInput>, OrganizationUncheckedUpdateWithoutTouchesInput>
+  }
+
+  export type AccountUpdateOneRequiredWithoutTouchesNestedInput = {
+    create?: XOR<AccountCreateWithoutTouchesInput, AccountUncheckedCreateWithoutTouchesInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutTouchesInput
+    upsert?: AccountUpsertWithoutTouchesInput
+    connect?: AccountWhereUniqueInput
+    update?: XOR<XOR<AccountUpdateToOneWithWhereWithoutTouchesInput, AccountUpdateWithoutTouchesInput>, AccountUncheckedUpdateWithoutTouchesInput>
+  }
+
+  export type ContactUpdateOneWithoutTouchesNestedInput = {
+    create?: XOR<ContactCreateWithoutTouchesInput, ContactUncheckedCreateWithoutTouchesInput>
+    connectOrCreate?: ContactCreateOrConnectWithoutTouchesInput
+    upsert?: ContactUpsertWithoutTouchesInput
+    disconnect?: ContactWhereInput | boolean
+    delete?: ContactWhereInput | boolean
+    connect?: ContactWhereUniqueInput
+    update?: XOR<XOR<ContactUpdateToOneWithWhereWithoutTouchesInput, ContactUpdateWithoutTouchesInput>, ContactUncheckedUpdateWithoutTouchesInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -13492,9 +16812,29 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedDateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -13523,39 +16863,6 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | null
-    notIn?: string[] | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type NestedDateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -13600,6 +16907,44 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
     in?: number[] | null
@@ -13627,92 +16972,127 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
-  export type CompanyCreateWithoutIndustryInput = {
-    id?: string
-    name: string
-    address?: string | null
-    phone?: string | null
-    website?: string | null
-    isVip?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    leads?: LeadCreateNestedManyWithoutCompanyInput
-    notes?: CompanyNoteCreateNestedManyWithoutCompanyInput
-    socials?: CompanySocialLinkCreateNestedManyWithoutCompanyInput
-  }
-
-  export type CompanyUncheckedCreateWithoutIndustryInput = {
-    id?: string
-    name: string
-    address?: string | null
-    phone?: string | null
-    website?: string | null
-    isVip?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    leads?: LeadUncheckedCreateNestedManyWithoutCompanyInput
-    notes?: CompanyNoteUncheckedCreateNestedManyWithoutCompanyInput
-    socials?: CompanySocialLinkUncheckedCreateNestedManyWithoutCompanyInput
-  }
-
-  export type CompanyCreateOrConnectWithoutIndustryInput = {
-    where: CompanyWhereUniqueInput
-    create: XOR<CompanyCreateWithoutIndustryInput, CompanyUncheckedCreateWithoutIndustryInput>
-  }
-
-  export type CompanyCreateManyIndustryInputEnvelope = {
-    data: CompanyCreateManyIndustryInput | CompanyCreateManyIndustryInput[]
-  }
-
-  export type CompanyUpsertWithWhereUniqueWithoutIndustryInput = {
-    where: CompanyWhereUniqueInput
-    update: XOR<CompanyUpdateWithoutIndustryInput, CompanyUncheckedUpdateWithoutIndustryInput>
-    create: XOR<CompanyCreateWithoutIndustryInput, CompanyUncheckedCreateWithoutIndustryInput>
-  }
-
-  export type CompanyUpdateWithWhereUniqueWithoutIndustryInput = {
-    where: CompanyWhereUniqueInput
-    data: XOR<CompanyUpdateWithoutIndustryInput, CompanyUncheckedUpdateWithoutIndustryInput>
-  }
-
-  export type CompanyUpdateManyWithWhereWithoutIndustryInput = {
-    where: CompanyScalarWhereInput
-    data: XOR<CompanyUpdateManyMutationInput, CompanyUncheckedUpdateManyWithoutIndustryInput>
-  }
-
-  export type CompanyScalarWhereInput = {
-    AND?: CompanyScalarWhereInput | CompanyScalarWhereInput[]
-    OR?: CompanyScalarWhereInput[]
-    NOT?: CompanyScalarWhereInput | CompanyScalarWhereInput[]
-    id?: StringFilter<"Company"> | string
-    name?: StringFilter<"Company"> | string
-    address?: StringNullableFilter<"Company"> | string | null
-    phone?: StringNullableFilter<"Company"> | string | null
-    website?: StringNullableFilter<"Company"> | string | null
-    isVip?: BoolFilter<"Company"> | boolean
-    industryId?: StringFilter<"Company"> | string
-    createdAt?: DateTimeFilter<"Company"> | Date | string
-    updatedAt?: DateTimeFilter<"Company"> | Date | string
-  }
-
-  export type IndustryCreateWithoutCompaniesInput = {
+  export type IndustryCreateWithoutOrganizationInput = {
     id?: string
     name: string
     isSystem?: boolean
+    accounts?: AccountCreateNestedManyWithoutIndustryInput
   }
 
-  export type IndustryUncheckedCreateWithoutCompaniesInput = {
+  export type IndustryUncheckedCreateWithoutOrganizationInput = {
     id?: string
     name: string
     isSystem?: boolean
+    accounts?: AccountUncheckedCreateNestedManyWithoutIndustryInput
   }
 
-  export type IndustryCreateOrConnectWithoutCompaniesInput = {
+  export type IndustryCreateOrConnectWithoutOrganizationInput = {
     where: IndustryWhereUniqueInput
-    create: XOR<IndustryCreateWithoutCompaniesInput, IndustryUncheckedCreateWithoutCompaniesInput>
+    create: XOR<IndustryCreateWithoutOrganizationInput, IndustryUncheckedCreateWithoutOrganizationInput>
   }
 
-  export type LeadCreateWithoutCompanyInput = {
+  export type IndustryCreateManyOrganizationInputEnvelope = {
+    data: IndustryCreateManyOrganizationInput | IndustryCreateManyOrganizationInput[]
+  }
+
+  export type TouchTypeCreateWithoutOrganizationInput = {
+    id?: string
+    name: string
+    isSystem?: boolean
+  }
+
+  export type TouchTypeUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    name: string
+    isSystem?: boolean
+  }
+
+  export type TouchTypeCreateOrConnectWithoutOrganizationInput = {
+    where: TouchTypeWhereUniqueInput
+    create: XOR<TouchTypeCreateWithoutOrganizationInput, TouchTypeUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type TouchTypeCreateManyOrganizationInputEnvelope = {
+    data: TouchTypeCreateManyOrganizationInput | TouchTypeCreateManyOrganizationInput[]
+  }
+
+  export type SocialPlatformCreateWithoutOrganizationInput = {
+    id?: string
+    name: string
+    isSystem?: boolean
+  }
+
+  export type SocialPlatformUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    name: string
+    isSystem?: boolean
+  }
+
+  export type SocialPlatformCreateOrConnectWithoutOrganizationInput = {
+    where: SocialPlatformWhereUniqueInput
+    create: XOR<SocialPlatformCreateWithoutOrganizationInput, SocialPlatformUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type SocialPlatformCreateManyOrganizationInputEnvelope = {
+    data: SocialPlatformCreateManyOrganizationInput | SocialPlatformCreateManyOrganizationInput[]
+  }
+
+  export type AccountCreateWithoutOrganizationInput = {
+    id?: string
+    name: string
+    address?: string | null
+    phone?: string | null
+    website?: string | null
+    status?: string
+    isVip?: boolean
+    source?: string | null
+    ownerUserId?: string | null
+    createdByUserId?: string | null
+    nextTouchAt?: Date | string | null
+    nextTouchType?: string | null
+    nextTouchNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industry: IndustryCreateNestedOneWithoutAccountsInput
+    contacts?: ContactCreateNestedManyWithoutAccountInput
+    notes?: AccountNoteCreateNestedManyWithoutAccountInput
+    socials?: AccountSocialLinkCreateNestedManyWithoutAccountInput
+    touches?: TouchCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    name: string
+    address?: string | null
+    phone?: string | null
+    website?: string | null
+    status?: string
+    isVip?: boolean
+    source?: string | null
+    ownerUserId?: string | null
+    createdByUserId?: string | null
+    nextTouchAt?: Date | string | null
+    nextTouchType?: string | null
+    nextTouchNote?: string | null
+    industryId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contacts?: ContactUncheckedCreateNestedManyWithoutAccountInput
+    notes?: AccountNoteUncheckedCreateNestedManyWithoutAccountInput
+    socials?: AccountSocialLinkUncheckedCreateNestedManyWithoutAccountInput
+    touches?: TouchUncheckedCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountCreateOrConnectWithoutOrganizationInput = {
+    where: AccountWhereUniqueInput
+    create: XOR<AccountCreateWithoutOrganizationInput, AccountUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type AccountCreateManyOrganizationInputEnvelope = {
+    data: AccountCreateManyOrganizationInput | AccountCreateManyOrganizationInput[]
+  }
+
+  export type ContactCreateWithoutOrganizationInput = {
     id?: string
     firstName: string
     lastName: string
@@ -13720,467 +17100,321 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     officePhone?: string | null
-    status?: string
     isVip?: boolean
+    source?: string | null
     createdAt?: Date | string
-    touches?: TouchCreateNestedManyWithoutLeadInput
-    notes?: LeadNoteCreateNestedManyWithoutLeadInput
+    updatedAt?: Date | string
+    account: AccountCreateNestedOneWithoutContactsInput
+    touches?: TouchCreateNestedManyWithoutContactInput
+    notes?: ContactNoteCreateNestedManyWithoutContactInput
   }
 
-  export type LeadUncheckedCreateWithoutCompanyInput = {
+  export type ContactUncheckedCreateWithoutOrganizationInput = {
     id?: string
+    accountId: string
     firstName: string
     lastName: string
     title?: string | null
     email?: string | null
     phone?: string | null
     officePhone?: string | null
-    status?: string
     isVip?: boolean
-    createdAt?: Date | string
-    touches?: TouchUncheckedCreateNestedManyWithoutLeadInput
-    notes?: LeadNoteUncheckedCreateNestedManyWithoutLeadInput
-  }
-
-  export type LeadCreateOrConnectWithoutCompanyInput = {
-    where: LeadWhereUniqueInput
-    create: XOR<LeadCreateWithoutCompanyInput, LeadUncheckedCreateWithoutCompanyInput>
-  }
-
-  export type LeadCreateManyCompanyInputEnvelope = {
-    data: LeadCreateManyCompanyInput | LeadCreateManyCompanyInput[]
-  }
-
-  export type CompanyNoteCreateWithoutCompanyInput = {
-    id?: string
-    text: string
-    createdAt?: Date | string
-  }
-
-  export type CompanyNoteUncheckedCreateWithoutCompanyInput = {
-    id?: string
-    text: string
-    createdAt?: Date | string
-  }
-
-  export type CompanyNoteCreateOrConnectWithoutCompanyInput = {
-    where: CompanyNoteWhereUniqueInput
-    create: XOR<CompanyNoteCreateWithoutCompanyInput, CompanyNoteUncheckedCreateWithoutCompanyInput>
-  }
-
-  export type CompanyNoteCreateManyCompanyInputEnvelope = {
-    data: CompanyNoteCreateManyCompanyInput | CompanyNoteCreateManyCompanyInput[]
-  }
-
-  export type CompanySocialLinkCreateWithoutCompanyInput = {
-    id?: string
-    platform: string
-    handle: string
-  }
-
-  export type CompanySocialLinkUncheckedCreateWithoutCompanyInput = {
-    id?: string
-    platform: string
-    handle: string
-  }
-
-  export type CompanySocialLinkCreateOrConnectWithoutCompanyInput = {
-    where: CompanySocialLinkWhereUniqueInput
-    create: XOR<CompanySocialLinkCreateWithoutCompanyInput, CompanySocialLinkUncheckedCreateWithoutCompanyInput>
-  }
-
-  export type CompanySocialLinkCreateManyCompanyInputEnvelope = {
-    data: CompanySocialLinkCreateManyCompanyInput | CompanySocialLinkCreateManyCompanyInput[]
-  }
-
-  export type IndustryUpsertWithoutCompaniesInput = {
-    update: XOR<IndustryUpdateWithoutCompaniesInput, IndustryUncheckedUpdateWithoutCompaniesInput>
-    create: XOR<IndustryCreateWithoutCompaniesInput, IndustryUncheckedCreateWithoutCompaniesInput>
-    where?: IndustryWhereInput
-  }
-
-  export type IndustryUpdateToOneWithWhereWithoutCompaniesInput = {
-    where?: IndustryWhereInput
-    data: XOR<IndustryUpdateWithoutCompaniesInput, IndustryUncheckedUpdateWithoutCompaniesInput>
-  }
-
-  export type IndustryUpdateWithoutCompaniesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    isSystem?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type IndustryUncheckedUpdateWithoutCompaniesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    isSystem?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type LeadUpsertWithWhereUniqueWithoutCompanyInput = {
-    where: LeadWhereUniqueInput
-    update: XOR<LeadUpdateWithoutCompanyInput, LeadUncheckedUpdateWithoutCompanyInput>
-    create: XOR<LeadCreateWithoutCompanyInput, LeadUncheckedCreateWithoutCompanyInput>
-  }
-
-  export type LeadUpdateWithWhereUniqueWithoutCompanyInput = {
-    where: LeadWhereUniqueInput
-    data: XOR<LeadUpdateWithoutCompanyInput, LeadUncheckedUpdateWithoutCompanyInput>
-  }
-
-  export type LeadUpdateManyWithWhereWithoutCompanyInput = {
-    where: LeadScalarWhereInput
-    data: XOR<LeadUpdateManyMutationInput, LeadUncheckedUpdateManyWithoutCompanyInput>
-  }
-
-  export type LeadScalarWhereInput = {
-    AND?: LeadScalarWhereInput | LeadScalarWhereInput[]
-    OR?: LeadScalarWhereInput[]
-    NOT?: LeadScalarWhereInput | LeadScalarWhereInput[]
-    id?: StringFilter<"Lead"> | string
-    firstName?: StringFilter<"Lead"> | string
-    lastName?: StringFilter<"Lead"> | string
-    title?: StringNullableFilter<"Lead"> | string | null
-    email?: StringNullableFilter<"Lead"> | string | null
-    phone?: StringNullableFilter<"Lead"> | string | null
-    officePhone?: StringNullableFilter<"Lead"> | string | null
-    status?: StringFilter<"Lead"> | string
-    isVip?: BoolFilter<"Lead"> | boolean
-    companyId?: StringFilter<"Lead"> | string
-    createdAt?: DateTimeFilter<"Lead"> | Date | string
-  }
-
-  export type CompanyNoteUpsertWithWhereUniqueWithoutCompanyInput = {
-    where: CompanyNoteWhereUniqueInput
-    update: XOR<CompanyNoteUpdateWithoutCompanyInput, CompanyNoteUncheckedUpdateWithoutCompanyInput>
-    create: XOR<CompanyNoteCreateWithoutCompanyInput, CompanyNoteUncheckedCreateWithoutCompanyInput>
-  }
-
-  export type CompanyNoteUpdateWithWhereUniqueWithoutCompanyInput = {
-    where: CompanyNoteWhereUniqueInput
-    data: XOR<CompanyNoteUpdateWithoutCompanyInput, CompanyNoteUncheckedUpdateWithoutCompanyInput>
-  }
-
-  export type CompanyNoteUpdateManyWithWhereWithoutCompanyInput = {
-    where: CompanyNoteScalarWhereInput
-    data: XOR<CompanyNoteUpdateManyMutationInput, CompanyNoteUncheckedUpdateManyWithoutCompanyInput>
-  }
-
-  export type CompanyNoteScalarWhereInput = {
-    AND?: CompanyNoteScalarWhereInput | CompanyNoteScalarWhereInput[]
-    OR?: CompanyNoteScalarWhereInput[]
-    NOT?: CompanyNoteScalarWhereInput | CompanyNoteScalarWhereInput[]
-    id?: StringFilter<"CompanyNote"> | string
-    text?: StringFilter<"CompanyNote"> | string
-    companyId?: StringFilter<"CompanyNote"> | string
-    createdAt?: DateTimeFilter<"CompanyNote"> | Date | string
-  }
-
-  export type CompanySocialLinkUpsertWithWhereUniqueWithoutCompanyInput = {
-    where: CompanySocialLinkWhereUniqueInput
-    update: XOR<CompanySocialLinkUpdateWithoutCompanyInput, CompanySocialLinkUncheckedUpdateWithoutCompanyInput>
-    create: XOR<CompanySocialLinkCreateWithoutCompanyInput, CompanySocialLinkUncheckedCreateWithoutCompanyInput>
-  }
-
-  export type CompanySocialLinkUpdateWithWhereUniqueWithoutCompanyInput = {
-    where: CompanySocialLinkWhereUniqueInput
-    data: XOR<CompanySocialLinkUpdateWithoutCompanyInput, CompanySocialLinkUncheckedUpdateWithoutCompanyInput>
-  }
-
-  export type CompanySocialLinkUpdateManyWithWhereWithoutCompanyInput = {
-    where: CompanySocialLinkScalarWhereInput
-    data: XOR<CompanySocialLinkUpdateManyMutationInput, CompanySocialLinkUncheckedUpdateManyWithoutCompanyInput>
-  }
-
-  export type CompanySocialLinkScalarWhereInput = {
-    AND?: CompanySocialLinkScalarWhereInput | CompanySocialLinkScalarWhereInput[]
-    OR?: CompanySocialLinkScalarWhereInput[]
-    NOT?: CompanySocialLinkScalarWhereInput | CompanySocialLinkScalarWhereInput[]
-    id?: StringFilter<"CompanySocialLink"> | string
-    companyId?: StringFilter<"CompanySocialLink"> | string
-    platform?: StringFilter<"CompanySocialLink"> | string
-    handle?: StringFilter<"CompanySocialLink"> | string
-  }
-
-  export type CompanyCreateWithoutSocialsInput = {
-    id?: string
-    name: string
-    address?: string | null
-    phone?: string | null
-    website?: string | null
-    isVip?: boolean
+    source?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    industry: IndustryCreateNestedOneWithoutCompaniesInput
-    leads?: LeadCreateNestedManyWithoutCompanyInput
-    notes?: CompanyNoteCreateNestedManyWithoutCompanyInput
+    touches?: TouchUncheckedCreateNestedManyWithoutContactInput
+    notes?: ContactNoteUncheckedCreateNestedManyWithoutContactInput
   }
 
-  export type CompanyUncheckedCreateWithoutSocialsInput = {
+  export type ContactCreateOrConnectWithoutOrganizationInput = {
+    where: ContactWhereUniqueInput
+    create: XOR<ContactCreateWithoutOrganizationInput, ContactUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ContactCreateManyOrganizationInputEnvelope = {
+    data: ContactCreateManyOrganizationInput | ContactCreateManyOrganizationInput[]
+  }
+
+  export type TouchCreateWithoutOrganizationInput = {
     id?: string
-    name: string
-    address?: string | null
-    phone?: string | null
-    website?: string | null
-    isVip?: boolean
-    industryId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    leads?: LeadUncheckedCreateNestedManyWithoutCompanyInput
-    notes?: CompanyNoteUncheckedCreateNestedManyWithoutCompanyInput
-  }
-
-  export type CompanyCreateOrConnectWithoutSocialsInput = {
-    where: CompanyWhereUniqueInput
-    create: XOR<CompanyCreateWithoutSocialsInput, CompanyUncheckedCreateWithoutSocialsInput>
-  }
-
-  export type CompanyUpsertWithoutSocialsInput = {
-    update: XOR<CompanyUpdateWithoutSocialsInput, CompanyUncheckedUpdateWithoutSocialsInput>
-    create: XOR<CompanyCreateWithoutSocialsInput, CompanyUncheckedCreateWithoutSocialsInput>
-    where?: CompanyWhereInput
-  }
-
-  export type CompanyUpdateToOneWithWhereWithoutSocialsInput = {
-    where?: CompanyWhereInput
-    data: XOR<CompanyUpdateWithoutSocialsInput, CompanyUncheckedUpdateWithoutSocialsInput>
-  }
-
-  export type CompanyUpdateWithoutSocialsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    isVip?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    industry?: IndustryUpdateOneRequiredWithoutCompaniesNestedInput
-    leads?: LeadUpdateManyWithoutCompanyNestedInput
-    notes?: CompanyNoteUpdateManyWithoutCompanyNestedInput
-  }
-
-  export type CompanyUncheckedUpdateWithoutSocialsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    isVip?: BoolFieldUpdateOperationsInput | boolean
-    industryId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    leads?: LeadUncheckedUpdateManyWithoutCompanyNestedInput
-    notes?: CompanyNoteUncheckedUpdateManyWithoutCompanyNestedInput
-  }
-
-  export type CompanyCreateWithoutNotesInput = {
-    id?: string
-    name: string
-    address?: string | null
-    phone?: string | null
-    website?: string | null
-    isVip?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    industry: IndustryCreateNestedOneWithoutCompaniesInput
-    leads?: LeadCreateNestedManyWithoutCompanyInput
-    socials?: CompanySocialLinkCreateNestedManyWithoutCompanyInput
-  }
-
-  export type CompanyUncheckedCreateWithoutNotesInput = {
-    id?: string
-    name: string
-    address?: string | null
-    phone?: string | null
-    website?: string | null
-    isVip?: boolean
-    industryId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    leads?: LeadUncheckedCreateNestedManyWithoutCompanyInput
-    socials?: CompanySocialLinkUncheckedCreateNestedManyWithoutCompanyInput
-  }
-
-  export type CompanyCreateOrConnectWithoutNotesInput = {
-    where: CompanyWhereUniqueInput
-    create: XOR<CompanyCreateWithoutNotesInput, CompanyUncheckedCreateWithoutNotesInput>
-  }
-
-  export type CompanyUpsertWithoutNotesInput = {
-    update: XOR<CompanyUpdateWithoutNotesInput, CompanyUncheckedUpdateWithoutNotesInput>
-    create: XOR<CompanyCreateWithoutNotesInput, CompanyUncheckedCreateWithoutNotesInput>
-    where?: CompanyWhereInput
-  }
-
-  export type CompanyUpdateToOneWithWhereWithoutNotesInput = {
-    where?: CompanyWhereInput
-    data: XOR<CompanyUpdateWithoutNotesInput, CompanyUncheckedUpdateWithoutNotesInput>
-  }
-
-  export type CompanyUpdateWithoutNotesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    isVip?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    industry?: IndustryUpdateOneRequiredWithoutCompaniesNestedInput
-    leads?: LeadUpdateManyWithoutCompanyNestedInput
-    socials?: CompanySocialLinkUpdateManyWithoutCompanyNestedInput
-  }
-
-  export type CompanyUncheckedUpdateWithoutNotesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    isVip?: BoolFieldUpdateOperationsInput | boolean
-    industryId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    leads?: LeadUncheckedUpdateManyWithoutCompanyNestedInput
-    socials?: CompanySocialLinkUncheckedUpdateManyWithoutCompanyNestedInput
-  }
-
-  export type CompanyCreateWithoutLeadsInput = {
-    id?: string
-    name: string
-    address?: string | null
-    phone?: string | null
-    website?: string | null
-    isVip?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    industry: IndustryCreateNestedOneWithoutCompaniesInput
-    notes?: CompanyNoteCreateNestedManyWithoutCompanyInput
-    socials?: CompanySocialLinkCreateNestedManyWithoutCompanyInput
-  }
-
-  export type CompanyUncheckedCreateWithoutLeadsInput = {
-    id?: string
-    name: string
-    address?: string | null
-    phone?: string | null
-    website?: string | null
-    isVip?: boolean
-    industryId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    notes?: CompanyNoteUncheckedCreateNestedManyWithoutCompanyInput
-    socials?: CompanySocialLinkUncheckedCreateNestedManyWithoutCompanyInput
-  }
-
-  export type CompanyCreateOrConnectWithoutLeadsInput = {
-    where: CompanyWhereUniqueInput
-    create: XOR<CompanyCreateWithoutLeadsInput, CompanyUncheckedCreateWithoutLeadsInput>
-  }
-
-  export type TouchCreateWithoutLeadInput = {
-    id?: string
+    createdByUserId?: string | null
     date?: Date | string
     type: string
+    outcome?: string | null
+    source?: string | null
+    isAutomated?: boolean
     notes?: string
     amount?: number | null
     estimateNumber?: string | null
     socialPlatform?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    account: AccountCreateNestedOneWithoutTouchesInput
+    contact?: ContactCreateNestedOneWithoutTouchesInput
   }
 
-  export type TouchUncheckedCreateWithoutLeadInput = {
+  export type TouchUncheckedCreateWithoutOrganizationInput = {
     id?: string
+    accountId: string
+    contactId?: string | null
+    createdByUserId?: string | null
     date?: Date | string
     type: string
+    outcome?: string | null
+    source?: string | null
+    isAutomated?: boolean
     notes?: string
     amount?: number | null
     estimateNumber?: string | null
     socialPlatform?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type TouchCreateOrConnectWithoutLeadInput = {
+  export type TouchCreateOrConnectWithoutOrganizationInput = {
     where: TouchWhereUniqueInput
-    create: XOR<TouchCreateWithoutLeadInput, TouchUncheckedCreateWithoutLeadInput>
+    create: XOR<TouchCreateWithoutOrganizationInput, TouchUncheckedCreateWithoutOrganizationInput>
   }
 
-  export type TouchCreateManyLeadInputEnvelope = {
-    data: TouchCreateManyLeadInput | TouchCreateManyLeadInput[]
+  export type TouchCreateManyOrganizationInputEnvelope = {
+    data: TouchCreateManyOrganizationInput | TouchCreateManyOrganizationInput[]
   }
 
-  export type LeadNoteCreateWithoutLeadInput = {
+  export type AccountNoteCreateWithoutOrganizationInput = {
     id?: string
     text: string
     createdAt?: Date | string
+    account: AccountCreateNestedOneWithoutNotesInput
   }
 
-  export type LeadNoteUncheckedCreateWithoutLeadInput = {
+  export type AccountNoteUncheckedCreateWithoutOrganizationInput = {
     id?: string
     text: string
+    accountId: string
     createdAt?: Date | string
   }
 
-  export type LeadNoteCreateOrConnectWithoutLeadInput = {
-    where: LeadNoteWhereUniqueInput
-    create: XOR<LeadNoteCreateWithoutLeadInput, LeadNoteUncheckedCreateWithoutLeadInput>
+  export type AccountNoteCreateOrConnectWithoutOrganizationInput = {
+    where: AccountNoteWhereUniqueInput
+    create: XOR<AccountNoteCreateWithoutOrganizationInput, AccountNoteUncheckedCreateWithoutOrganizationInput>
   }
 
-  export type LeadNoteCreateManyLeadInputEnvelope = {
-    data: LeadNoteCreateManyLeadInput | LeadNoteCreateManyLeadInput[]
+  export type AccountNoteCreateManyOrganizationInputEnvelope = {
+    data: AccountNoteCreateManyOrganizationInput | AccountNoteCreateManyOrganizationInput[]
   }
 
-  export type CompanyUpsertWithoutLeadsInput = {
-    update: XOR<CompanyUpdateWithoutLeadsInput, CompanyUncheckedUpdateWithoutLeadsInput>
-    create: XOR<CompanyCreateWithoutLeadsInput, CompanyUncheckedCreateWithoutLeadsInput>
-    where?: CompanyWhereInput
+  export type ContactNoteCreateWithoutOrganizationInput = {
+    id?: string
+    text: string
+    createdAt?: Date | string
+    contact: ContactCreateNestedOneWithoutNotesInput
   }
 
-  export type CompanyUpdateToOneWithWhereWithoutLeadsInput = {
-    where?: CompanyWhereInput
-    data: XOR<CompanyUpdateWithoutLeadsInput, CompanyUncheckedUpdateWithoutLeadsInput>
+  export type ContactNoteUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    text: string
+    contactId: string
+    createdAt?: Date | string
   }
 
-  export type CompanyUpdateWithoutLeadsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    isVip?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    industry?: IndustryUpdateOneRequiredWithoutCompaniesNestedInput
-    notes?: CompanyNoteUpdateManyWithoutCompanyNestedInput
-    socials?: CompanySocialLinkUpdateManyWithoutCompanyNestedInput
+  export type ContactNoteCreateOrConnectWithoutOrganizationInput = {
+    where: ContactNoteWhereUniqueInput
+    create: XOR<ContactNoteCreateWithoutOrganizationInput, ContactNoteUncheckedCreateWithoutOrganizationInput>
   }
 
-  export type CompanyUncheckedUpdateWithoutLeadsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    isVip?: BoolFieldUpdateOperationsInput | boolean
-    industryId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    notes?: CompanyNoteUncheckedUpdateManyWithoutCompanyNestedInput
-    socials?: CompanySocialLinkUncheckedUpdateManyWithoutCompanyNestedInput
+  export type ContactNoteCreateManyOrganizationInputEnvelope = {
+    data: ContactNoteCreateManyOrganizationInput | ContactNoteCreateManyOrganizationInput[]
   }
 
-  export type TouchUpsertWithWhereUniqueWithoutLeadInput = {
+  export type AccountSocialLinkCreateWithoutOrganizationInput = {
+    id?: string
+    platform: string
+    handle: string
+    account: AccountCreateNestedOneWithoutSocialsInput
+  }
+
+  export type AccountSocialLinkUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    accountId: string
+    platform: string
+    handle: string
+  }
+
+  export type AccountSocialLinkCreateOrConnectWithoutOrganizationInput = {
+    where: AccountSocialLinkWhereUniqueInput
+    create: XOR<AccountSocialLinkCreateWithoutOrganizationInput, AccountSocialLinkUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type AccountSocialLinkCreateManyOrganizationInputEnvelope = {
+    data: AccountSocialLinkCreateManyOrganizationInput | AccountSocialLinkCreateManyOrganizationInput[]
+  }
+
+  export type IndustryUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: IndustryWhereUniqueInput
+    update: XOR<IndustryUpdateWithoutOrganizationInput, IndustryUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<IndustryCreateWithoutOrganizationInput, IndustryUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type IndustryUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: IndustryWhereUniqueInput
+    data: XOR<IndustryUpdateWithoutOrganizationInput, IndustryUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type IndustryUpdateManyWithWhereWithoutOrganizationInput = {
+    where: IndustryScalarWhereInput
+    data: XOR<IndustryUpdateManyMutationInput, IndustryUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type IndustryScalarWhereInput = {
+    AND?: IndustryScalarWhereInput | IndustryScalarWhereInput[]
+    OR?: IndustryScalarWhereInput[]
+    NOT?: IndustryScalarWhereInput | IndustryScalarWhereInput[]
+    id?: StringFilter<"Industry"> | string
+    organizationId?: StringFilter<"Industry"> | string
+    name?: StringFilter<"Industry"> | string
+    isSystem?: BoolFilter<"Industry"> | boolean
+  }
+
+  export type TouchTypeUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: TouchTypeWhereUniqueInput
+    update: XOR<TouchTypeUpdateWithoutOrganizationInput, TouchTypeUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<TouchTypeCreateWithoutOrganizationInput, TouchTypeUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type TouchTypeUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: TouchTypeWhereUniqueInput
+    data: XOR<TouchTypeUpdateWithoutOrganizationInput, TouchTypeUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type TouchTypeUpdateManyWithWhereWithoutOrganizationInput = {
+    where: TouchTypeScalarWhereInput
+    data: XOR<TouchTypeUpdateManyMutationInput, TouchTypeUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type TouchTypeScalarWhereInput = {
+    AND?: TouchTypeScalarWhereInput | TouchTypeScalarWhereInput[]
+    OR?: TouchTypeScalarWhereInput[]
+    NOT?: TouchTypeScalarWhereInput | TouchTypeScalarWhereInput[]
+    id?: StringFilter<"TouchType"> | string
+    organizationId?: StringFilter<"TouchType"> | string
+    name?: StringFilter<"TouchType"> | string
+    isSystem?: BoolFilter<"TouchType"> | boolean
+  }
+
+  export type SocialPlatformUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: SocialPlatformWhereUniqueInput
+    update: XOR<SocialPlatformUpdateWithoutOrganizationInput, SocialPlatformUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<SocialPlatformCreateWithoutOrganizationInput, SocialPlatformUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type SocialPlatformUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: SocialPlatformWhereUniqueInput
+    data: XOR<SocialPlatformUpdateWithoutOrganizationInput, SocialPlatformUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type SocialPlatformUpdateManyWithWhereWithoutOrganizationInput = {
+    where: SocialPlatformScalarWhereInput
+    data: XOR<SocialPlatformUpdateManyMutationInput, SocialPlatformUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type SocialPlatformScalarWhereInput = {
+    AND?: SocialPlatformScalarWhereInput | SocialPlatformScalarWhereInput[]
+    OR?: SocialPlatformScalarWhereInput[]
+    NOT?: SocialPlatformScalarWhereInput | SocialPlatformScalarWhereInput[]
+    id?: StringFilter<"SocialPlatform"> | string
+    organizationId?: StringFilter<"SocialPlatform"> | string
+    name?: StringFilter<"SocialPlatform"> | string
+    isSystem?: BoolFilter<"SocialPlatform"> | boolean
+  }
+
+  export type AccountUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: AccountWhereUniqueInput
+    update: XOR<AccountUpdateWithoutOrganizationInput, AccountUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<AccountCreateWithoutOrganizationInput, AccountUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type AccountUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: AccountWhereUniqueInput
+    data: XOR<AccountUpdateWithoutOrganizationInput, AccountUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type AccountUpdateManyWithWhereWithoutOrganizationInput = {
+    where: AccountScalarWhereInput
+    data: XOR<AccountUpdateManyMutationInput, AccountUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type AccountScalarWhereInput = {
+    AND?: AccountScalarWhereInput | AccountScalarWhereInput[]
+    OR?: AccountScalarWhereInput[]
+    NOT?: AccountScalarWhereInput | AccountScalarWhereInput[]
+    id?: StringFilter<"Account"> | string
+    organizationId?: StringFilter<"Account"> | string
+    name?: StringFilter<"Account"> | string
+    address?: StringNullableFilter<"Account"> | string | null
+    phone?: StringNullableFilter<"Account"> | string | null
+    website?: StringNullableFilter<"Account"> | string | null
+    status?: StringFilter<"Account"> | string
+    isVip?: BoolFilter<"Account"> | boolean
+    source?: StringNullableFilter<"Account"> | string | null
+    ownerUserId?: StringNullableFilter<"Account"> | string | null
+    createdByUserId?: StringNullableFilter<"Account"> | string | null
+    nextTouchAt?: DateTimeNullableFilter<"Account"> | Date | string | null
+    nextTouchType?: StringNullableFilter<"Account"> | string | null
+    nextTouchNote?: StringNullableFilter<"Account"> | string | null
+    industryId?: StringFilter<"Account"> | string
+    createdAt?: DateTimeFilter<"Account"> | Date | string
+    updatedAt?: DateTimeFilter<"Account"> | Date | string
+  }
+
+  export type ContactUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: ContactWhereUniqueInput
+    update: XOR<ContactUpdateWithoutOrganizationInput, ContactUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<ContactCreateWithoutOrganizationInput, ContactUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ContactUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: ContactWhereUniqueInput
+    data: XOR<ContactUpdateWithoutOrganizationInput, ContactUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type ContactUpdateManyWithWhereWithoutOrganizationInput = {
+    where: ContactScalarWhereInput
+    data: XOR<ContactUpdateManyMutationInput, ContactUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type ContactScalarWhereInput = {
+    AND?: ContactScalarWhereInput | ContactScalarWhereInput[]
+    OR?: ContactScalarWhereInput[]
+    NOT?: ContactScalarWhereInput | ContactScalarWhereInput[]
+    id?: StringFilter<"Contact"> | string
+    organizationId?: StringFilter<"Contact"> | string
+    accountId?: StringFilter<"Contact"> | string
+    firstName?: StringFilter<"Contact"> | string
+    lastName?: StringFilter<"Contact"> | string
+    title?: StringNullableFilter<"Contact"> | string | null
+    email?: StringNullableFilter<"Contact"> | string | null
+    phone?: StringNullableFilter<"Contact"> | string | null
+    officePhone?: StringNullableFilter<"Contact"> | string | null
+    isVip?: BoolFilter<"Contact"> | boolean
+    source?: StringNullableFilter<"Contact"> | string | null
+    createdAt?: DateTimeFilter<"Contact"> | Date | string
+    updatedAt?: DateTimeFilter<"Contact"> | Date | string
+  }
+
+  export type TouchUpsertWithWhereUniqueWithoutOrganizationInput = {
     where: TouchWhereUniqueInput
-    update: XOR<TouchUpdateWithoutLeadInput, TouchUncheckedUpdateWithoutLeadInput>
-    create: XOR<TouchCreateWithoutLeadInput, TouchUncheckedCreateWithoutLeadInput>
+    update: XOR<TouchUpdateWithoutOrganizationInput, TouchUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<TouchCreateWithoutOrganizationInput, TouchUncheckedCreateWithoutOrganizationInput>
   }
 
-  export type TouchUpdateWithWhereUniqueWithoutLeadInput = {
+  export type TouchUpdateWithWhereUniqueWithoutOrganizationInput = {
     where: TouchWhereUniqueInput
-    data: XOR<TouchUpdateWithoutLeadInput, TouchUncheckedUpdateWithoutLeadInput>
+    data: XOR<TouchUpdateWithoutOrganizationInput, TouchUncheckedUpdateWithoutOrganizationInput>
   }
 
-  export type TouchUpdateManyWithWhereWithoutLeadInput = {
+  export type TouchUpdateManyWithWhereWithoutOrganizationInput = {
     where: TouchScalarWhereInput
-    data: XOR<TouchUpdateManyMutationInput, TouchUncheckedUpdateManyWithoutLeadInput>
+    data: XOR<TouchUpdateManyMutationInput, TouchUncheckedUpdateManyWithoutOrganizationInput>
   }
 
   export type TouchScalarWhereInput = {
@@ -14188,244 +17422,472 @@ export namespace Prisma {
     OR?: TouchScalarWhereInput[]
     NOT?: TouchScalarWhereInput | TouchScalarWhereInput[]
     id?: StringFilter<"Touch"> | string
+    organizationId?: StringFilter<"Touch"> | string
+    accountId?: StringFilter<"Touch"> | string
+    contactId?: StringNullableFilter<"Touch"> | string | null
+    createdByUserId?: StringNullableFilter<"Touch"> | string | null
     date?: DateTimeFilter<"Touch"> | Date | string
     type?: StringFilter<"Touch"> | string
+    outcome?: StringNullableFilter<"Touch"> | string | null
+    source?: StringNullableFilter<"Touch"> | string | null
+    isAutomated?: BoolFilter<"Touch"> | boolean
     notes?: StringFilter<"Touch"> | string
     amount?: FloatNullableFilter<"Touch"> | number | null
     estimateNumber?: StringNullableFilter<"Touch"> | string | null
     socialPlatform?: StringNullableFilter<"Touch"> | string | null
-    leadId?: StringFilter<"Touch"> | string
+    createdAt?: DateTimeFilter<"Touch"> | Date | string
+    updatedAt?: DateTimeFilter<"Touch"> | Date | string
   }
 
-  export type LeadNoteUpsertWithWhereUniqueWithoutLeadInput = {
-    where: LeadNoteWhereUniqueInput
-    update: XOR<LeadNoteUpdateWithoutLeadInput, LeadNoteUncheckedUpdateWithoutLeadInput>
-    create: XOR<LeadNoteCreateWithoutLeadInput, LeadNoteUncheckedCreateWithoutLeadInput>
+  export type AccountNoteUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: AccountNoteWhereUniqueInput
+    update: XOR<AccountNoteUpdateWithoutOrganizationInput, AccountNoteUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<AccountNoteCreateWithoutOrganizationInput, AccountNoteUncheckedCreateWithoutOrganizationInput>
   }
 
-  export type LeadNoteUpdateWithWhereUniqueWithoutLeadInput = {
-    where: LeadNoteWhereUniqueInput
-    data: XOR<LeadNoteUpdateWithoutLeadInput, LeadNoteUncheckedUpdateWithoutLeadInput>
+  export type AccountNoteUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: AccountNoteWhereUniqueInput
+    data: XOR<AccountNoteUpdateWithoutOrganizationInput, AccountNoteUncheckedUpdateWithoutOrganizationInput>
   }
 
-  export type LeadNoteUpdateManyWithWhereWithoutLeadInput = {
-    where: LeadNoteScalarWhereInput
-    data: XOR<LeadNoteUpdateManyMutationInput, LeadNoteUncheckedUpdateManyWithoutLeadInput>
+  export type AccountNoteUpdateManyWithWhereWithoutOrganizationInput = {
+    where: AccountNoteScalarWhereInput
+    data: XOR<AccountNoteUpdateManyMutationInput, AccountNoteUncheckedUpdateManyWithoutOrganizationInput>
   }
 
-  export type LeadNoteScalarWhereInput = {
-    AND?: LeadNoteScalarWhereInput | LeadNoteScalarWhereInput[]
-    OR?: LeadNoteScalarWhereInput[]
-    NOT?: LeadNoteScalarWhereInput | LeadNoteScalarWhereInput[]
-    id?: StringFilter<"LeadNote"> | string
-    text?: StringFilter<"LeadNote"> | string
-    leadId?: StringFilter<"LeadNote"> | string
-    createdAt?: DateTimeFilter<"LeadNote"> | Date | string
+  export type AccountNoteScalarWhereInput = {
+    AND?: AccountNoteScalarWhereInput | AccountNoteScalarWhereInput[]
+    OR?: AccountNoteScalarWhereInput[]
+    NOT?: AccountNoteScalarWhereInput | AccountNoteScalarWhereInput[]
+    id?: StringFilter<"AccountNote"> | string
+    organizationId?: StringFilter<"AccountNote"> | string
+    text?: StringFilter<"AccountNote"> | string
+    accountId?: StringFilter<"AccountNote"> | string
+    createdAt?: DateTimeFilter<"AccountNote"> | Date | string
   }
 
-  export type LeadCreateWithoutNotesInput = {
+  export type ContactNoteUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: ContactNoteWhereUniqueInput
+    update: XOR<ContactNoteUpdateWithoutOrganizationInput, ContactNoteUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<ContactNoteCreateWithoutOrganizationInput, ContactNoteUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ContactNoteUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: ContactNoteWhereUniqueInput
+    data: XOR<ContactNoteUpdateWithoutOrganizationInput, ContactNoteUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type ContactNoteUpdateManyWithWhereWithoutOrganizationInput = {
+    where: ContactNoteScalarWhereInput
+    data: XOR<ContactNoteUpdateManyMutationInput, ContactNoteUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type ContactNoteScalarWhereInput = {
+    AND?: ContactNoteScalarWhereInput | ContactNoteScalarWhereInput[]
+    OR?: ContactNoteScalarWhereInput[]
+    NOT?: ContactNoteScalarWhereInput | ContactNoteScalarWhereInput[]
+    id?: StringFilter<"ContactNote"> | string
+    organizationId?: StringFilter<"ContactNote"> | string
+    text?: StringFilter<"ContactNote"> | string
+    contactId?: StringFilter<"ContactNote"> | string
+    createdAt?: DateTimeFilter<"ContactNote"> | Date | string
+  }
+
+  export type AccountSocialLinkUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: AccountSocialLinkWhereUniqueInput
+    update: XOR<AccountSocialLinkUpdateWithoutOrganizationInput, AccountSocialLinkUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<AccountSocialLinkCreateWithoutOrganizationInput, AccountSocialLinkUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type AccountSocialLinkUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: AccountSocialLinkWhereUniqueInput
+    data: XOR<AccountSocialLinkUpdateWithoutOrganizationInput, AccountSocialLinkUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type AccountSocialLinkUpdateManyWithWhereWithoutOrganizationInput = {
+    where: AccountSocialLinkScalarWhereInput
+    data: XOR<AccountSocialLinkUpdateManyMutationInput, AccountSocialLinkUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type AccountSocialLinkScalarWhereInput = {
+    AND?: AccountSocialLinkScalarWhereInput | AccountSocialLinkScalarWhereInput[]
+    OR?: AccountSocialLinkScalarWhereInput[]
+    NOT?: AccountSocialLinkScalarWhereInput | AccountSocialLinkScalarWhereInput[]
+    id?: StringFilter<"AccountSocialLink"> | string
+    organizationId?: StringFilter<"AccountSocialLink"> | string
+    accountId?: StringFilter<"AccountSocialLink"> | string
+    platform?: StringFilter<"AccountSocialLink"> | string
+    handle?: StringFilter<"AccountSocialLink"> | string
+  }
+
+  export type OrganizationCreateWithoutIndustriesInput = {
     id?: string
-    firstName: string
-    lastName: string
-    title?: string | null
-    email?: string | null
-    phone?: string | null
-    officePhone?: string | null
-    status?: string
-    isVip?: boolean
+    name: string
+    slug?: string | null
     createdAt?: Date | string
-    company: CompanyCreateNestedOneWithoutLeadsInput
-    touches?: TouchCreateNestedManyWithoutLeadInput
+    updatedAt?: Date | string
+    touchTypes?: TouchTypeCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactCreateNestedManyWithoutOrganizationInput
+    touches?: TouchCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkCreateNestedManyWithoutOrganizationInput
   }
 
-  export type LeadUncheckedCreateWithoutNotesInput = {
+  export type OrganizationUncheckedCreateWithoutIndustriesInput = {
     id?: string
-    firstName: string
-    lastName: string
-    title?: string | null
-    email?: string | null
-    phone?: string | null
-    officePhone?: string | null
-    status?: string
-    isVip?: boolean
-    companyId: string
+    name: string
+    slug?: string | null
     createdAt?: Date | string
-    touches?: TouchUncheckedCreateNestedManyWithoutLeadInput
+    updatedAt?: Date | string
+    touchTypes?: TouchTypeUncheckedCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutOrganizationInput
+    touches?: TouchUncheckedCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
-  export type LeadCreateOrConnectWithoutNotesInput = {
-    where: LeadWhereUniqueInput
-    create: XOR<LeadCreateWithoutNotesInput, LeadUncheckedCreateWithoutNotesInput>
+  export type OrganizationCreateOrConnectWithoutIndustriesInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutIndustriesInput, OrganizationUncheckedCreateWithoutIndustriesInput>
   }
 
-  export type LeadUpsertWithoutNotesInput = {
-    update: XOR<LeadUpdateWithoutNotesInput, LeadUncheckedUpdateWithoutNotesInput>
-    create: XOR<LeadCreateWithoutNotesInput, LeadUncheckedCreateWithoutNotesInput>
-    where?: LeadWhereInput
-  }
-
-  export type LeadUpdateToOneWithWhereWithoutNotesInput = {
-    where?: LeadWhereInput
-    data: XOR<LeadUpdateWithoutNotesInput, LeadUncheckedUpdateWithoutNotesInput>
-  }
-
-  export type LeadUpdateWithoutNotesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
-    isVip?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    company?: CompanyUpdateOneRequiredWithoutLeadsNestedInput
-    touches?: TouchUpdateManyWithoutLeadNestedInput
-  }
-
-  export type LeadUncheckedUpdateWithoutNotesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
-    isVip?: BoolFieldUpdateOperationsInput | boolean
-    companyId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    touches?: TouchUncheckedUpdateManyWithoutLeadNestedInput
-  }
-
-  export type LeadCreateWithoutTouchesInput = {
-    id?: string
-    firstName: string
-    lastName: string
-    title?: string | null
-    email?: string | null
-    phone?: string | null
-    officePhone?: string | null
-    status?: string
-    isVip?: boolean
-    createdAt?: Date | string
-    company: CompanyCreateNestedOneWithoutLeadsInput
-    notes?: LeadNoteCreateNestedManyWithoutLeadInput
-  }
-
-  export type LeadUncheckedCreateWithoutTouchesInput = {
-    id?: string
-    firstName: string
-    lastName: string
-    title?: string | null
-    email?: string | null
-    phone?: string | null
-    officePhone?: string | null
-    status?: string
-    isVip?: boolean
-    companyId: string
-    createdAt?: Date | string
-    notes?: LeadNoteUncheckedCreateNestedManyWithoutLeadInput
-  }
-
-  export type LeadCreateOrConnectWithoutTouchesInput = {
-    where: LeadWhereUniqueInput
-    create: XOR<LeadCreateWithoutTouchesInput, LeadUncheckedCreateWithoutTouchesInput>
-  }
-
-  export type LeadUpsertWithoutTouchesInput = {
-    update: XOR<LeadUpdateWithoutTouchesInput, LeadUncheckedUpdateWithoutTouchesInput>
-    create: XOR<LeadCreateWithoutTouchesInput, LeadUncheckedCreateWithoutTouchesInput>
-    where?: LeadWhereInput
-  }
-
-  export type LeadUpdateToOneWithWhereWithoutTouchesInput = {
-    where?: LeadWhereInput
-    data: XOR<LeadUpdateWithoutTouchesInput, LeadUncheckedUpdateWithoutTouchesInput>
-  }
-
-  export type LeadUpdateWithoutTouchesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
-    isVip?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    company?: CompanyUpdateOneRequiredWithoutLeadsNestedInput
-    notes?: LeadNoteUpdateManyWithoutLeadNestedInput
-  }
-
-  export type LeadUncheckedUpdateWithoutTouchesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
-    isVip?: BoolFieldUpdateOperationsInput | boolean
-    companyId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    notes?: LeadNoteUncheckedUpdateManyWithoutLeadNestedInput
-  }
-
-  export type CompanyCreateManyIndustryInput = {
+  export type AccountCreateWithoutIndustryInput = {
     id?: string
     name: string
     address?: string | null
     phone?: string | null
     website?: string | null
+    status?: string
     isVip?: boolean
+    source?: string | null
+    ownerUserId?: string | null
+    createdByUserId?: string | null
+    nextTouchAt?: Date | string | null
+    nextTouchType?: string | null
+    nextTouchNote?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutAccountsInput
+    contacts?: ContactCreateNestedManyWithoutAccountInput
+    notes?: AccountNoteCreateNestedManyWithoutAccountInput
+    socials?: AccountSocialLinkCreateNestedManyWithoutAccountInput
+    touches?: TouchCreateNestedManyWithoutAccountInput
   }
 
-  export type CompanyUpdateWithoutIndustryInput = {
+  export type AccountUncheckedCreateWithoutIndustryInput = {
+    id?: string
+    organizationId: string
+    name: string
+    address?: string | null
+    phone?: string | null
+    website?: string | null
+    status?: string
+    isVip?: boolean
+    source?: string | null
+    ownerUserId?: string | null
+    createdByUserId?: string | null
+    nextTouchAt?: Date | string | null
+    nextTouchType?: string | null
+    nextTouchNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contacts?: ContactUncheckedCreateNestedManyWithoutAccountInput
+    notes?: AccountNoteUncheckedCreateNestedManyWithoutAccountInput
+    socials?: AccountSocialLinkUncheckedCreateNestedManyWithoutAccountInput
+    touches?: TouchUncheckedCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountCreateOrConnectWithoutIndustryInput = {
+    where: AccountWhereUniqueInput
+    create: XOR<AccountCreateWithoutIndustryInput, AccountUncheckedCreateWithoutIndustryInput>
+  }
+
+  export type AccountCreateManyIndustryInputEnvelope = {
+    data: AccountCreateManyIndustryInput | AccountCreateManyIndustryInput[]
+  }
+
+  export type OrganizationUpsertWithoutIndustriesInput = {
+    update: XOR<OrganizationUpdateWithoutIndustriesInput, OrganizationUncheckedUpdateWithoutIndustriesInput>
+    create: XOR<OrganizationCreateWithoutIndustriesInput, OrganizationUncheckedCreateWithoutIndustriesInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutIndustriesInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutIndustriesInput, OrganizationUncheckedUpdateWithoutIndustriesInput>
+  }
+
+  export type OrganizationUpdateWithoutIndustriesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    isVip?: BoolFieldUpdateOperationsInput | boolean
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    leads?: LeadUpdateManyWithoutCompanyNestedInput
-    notes?: CompanyNoteUpdateManyWithoutCompanyNestedInput
-    socials?: CompanySocialLinkUpdateManyWithoutCompanyNestedInput
+    touchTypes?: TouchTypeUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUpdateManyWithoutOrganizationNestedInput
   }
 
-  export type CompanyUncheckedUpdateWithoutIndustryInput = {
+  export type OrganizationUncheckedUpdateWithoutIndustriesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    isVip?: BoolFieldUpdateOperationsInput | boolean
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    leads?: LeadUncheckedUpdateManyWithoutCompanyNestedInput
-    notes?: CompanyNoteUncheckedUpdateManyWithoutCompanyNestedInput
-    socials?: CompanySocialLinkUncheckedUpdateManyWithoutCompanyNestedInput
+    touchTypes?: TouchTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
-  export type CompanyUncheckedUpdateManyWithoutIndustryInput = {
+  export type AccountUpsertWithWhereUniqueWithoutIndustryInput = {
+    where: AccountWhereUniqueInput
+    update: XOR<AccountUpdateWithoutIndustryInput, AccountUncheckedUpdateWithoutIndustryInput>
+    create: XOR<AccountCreateWithoutIndustryInput, AccountUncheckedCreateWithoutIndustryInput>
+  }
+
+  export type AccountUpdateWithWhereUniqueWithoutIndustryInput = {
+    where: AccountWhereUniqueInput
+    data: XOR<AccountUpdateWithoutIndustryInput, AccountUncheckedUpdateWithoutIndustryInput>
+  }
+
+  export type AccountUpdateManyWithWhereWithoutIndustryInput = {
+    where: AccountScalarWhereInput
+    data: XOR<AccountUpdateManyMutationInput, AccountUncheckedUpdateManyWithoutIndustryInput>
+  }
+
+  export type OrganizationCreateWithoutTouchTypesInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactCreateNestedManyWithoutOrganizationInput
+    touches?: TouchCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutTouchTypesInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryUncheckedCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutOrganizationInput
+    touches?: TouchUncheckedCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutTouchTypesInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutTouchTypesInput, OrganizationUncheckedCreateWithoutTouchTypesInput>
+  }
+
+  export type OrganizationUpsertWithoutTouchTypesInput = {
+    update: XOR<OrganizationUpdateWithoutTouchTypesInput, OrganizationUncheckedUpdateWithoutTouchTypesInput>
+    create: XOR<OrganizationCreateWithoutTouchTypesInput, OrganizationUncheckedCreateWithoutTouchTypesInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutTouchTypesInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutTouchTypesInput, OrganizationUncheckedUpdateWithoutTouchTypesInput>
+  }
+
+  export type OrganizationUpdateWithoutTouchTypesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    isVip?: BoolFieldUpdateOperationsInput | boolean
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUpdateManyWithoutOrganizationNestedInput
   }
 
-  export type LeadCreateManyCompanyInput = {
+  export type OrganizationUncheckedUpdateWithoutTouchTypesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUncheckedUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationCreateWithoutSocialPlatformsInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryCreateNestedManyWithoutOrganizationInput
+    touchTypes?: TouchTypeCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactCreateNestedManyWithoutOrganizationInput
+    touches?: TouchCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutSocialPlatformsInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryUncheckedCreateNestedManyWithoutOrganizationInput
+    touchTypes?: TouchTypeUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutOrganizationInput
+    touches?: TouchUncheckedCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutSocialPlatformsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutSocialPlatformsInput, OrganizationUncheckedCreateWithoutSocialPlatformsInput>
+  }
+
+  export type OrganizationUpsertWithoutSocialPlatformsInput = {
+    update: XOR<OrganizationUpdateWithoutSocialPlatformsInput, OrganizationUncheckedUpdateWithoutSocialPlatformsInput>
+    create: XOR<OrganizationCreateWithoutSocialPlatformsInput, OrganizationUncheckedCreateWithoutSocialPlatformsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutSocialPlatformsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutSocialPlatformsInput, OrganizationUncheckedUpdateWithoutSocialPlatformsInput>
+  }
+
+  export type OrganizationUpdateWithoutSocialPlatformsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUpdateManyWithoutOrganizationNestedInput
+    touchTypes?: TouchTypeUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutSocialPlatformsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUncheckedUpdateManyWithoutOrganizationNestedInput
+    touchTypes?: TouchTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationCreateWithoutAccountsInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryCreateNestedManyWithoutOrganizationInput
+    touchTypes?: TouchTypeCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactCreateNestedManyWithoutOrganizationInput
+    touches?: TouchCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutAccountsInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryUncheckedCreateNestedManyWithoutOrganizationInput
+    touchTypes?: TouchTypeUncheckedCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformUncheckedCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutOrganizationInput
+    touches?: TouchUncheckedCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutAccountsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutAccountsInput, OrganizationUncheckedCreateWithoutAccountsInput>
+  }
+
+  export type IndustryCreateWithoutAccountsInput = {
+    id?: string
+    name: string
+    isSystem?: boolean
+    organization: OrganizationCreateNestedOneWithoutIndustriesInput
+  }
+
+  export type IndustryUncheckedCreateWithoutAccountsInput = {
+    id?: string
+    organizationId: string
+    name: string
+    isSystem?: boolean
+  }
+
+  export type IndustryCreateOrConnectWithoutAccountsInput = {
+    where: IndustryWhereUniqueInput
+    create: XOR<IndustryCreateWithoutAccountsInput, IndustryUncheckedCreateWithoutAccountsInput>
+  }
+
+  export type ContactCreateWithoutAccountInput = {
     id?: string
     firstName: string
     lastName: string
@@ -14433,162 +17895,2114 @@ export namespace Prisma {
     email?: string | null
     phone?: string | null
     officePhone?: string | null
-    status?: string
     isVip?: boolean
+    source?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutContactsInput
+    touches?: TouchCreateNestedManyWithoutContactInput
+    notes?: ContactNoteCreateNestedManyWithoutContactInput
   }
 
-  export type CompanyNoteCreateManyCompanyInput = {
+  export type ContactUncheckedCreateWithoutAccountInput = {
     id?: string
+    organizationId: string
+    firstName: string
+    lastName: string
+    title?: string | null
+    email?: string | null
+    phone?: string | null
+    officePhone?: string | null
+    isVip?: boolean
+    source?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    touches?: TouchUncheckedCreateNestedManyWithoutContactInput
+    notes?: ContactNoteUncheckedCreateNestedManyWithoutContactInput
+  }
+
+  export type ContactCreateOrConnectWithoutAccountInput = {
+    where: ContactWhereUniqueInput
+    create: XOR<ContactCreateWithoutAccountInput, ContactUncheckedCreateWithoutAccountInput>
+  }
+
+  export type ContactCreateManyAccountInputEnvelope = {
+    data: ContactCreateManyAccountInput | ContactCreateManyAccountInput[]
+  }
+
+  export type AccountNoteCreateWithoutAccountInput = {
+    id?: string
+    text: string
+    createdAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutAccountNotesInput
+  }
+
+  export type AccountNoteUncheckedCreateWithoutAccountInput = {
+    id?: string
+    organizationId: string
     text: string
     createdAt?: Date | string
   }
 
-  export type CompanySocialLinkCreateManyCompanyInput = {
+  export type AccountNoteCreateOrConnectWithoutAccountInput = {
+    where: AccountNoteWhereUniqueInput
+    create: XOR<AccountNoteCreateWithoutAccountInput, AccountNoteUncheckedCreateWithoutAccountInput>
+  }
+
+  export type AccountNoteCreateManyAccountInputEnvelope = {
+    data: AccountNoteCreateManyAccountInput | AccountNoteCreateManyAccountInput[]
+  }
+
+  export type AccountSocialLinkCreateWithoutAccountInput = {
     id?: string
+    platform: string
+    handle: string
+    organization: OrganizationCreateNestedOneWithoutAccountSocialsInput
+  }
+
+  export type AccountSocialLinkUncheckedCreateWithoutAccountInput = {
+    id?: string
+    organizationId: string
     platform: string
     handle: string
   }
 
-  export type LeadUpdateWithoutCompanyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
-    isVip?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    touches?: TouchUpdateManyWithoutLeadNestedInput
-    notes?: LeadNoteUpdateManyWithoutLeadNestedInput
+  export type AccountSocialLinkCreateOrConnectWithoutAccountInput = {
+    where: AccountSocialLinkWhereUniqueInput
+    create: XOR<AccountSocialLinkCreateWithoutAccountInput, AccountSocialLinkUncheckedCreateWithoutAccountInput>
   }
 
-  export type LeadUncheckedUpdateWithoutCompanyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
-    isVip?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    touches?: TouchUncheckedUpdateManyWithoutLeadNestedInput
-    notes?: LeadNoteUncheckedUpdateManyWithoutLeadNestedInput
+  export type AccountSocialLinkCreateManyAccountInputEnvelope = {
+    data: AccountSocialLinkCreateManyAccountInput | AccountSocialLinkCreateManyAccountInput[]
   }
 
-  export type LeadUncheckedUpdateManyWithoutCompanyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
-    isVip?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CompanyNoteUpdateWithoutCompanyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    text?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CompanyNoteUncheckedUpdateWithoutCompanyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    text?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CompanyNoteUncheckedUpdateManyWithoutCompanyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    text?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CompanySocialLinkUpdateWithoutCompanyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    platform?: StringFieldUpdateOperationsInput | string
-    handle?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type CompanySocialLinkUncheckedUpdateWithoutCompanyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    platform?: StringFieldUpdateOperationsInput | string
-    handle?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type CompanySocialLinkUncheckedUpdateManyWithoutCompanyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    platform?: StringFieldUpdateOperationsInput | string
-    handle?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type TouchCreateManyLeadInput = {
+  export type TouchCreateWithoutAccountInput = {
     id?: string
+    createdByUserId?: string | null
     date?: Date | string
     type: string
+    outcome?: string | null
+    source?: string | null
+    isAutomated?: boolean
     notes?: string
     amount?: number | null
     estimateNumber?: string | null
     socialPlatform?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTouchesInput
+    contact?: ContactCreateNestedOneWithoutTouchesInput
   }
 
-  export type LeadNoteCreateManyLeadInput = {
+  export type TouchUncheckedCreateWithoutAccountInput = {
     id?: string
+    organizationId: string
+    contactId?: string | null
+    createdByUserId?: string | null
+    date?: Date | string
+    type: string
+    outcome?: string | null
+    source?: string | null
+    isAutomated?: boolean
+    notes?: string
+    amount?: number | null
+    estimateNumber?: string | null
+    socialPlatform?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TouchCreateOrConnectWithoutAccountInput = {
+    where: TouchWhereUniqueInput
+    create: XOR<TouchCreateWithoutAccountInput, TouchUncheckedCreateWithoutAccountInput>
+  }
+
+  export type TouchCreateManyAccountInputEnvelope = {
+    data: TouchCreateManyAccountInput | TouchCreateManyAccountInput[]
+  }
+
+  export type OrganizationUpsertWithoutAccountsInput = {
+    update: XOR<OrganizationUpdateWithoutAccountsInput, OrganizationUncheckedUpdateWithoutAccountsInput>
+    create: XOR<OrganizationCreateWithoutAccountsInput, OrganizationUncheckedCreateWithoutAccountsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutAccountsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutAccountsInput, OrganizationUncheckedUpdateWithoutAccountsInput>
+  }
+
+  export type OrganizationUpdateWithoutAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUpdateManyWithoutOrganizationNestedInput
+    touchTypes?: TouchTypeUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUncheckedUpdateManyWithoutOrganizationNestedInput
+    touchTypes?: TouchTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUncheckedUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type IndustryUpsertWithoutAccountsInput = {
+    update: XOR<IndustryUpdateWithoutAccountsInput, IndustryUncheckedUpdateWithoutAccountsInput>
+    create: XOR<IndustryCreateWithoutAccountsInput, IndustryUncheckedCreateWithoutAccountsInput>
+    where?: IndustryWhereInput
+  }
+
+  export type IndustryUpdateToOneWithWhereWithoutAccountsInput = {
+    where?: IndustryWhereInput
+    data: XOR<IndustryUpdateWithoutAccountsInput, IndustryUncheckedUpdateWithoutAccountsInput>
+  }
+
+  export type IndustryUpdateWithoutAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+    organization?: OrganizationUpdateOneRequiredWithoutIndustriesNestedInput
+  }
+
+  export type IndustryUncheckedUpdateWithoutAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ContactUpsertWithWhereUniqueWithoutAccountInput = {
+    where: ContactWhereUniqueInput
+    update: XOR<ContactUpdateWithoutAccountInput, ContactUncheckedUpdateWithoutAccountInput>
+    create: XOR<ContactCreateWithoutAccountInput, ContactUncheckedCreateWithoutAccountInput>
+  }
+
+  export type ContactUpdateWithWhereUniqueWithoutAccountInput = {
+    where: ContactWhereUniqueInput
+    data: XOR<ContactUpdateWithoutAccountInput, ContactUncheckedUpdateWithoutAccountInput>
+  }
+
+  export type ContactUpdateManyWithWhereWithoutAccountInput = {
+    where: ContactScalarWhereInput
+    data: XOR<ContactUpdateManyMutationInput, ContactUncheckedUpdateManyWithoutAccountInput>
+  }
+
+  export type AccountNoteUpsertWithWhereUniqueWithoutAccountInput = {
+    where: AccountNoteWhereUniqueInput
+    update: XOR<AccountNoteUpdateWithoutAccountInput, AccountNoteUncheckedUpdateWithoutAccountInput>
+    create: XOR<AccountNoteCreateWithoutAccountInput, AccountNoteUncheckedCreateWithoutAccountInput>
+  }
+
+  export type AccountNoteUpdateWithWhereUniqueWithoutAccountInput = {
+    where: AccountNoteWhereUniqueInput
+    data: XOR<AccountNoteUpdateWithoutAccountInput, AccountNoteUncheckedUpdateWithoutAccountInput>
+  }
+
+  export type AccountNoteUpdateManyWithWhereWithoutAccountInput = {
+    where: AccountNoteScalarWhereInput
+    data: XOR<AccountNoteUpdateManyMutationInput, AccountNoteUncheckedUpdateManyWithoutAccountInput>
+  }
+
+  export type AccountSocialLinkUpsertWithWhereUniqueWithoutAccountInput = {
+    where: AccountSocialLinkWhereUniqueInput
+    update: XOR<AccountSocialLinkUpdateWithoutAccountInput, AccountSocialLinkUncheckedUpdateWithoutAccountInput>
+    create: XOR<AccountSocialLinkCreateWithoutAccountInput, AccountSocialLinkUncheckedCreateWithoutAccountInput>
+  }
+
+  export type AccountSocialLinkUpdateWithWhereUniqueWithoutAccountInput = {
+    where: AccountSocialLinkWhereUniqueInput
+    data: XOR<AccountSocialLinkUpdateWithoutAccountInput, AccountSocialLinkUncheckedUpdateWithoutAccountInput>
+  }
+
+  export type AccountSocialLinkUpdateManyWithWhereWithoutAccountInput = {
+    where: AccountSocialLinkScalarWhereInput
+    data: XOR<AccountSocialLinkUpdateManyMutationInput, AccountSocialLinkUncheckedUpdateManyWithoutAccountInput>
+  }
+
+  export type TouchUpsertWithWhereUniqueWithoutAccountInput = {
+    where: TouchWhereUniqueInput
+    update: XOR<TouchUpdateWithoutAccountInput, TouchUncheckedUpdateWithoutAccountInput>
+    create: XOR<TouchCreateWithoutAccountInput, TouchUncheckedCreateWithoutAccountInput>
+  }
+
+  export type TouchUpdateWithWhereUniqueWithoutAccountInput = {
+    where: TouchWhereUniqueInput
+    data: XOR<TouchUpdateWithoutAccountInput, TouchUncheckedUpdateWithoutAccountInput>
+  }
+
+  export type TouchUpdateManyWithWhereWithoutAccountInput = {
+    where: TouchScalarWhereInput
+    data: XOR<TouchUpdateManyMutationInput, TouchUncheckedUpdateManyWithoutAccountInput>
+  }
+
+  export type OrganizationCreateWithoutAccountSocialsInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryCreateNestedManyWithoutOrganizationInput
+    touchTypes?: TouchTypeCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactCreateNestedManyWithoutOrganizationInput
+    touches?: TouchCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutAccountSocialsInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryUncheckedCreateNestedManyWithoutOrganizationInput
+    touchTypes?: TouchTypeUncheckedCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutOrganizationInput
+    touches?: TouchUncheckedCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutAccountSocialsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutAccountSocialsInput, OrganizationUncheckedCreateWithoutAccountSocialsInput>
+  }
+
+  export type AccountCreateWithoutSocialsInput = {
+    id?: string
+    name: string
+    address?: string | null
+    phone?: string | null
+    website?: string | null
+    status?: string
+    isVip?: boolean
+    source?: string | null
+    ownerUserId?: string | null
+    createdByUserId?: string | null
+    nextTouchAt?: Date | string | null
+    nextTouchType?: string | null
+    nextTouchNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutAccountsInput
+    industry: IndustryCreateNestedOneWithoutAccountsInput
+    contacts?: ContactCreateNestedManyWithoutAccountInput
+    notes?: AccountNoteCreateNestedManyWithoutAccountInput
+    touches?: TouchCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountUncheckedCreateWithoutSocialsInput = {
+    id?: string
+    organizationId: string
+    name: string
+    address?: string | null
+    phone?: string | null
+    website?: string | null
+    status?: string
+    isVip?: boolean
+    source?: string | null
+    ownerUserId?: string | null
+    createdByUserId?: string | null
+    nextTouchAt?: Date | string | null
+    nextTouchType?: string | null
+    nextTouchNote?: string | null
+    industryId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contacts?: ContactUncheckedCreateNestedManyWithoutAccountInput
+    notes?: AccountNoteUncheckedCreateNestedManyWithoutAccountInput
+    touches?: TouchUncheckedCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountCreateOrConnectWithoutSocialsInput = {
+    where: AccountWhereUniqueInput
+    create: XOR<AccountCreateWithoutSocialsInput, AccountUncheckedCreateWithoutSocialsInput>
+  }
+
+  export type OrganizationUpsertWithoutAccountSocialsInput = {
+    update: XOR<OrganizationUpdateWithoutAccountSocialsInput, OrganizationUncheckedUpdateWithoutAccountSocialsInput>
+    create: XOR<OrganizationCreateWithoutAccountSocialsInput, OrganizationUncheckedCreateWithoutAccountSocialsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutAccountSocialsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutAccountSocialsInput, OrganizationUncheckedUpdateWithoutAccountSocialsInput>
+  }
+
+  export type OrganizationUpdateWithoutAccountSocialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUpdateManyWithoutOrganizationNestedInput
+    touchTypes?: TouchTypeUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutAccountSocialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUncheckedUpdateManyWithoutOrganizationNestedInput
+    touchTypes?: TouchTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type AccountUpsertWithoutSocialsInput = {
+    update: XOR<AccountUpdateWithoutSocialsInput, AccountUncheckedUpdateWithoutSocialsInput>
+    create: XOR<AccountCreateWithoutSocialsInput, AccountUncheckedCreateWithoutSocialsInput>
+    where?: AccountWhereInput
+  }
+
+  export type AccountUpdateToOneWithWhereWithoutSocialsInput = {
+    where?: AccountWhereInput
+    data: XOR<AccountUpdateWithoutSocialsInput, AccountUncheckedUpdateWithoutSocialsInput>
+  }
+
+  export type AccountUpdateWithoutSocialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutAccountsNestedInput
+    industry?: IndustryUpdateOneRequiredWithoutAccountsNestedInput
+    contacts?: ContactUpdateManyWithoutAccountNestedInput
+    notes?: AccountNoteUpdateManyWithoutAccountNestedInput
+    touches?: TouchUpdateManyWithoutAccountNestedInput
+  }
+
+  export type AccountUncheckedUpdateWithoutSocialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
+    industryId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contacts?: ContactUncheckedUpdateManyWithoutAccountNestedInput
+    notes?: AccountNoteUncheckedUpdateManyWithoutAccountNestedInput
+    touches?: TouchUncheckedUpdateManyWithoutAccountNestedInput
+  }
+
+  export type OrganizationCreateWithoutAccountNotesInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryCreateNestedManyWithoutOrganizationInput
+    touchTypes?: TouchTypeCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactCreateNestedManyWithoutOrganizationInput
+    touches?: TouchCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutAccountNotesInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryUncheckedCreateNestedManyWithoutOrganizationInput
+    touchTypes?: TouchTypeUncheckedCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutOrganizationInput
+    touches?: TouchUncheckedCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutAccountNotesInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutAccountNotesInput, OrganizationUncheckedCreateWithoutAccountNotesInput>
+  }
+
+  export type AccountCreateWithoutNotesInput = {
+    id?: string
+    name: string
+    address?: string | null
+    phone?: string | null
+    website?: string | null
+    status?: string
+    isVip?: boolean
+    source?: string | null
+    ownerUserId?: string | null
+    createdByUserId?: string | null
+    nextTouchAt?: Date | string | null
+    nextTouchType?: string | null
+    nextTouchNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutAccountsInput
+    industry: IndustryCreateNestedOneWithoutAccountsInput
+    contacts?: ContactCreateNestedManyWithoutAccountInput
+    socials?: AccountSocialLinkCreateNestedManyWithoutAccountInput
+    touches?: TouchCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountUncheckedCreateWithoutNotesInput = {
+    id?: string
+    organizationId: string
+    name: string
+    address?: string | null
+    phone?: string | null
+    website?: string | null
+    status?: string
+    isVip?: boolean
+    source?: string | null
+    ownerUserId?: string | null
+    createdByUserId?: string | null
+    nextTouchAt?: Date | string | null
+    nextTouchType?: string | null
+    nextTouchNote?: string | null
+    industryId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contacts?: ContactUncheckedCreateNestedManyWithoutAccountInput
+    socials?: AccountSocialLinkUncheckedCreateNestedManyWithoutAccountInput
+    touches?: TouchUncheckedCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountCreateOrConnectWithoutNotesInput = {
+    where: AccountWhereUniqueInput
+    create: XOR<AccountCreateWithoutNotesInput, AccountUncheckedCreateWithoutNotesInput>
+  }
+
+  export type OrganizationUpsertWithoutAccountNotesInput = {
+    update: XOR<OrganizationUpdateWithoutAccountNotesInput, OrganizationUncheckedUpdateWithoutAccountNotesInput>
+    create: XOR<OrganizationCreateWithoutAccountNotesInput, OrganizationUncheckedCreateWithoutAccountNotesInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutAccountNotesInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutAccountNotesInput, OrganizationUncheckedUpdateWithoutAccountNotesInput>
+  }
+
+  export type OrganizationUpdateWithoutAccountNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUpdateManyWithoutOrganizationNestedInput
+    touchTypes?: TouchTypeUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutAccountNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUncheckedUpdateManyWithoutOrganizationNestedInput
+    touchTypes?: TouchTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUncheckedUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type AccountUpsertWithoutNotesInput = {
+    update: XOR<AccountUpdateWithoutNotesInput, AccountUncheckedUpdateWithoutNotesInput>
+    create: XOR<AccountCreateWithoutNotesInput, AccountUncheckedCreateWithoutNotesInput>
+    where?: AccountWhereInput
+  }
+
+  export type AccountUpdateToOneWithWhereWithoutNotesInput = {
+    where?: AccountWhereInput
+    data: XOR<AccountUpdateWithoutNotesInput, AccountUncheckedUpdateWithoutNotesInput>
+  }
+
+  export type AccountUpdateWithoutNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutAccountsNestedInput
+    industry?: IndustryUpdateOneRequiredWithoutAccountsNestedInput
+    contacts?: ContactUpdateManyWithoutAccountNestedInput
+    socials?: AccountSocialLinkUpdateManyWithoutAccountNestedInput
+    touches?: TouchUpdateManyWithoutAccountNestedInput
+  }
+
+  export type AccountUncheckedUpdateWithoutNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
+    industryId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contacts?: ContactUncheckedUpdateManyWithoutAccountNestedInput
+    socials?: AccountSocialLinkUncheckedUpdateManyWithoutAccountNestedInput
+    touches?: TouchUncheckedUpdateManyWithoutAccountNestedInput
+  }
+
+  export type OrganizationCreateWithoutContactsInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryCreateNestedManyWithoutOrganizationInput
+    touchTypes?: TouchTypeCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    touches?: TouchCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutContactsInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryUncheckedCreateNestedManyWithoutOrganizationInput
+    touchTypes?: TouchTypeUncheckedCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    touches?: TouchUncheckedCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutContactsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutContactsInput, OrganizationUncheckedCreateWithoutContactsInput>
+  }
+
+  export type AccountCreateWithoutContactsInput = {
+    id?: string
+    name: string
+    address?: string | null
+    phone?: string | null
+    website?: string | null
+    status?: string
+    isVip?: boolean
+    source?: string | null
+    ownerUserId?: string | null
+    createdByUserId?: string | null
+    nextTouchAt?: Date | string | null
+    nextTouchType?: string | null
+    nextTouchNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutAccountsInput
+    industry: IndustryCreateNestedOneWithoutAccountsInput
+    notes?: AccountNoteCreateNestedManyWithoutAccountInput
+    socials?: AccountSocialLinkCreateNestedManyWithoutAccountInput
+    touches?: TouchCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountUncheckedCreateWithoutContactsInput = {
+    id?: string
+    organizationId: string
+    name: string
+    address?: string | null
+    phone?: string | null
+    website?: string | null
+    status?: string
+    isVip?: boolean
+    source?: string | null
+    ownerUserId?: string | null
+    createdByUserId?: string | null
+    nextTouchAt?: Date | string | null
+    nextTouchType?: string | null
+    nextTouchNote?: string | null
+    industryId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notes?: AccountNoteUncheckedCreateNestedManyWithoutAccountInput
+    socials?: AccountSocialLinkUncheckedCreateNestedManyWithoutAccountInput
+    touches?: TouchUncheckedCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountCreateOrConnectWithoutContactsInput = {
+    where: AccountWhereUniqueInput
+    create: XOR<AccountCreateWithoutContactsInput, AccountUncheckedCreateWithoutContactsInput>
+  }
+
+  export type TouchCreateWithoutContactInput = {
+    id?: string
+    createdByUserId?: string | null
+    date?: Date | string
+    type: string
+    outcome?: string | null
+    source?: string | null
+    isAutomated?: boolean
+    notes?: string
+    amount?: number | null
+    estimateNumber?: string | null
+    socialPlatform?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTouchesInput
+    account: AccountCreateNestedOneWithoutTouchesInput
+  }
+
+  export type TouchUncheckedCreateWithoutContactInput = {
+    id?: string
+    organizationId: string
+    accountId: string
+    createdByUserId?: string | null
+    date?: Date | string
+    type: string
+    outcome?: string | null
+    source?: string | null
+    isAutomated?: boolean
+    notes?: string
+    amount?: number | null
+    estimateNumber?: string | null
+    socialPlatform?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TouchCreateOrConnectWithoutContactInput = {
+    where: TouchWhereUniqueInput
+    create: XOR<TouchCreateWithoutContactInput, TouchUncheckedCreateWithoutContactInput>
+  }
+
+  export type TouchCreateManyContactInputEnvelope = {
+    data: TouchCreateManyContactInput | TouchCreateManyContactInput[]
+  }
+
+  export type ContactNoteCreateWithoutContactInput = {
+    id?: string
+    text: string
+    createdAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutContactNotesInput
+  }
+
+  export type ContactNoteUncheckedCreateWithoutContactInput = {
+    id?: string
+    organizationId: string
     text: string
     createdAt?: Date | string
   }
 
-  export type TouchUpdateWithoutLeadInput = {
+  export type ContactNoteCreateOrConnectWithoutContactInput = {
+    where: ContactNoteWhereUniqueInput
+    create: XOR<ContactNoteCreateWithoutContactInput, ContactNoteUncheckedCreateWithoutContactInput>
+  }
+
+  export type ContactNoteCreateManyContactInputEnvelope = {
+    data: ContactNoteCreateManyContactInput | ContactNoteCreateManyContactInput[]
+  }
+
+  export type OrganizationUpsertWithoutContactsInput = {
+    update: XOR<OrganizationUpdateWithoutContactsInput, OrganizationUncheckedUpdateWithoutContactsInput>
+    create: XOR<OrganizationCreateWithoutContactsInput, OrganizationUncheckedCreateWithoutContactsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutContactsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutContactsInput, OrganizationUncheckedUpdateWithoutContactsInput>
+  }
+
+  export type OrganizationUpdateWithoutContactsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUpdateManyWithoutOrganizationNestedInput
+    touchTypes?: TouchTypeUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutContactsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUncheckedUpdateManyWithoutOrganizationNestedInput
+    touchTypes?: TouchTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type AccountUpsertWithoutContactsInput = {
+    update: XOR<AccountUpdateWithoutContactsInput, AccountUncheckedUpdateWithoutContactsInput>
+    create: XOR<AccountCreateWithoutContactsInput, AccountUncheckedCreateWithoutContactsInput>
+    where?: AccountWhereInput
+  }
+
+  export type AccountUpdateToOneWithWhereWithoutContactsInput = {
+    where?: AccountWhereInput
+    data: XOR<AccountUpdateWithoutContactsInput, AccountUncheckedUpdateWithoutContactsInput>
+  }
+
+  export type AccountUpdateWithoutContactsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutAccountsNestedInput
+    industry?: IndustryUpdateOneRequiredWithoutAccountsNestedInput
+    notes?: AccountNoteUpdateManyWithoutAccountNestedInput
+    socials?: AccountSocialLinkUpdateManyWithoutAccountNestedInput
+    touches?: TouchUpdateManyWithoutAccountNestedInput
+  }
+
+  export type AccountUncheckedUpdateWithoutContactsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
+    industryId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: AccountNoteUncheckedUpdateManyWithoutAccountNestedInput
+    socials?: AccountSocialLinkUncheckedUpdateManyWithoutAccountNestedInput
+    touches?: TouchUncheckedUpdateManyWithoutAccountNestedInput
+  }
+
+  export type TouchUpsertWithWhereUniqueWithoutContactInput = {
+    where: TouchWhereUniqueInput
+    update: XOR<TouchUpdateWithoutContactInput, TouchUncheckedUpdateWithoutContactInput>
+    create: XOR<TouchCreateWithoutContactInput, TouchUncheckedCreateWithoutContactInput>
+  }
+
+  export type TouchUpdateWithWhereUniqueWithoutContactInput = {
+    where: TouchWhereUniqueInput
+    data: XOR<TouchUpdateWithoutContactInput, TouchUncheckedUpdateWithoutContactInput>
+  }
+
+  export type TouchUpdateManyWithWhereWithoutContactInput = {
+    where: TouchScalarWhereInput
+    data: XOR<TouchUpdateManyMutationInput, TouchUncheckedUpdateManyWithoutContactInput>
+  }
+
+  export type ContactNoteUpsertWithWhereUniqueWithoutContactInput = {
+    where: ContactNoteWhereUniqueInput
+    update: XOR<ContactNoteUpdateWithoutContactInput, ContactNoteUncheckedUpdateWithoutContactInput>
+    create: XOR<ContactNoteCreateWithoutContactInput, ContactNoteUncheckedCreateWithoutContactInput>
+  }
+
+  export type ContactNoteUpdateWithWhereUniqueWithoutContactInput = {
+    where: ContactNoteWhereUniqueInput
+    data: XOR<ContactNoteUpdateWithoutContactInput, ContactNoteUncheckedUpdateWithoutContactInput>
+  }
+
+  export type ContactNoteUpdateManyWithWhereWithoutContactInput = {
+    where: ContactNoteScalarWhereInput
+    data: XOR<ContactNoteUpdateManyMutationInput, ContactNoteUncheckedUpdateManyWithoutContactInput>
+  }
+
+  export type OrganizationCreateWithoutContactNotesInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryCreateNestedManyWithoutOrganizationInput
+    touchTypes?: TouchTypeCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactCreateNestedManyWithoutOrganizationInput
+    touches?: TouchCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutContactNotesInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryUncheckedCreateNestedManyWithoutOrganizationInput
+    touchTypes?: TouchTypeUncheckedCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutOrganizationInput
+    touches?: TouchUncheckedCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutContactNotesInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutContactNotesInput, OrganizationUncheckedCreateWithoutContactNotesInput>
+  }
+
+  export type ContactCreateWithoutNotesInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    title?: string | null
+    email?: string | null
+    phone?: string | null
+    officePhone?: string | null
+    isVip?: boolean
+    source?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutContactsInput
+    account: AccountCreateNestedOneWithoutContactsInput
+    touches?: TouchCreateNestedManyWithoutContactInput
+  }
+
+  export type ContactUncheckedCreateWithoutNotesInput = {
+    id?: string
+    organizationId: string
+    accountId: string
+    firstName: string
+    lastName: string
+    title?: string | null
+    email?: string | null
+    phone?: string | null
+    officePhone?: string | null
+    isVip?: boolean
+    source?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    touches?: TouchUncheckedCreateNestedManyWithoutContactInput
+  }
+
+  export type ContactCreateOrConnectWithoutNotesInput = {
+    where: ContactWhereUniqueInput
+    create: XOR<ContactCreateWithoutNotesInput, ContactUncheckedCreateWithoutNotesInput>
+  }
+
+  export type OrganizationUpsertWithoutContactNotesInput = {
+    update: XOR<OrganizationUpdateWithoutContactNotesInput, OrganizationUncheckedUpdateWithoutContactNotesInput>
+    create: XOR<OrganizationCreateWithoutContactNotesInput, OrganizationUncheckedCreateWithoutContactNotesInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutContactNotesInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutContactNotesInput, OrganizationUncheckedUpdateWithoutContactNotesInput>
+  }
+
+  export type OrganizationUpdateWithoutContactNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUpdateManyWithoutOrganizationNestedInput
+    touchTypes?: TouchTypeUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutContactNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUncheckedUpdateManyWithoutOrganizationNestedInput
+    touchTypes?: TouchTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutOrganizationNestedInput
+    touches?: TouchUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type ContactUpsertWithoutNotesInput = {
+    update: XOR<ContactUpdateWithoutNotesInput, ContactUncheckedUpdateWithoutNotesInput>
+    create: XOR<ContactCreateWithoutNotesInput, ContactUncheckedCreateWithoutNotesInput>
+    where?: ContactWhereInput
+  }
+
+  export type ContactUpdateToOneWithWhereWithoutNotesInput = {
+    where?: ContactWhereInput
+    data: XOR<ContactUpdateWithoutNotesInput, ContactUncheckedUpdateWithoutNotesInput>
+  }
+
+  export type ContactUpdateWithoutNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutContactsNestedInput
+    account?: AccountUpdateOneRequiredWithoutContactsNestedInput
+    touches?: TouchUpdateManyWithoutContactNestedInput
+  }
+
+  export type ContactUncheckedUpdateWithoutNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    touches?: TouchUncheckedUpdateManyWithoutContactNestedInput
+  }
+
+  export type OrganizationCreateWithoutTouchesInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryCreateNestedManyWithoutOrganizationInput
+    touchTypes?: TouchTypeCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutTouchesInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industries?: IndustryUncheckedCreateNestedManyWithoutOrganizationInput
+    touchTypes?: TouchTypeUncheckedCreateNestedManyWithoutOrganizationInput
+    socialPlatforms?: SocialPlatformUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutOrganizationInput
+    accountNotes?: AccountNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    contactNotes?: ContactNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    accountSocials?: AccountSocialLinkUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutTouchesInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutTouchesInput, OrganizationUncheckedCreateWithoutTouchesInput>
+  }
+
+  export type AccountCreateWithoutTouchesInput = {
+    id?: string
+    name: string
+    address?: string | null
+    phone?: string | null
+    website?: string | null
+    status?: string
+    isVip?: boolean
+    source?: string | null
+    ownerUserId?: string | null
+    createdByUserId?: string | null
+    nextTouchAt?: Date | string | null
+    nextTouchType?: string | null
+    nextTouchNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutAccountsInput
+    industry: IndustryCreateNestedOneWithoutAccountsInput
+    contacts?: ContactCreateNestedManyWithoutAccountInput
+    notes?: AccountNoteCreateNestedManyWithoutAccountInput
+    socials?: AccountSocialLinkCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountUncheckedCreateWithoutTouchesInput = {
+    id?: string
+    organizationId: string
+    name: string
+    address?: string | null
+    phone?: string | null
+    website?: string | null
+    status?: string
+    isVip?: boolean
+    source?: string | null
+    ownerUserId?: string | null
+    createdByUserId?: string | null
+    nextTouchAt?: Date | string | null
+    nextTouchType?: string | null
+    nextTouchNote?: string | null
+    industryId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contacts?: ContactUncheckedCreateNestedManyWithoutAccountInput
+    notes?: AccountNoteUncheckedCreateNestedManyWithoutAccountInput
+    socials?: AccountSocialLinkUncheckedCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountCreateOrConnectWithoutTouchesInput = {
+    where: AccountWhereUniqueInput
+    create: XOR<AccountCreateWithoutTouchesInput, AccountUncheckedCreateWithoutTouchesInput>
+  }
+
+  export type ContactCreateWithoutTouchesInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    title?: string | null
+    email?: string | null
+    phone?: string | null
+    officePhone?: string | null
+    isVip?: boolean
+    source?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutContactsInput
+    account: AccountCreateNestedOneWithoutContactsInput
+    notes?: ContactNoteCreateNestedManyWithoutContactInput
+  }
+
+  export type ContactUncheckedCreateWithoutTouchesInput = {
+    id?: string
+    organizationId: string
+    accountId: string
+    firstName: string
+    lastName: string
+    title?: string | null
+    email?: string | null
+    phone?: string | null
+    officePhone?: string | null
+    isVip?: boolean
+    source?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notes?: ContactNoteUncheckedCreateNestedManyWithoutContactInput
+  }
+
+  export type ContactCreateOrConnectWithoutTouchesInput = {
+    where: ContactWhereUniqueInput
+    create: XOR<ContactCreateWithoutTouchesInput, ContactUncheckedCreateWithoutTouchesInput>
+  }
+
+  export type OrganizationUpsertWithoutTouchesInput = {
+    update: XOR<OrganizationUpdateWithoutTouchesInput, OrganizationUncheckedUpdateWithoutTouchesInput>
+    create: XOR<OrganizationCreateWithoutTouchesInput, OrganizationUncheckedCreateWithoutTouchesInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutTouchesInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutTouchesInput, OrganizationUncheckedUpdateWithoutTouchesInput>
+  }
+
+  export type OrganizationUpdateWithoutTouchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUpdateManyWithoutOrganizationNestedInput
+    touchTypes?: TouchTypeUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutTouchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industries?: IndustryUncheckedUpdateManyWithoutOrganizationNestedInput
+    touchTypes?: TouchTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+    socialPlatforms?: SocialPlatformUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountNotes?: AccountNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    contactNotes?: ContactNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountSocials?: AccountSocialLinkUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type AccountUpsertWithoutTouchesInput = {
+    update: XOR<AccountUpdateWithoutTouchesInput, AccountUncheckedUpdateWithoutTouchesInput>
+    create: XOR<AccountCreateWithoutTouchesInput, AccountUncheckedCreateWithoutTouchesInput>
+    where?: AccountWhereInput
+  }
+
+  export type AccountUpdateToOneWithWhereWithoutTouchesInput = {
+    where?: AccountWhereInput
+    data: XOR<AccountUpdateWithoutTouchesInput, AccountUncheckedUpdateWithoutTouchesInput>
+  }
+
+  export type AccountUpdateWithoutTouchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutAccountsNestedInput
+    industry?: IndustryUpdateOneRequiredWithoutAccountsNestedInput
+    contacts?: ContactUpdateManyWithoutAccountNestedInput
+    notes?: AccountNoteUpdateManyWithoutAccountNestedInput
+    socials?: AccountSocialLinkUpdateManyWithoutAccountNestedInput
+  }
+
+  export type AccountUncheckedUpdateWithoutTouchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
+    industryId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contacts?: ContactUncheckedUpdateManyWithoutAccountNestedInput
+    notes?: AccountNoteUncheckedUpdateManyWithoutAccountNestedInput
+    socials?: AccountSocialLinkUncheckedUpdateManyWithoutAccountNestedInput
+  }
+
+  export type ContactUpsertWithoutTouchesInput = {
+    update: XOR<ContactUpdateWithoutTouchesInput, ContactUncheckedUpdateWithoutTouchesInput>
+    create: XOR<ContactCreateWithoutTouchesInput, ContactUncheckedCreateWithoutTouchesInput>
+    where?: ContactWhereInput
+  }
+
+  export type ContactUpdateToOneWithWhereWithoutTouchesInput = {
+    where?: ContactWhereInput
+    data: XOR<ContactUpdateWithoutTouchesInput, ContactUncheckedUpdateWithoutTouchesInput>
+  }
+
+  export type ContactUpdateWithoutTouchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutContactsNestedInput
+    account?: AccountUpdateOneRequiredWithoutContactsNestedInput
+    notes?: ContactNoteUpdateManyWithoutContactNestedInput
+  }
+
+  export type ContactUncheckedUpdateWithoutTouchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: ContactNoteUncheckedUpdateManyWithoutContactNestedInput
+  }
+
+  export type IndustryCreateManyOrganizationInput = {
+    id?: string
+    name: string
+    isSystem?: boolean
+  }
+
+  export type TouchTypeCreateManyOrganizationInput = {
+    id?: string
+    name: string
+    isSystem?: boolean
+  }
+
+  export type SocialPlatformCreateManyOrganizationInput = {
+    id?: string
+    name: string
+    isSystem?: boolean
+  }
+
+  export type AccountCreateManyOrganizationInput = {
+    id?: string
+    name: string
+    address?: string | null
+    phone?: string | null
+    website?: string | null
+    status?: string
+    isVip?: boolean
+    source?: string | null
+    ownerUserId?: string | null
+    createdByUserId?: string | null
+    nextTouchAt?: Date | string | null
+    nextTouchType?: string | null
+    nextTouchNote?: string | null
+    industryId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ContactCreateManyOrganizationInput = {
+    id?: string
+    accountId: string
+    firstName: string
+    lastName: string
+    title?: string | null
+    email?: string | null
+    phone?: string | null
+    officePhone?: string | null
+    isVip?: boolean
+    source?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TouchCreateManyOrganizationInput = {
+    id?: string
+    accountId: string
+    contactId?: string | null
+    createdByUserId?: string | null
+    date?: Date | string
+    type: string
+    outcome?: string | null
+    source?: string | null
+    isAutomated?: boolean
+    notes?: string
+    amount?: number | null
+    estimateNumber?: string | null
+    socialPlatform?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AccountNoteCreateManyOrganizationInput = {
+    id?: string
+    text: string
+    accountId: string
+    createdAt?: Date | string
+  }
+
+  export type ContactNoteCreateManyOrganizationInput = {
+    id?: string
+    text: string
+    contactId: string
+    createdAt?: Date | string
+  }
+
+  export type AccountSocialLinkCreateManyOrganizationInput = {
+    id?: string
+    accountId: string
+    platform: string
+    handle: string
+  }
+
+  export type IndustryUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+    accounts?: AccountUpdateManyWithoutIndustryNestedInput
+  }
+
+  export type IndustryUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+    accounts?: AccountUncheckedUpdateManyWithoutIndustryNestedInput
+  }
+
+  export type IndustryUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type TouchTypeUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type TouchTypeUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type TouchTypeUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type SocialPlatformUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type SocialPlatformUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type SocialPlatformUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type AccountUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industry?: IndustryUpdateOneRequiredWithoutAccountsNestedInput
+    contacts?: ContactUpdateManyWithoutAccountNestedInput
+    notes?: AccountNoteUpdateManyWithoutAccountNestedInput
+    socials?: AccountSocialLinkUpdateManyWithoutAccountNestedInput
+    touches?: TouchUpdateManyWithoutAccountNestedInput
+  }
+
+  export type AccountUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
+    industryId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contacts?: ContactUncheckedUpdateManyWithoutAccountNestedInput
+    notes?: AccountNoteUncheckedUpdateManyWithoutAccountNestedInput
+    socials?: AccountSocialLinkUncheckedUpdateManyWithoutAccountNestedInput
+    touches?: TouchUncheckedUpdateManyWithoutAccountNestedInput
+  }
+
+  export type AccountUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
+    industryId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContactUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    account?: AccountUpdateOneRequiredWithoutContactsNestedInput
+    touches?: TouchUpdateManyWithoutContactNestedInput
+    notes?: ContactNoteUpdateManyWithoutContactNestedInput
+  }
+
+  export type ContactUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    touches?: TouchUncheckedUpdateManyWithoutContactNestedInput
+    notes?: ContactNoteUncheckedUpdateManyWithoutContactNestedInput
+  }
+
+  export type ContactUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TouchUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: StringFieldUpdateOperationsInput | string
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    isAutomated?: BoolFieldUpdateOperationsInput | boolean
     notes?: StringFieldUpdateOperationsInput | string
     amount?: NullableFloatFieldUpdateOperationsInput | number | null
     estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
     socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    account?: AccountUpdateOneRequiredWithoutTouchesNestedInput
+    contact?: ContactUpdateOneWithoutTouchesNestedInput
   }
 
-  export type TouchUncheckedUpdateWithoutLeadInput = {
+  export type TouchUncheckedUpdateWithoutOrganizationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: StringFieldUpdateOperationsInput | string
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    isAutomated?: BoolFieldUpdateOperationsInput | boolean
     notes?: StringFieldUpdateOperationsInput | string
     amount?: NullableFloatFieldUpdateOperationsInput | number | null
     estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
     socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type TouchUncheckedUpdateManyWithoutLeadInput = {
+  export type TouchUncheckedUpdateManyWithoutOrganizationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: StringFieldUpdateOperationsInput | string
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    isAutomated?: BoolFieldUpdateOperationsInput | boolean
     notes?: StringFieldUpdateOperationsInput | string
     amount?: NullableFloatFieldUpdateOperationsInput | number | null
     estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
     socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type LeadNoteUpdateWithoutLeadInput = {
+  export type AccountNoteUpdateWithoutOrganizationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    account?: AccountUpdateOneRequiredWithoutNotesNestedInput
+  }
+
+  export type AccountNoteUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountNoteUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContactNoteUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contact?: ContactUpdateOneRequiredWithoutNotesNestedInput
+  }
+
+  export type ContactNoteUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContactNoteUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    contactId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountSocialLinkUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    handle?: StringFieldUpdateOperationsInput | string
+    account?: AccountUpdateOneRequiredWithoutSocialsNestedInput
+  }
+
+  export type AccountSocialLinkUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    handle?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AccountSocialLinkUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    handle?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AccountCreateManyIndustryInput = {
+    id?: string
+    organizationId: string
+    name: string
+    address?: string | null
+    phone?: string | null
+    website?: string | null
+    status?: string
+    isVip?: boolean
+    source?: string | null
+    ownerUserId?: string | null
+    createdByUserId?: string | null
+    nextTouchAt?: Date | string | null
+    nextTouchType?: string | null
+    nextTouchNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AccountUpdateWithoutIndustryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutAccountsNestedInput
+    contacts?: ContactUpdateManyWithoutAccountNestedInput
+    notes?: AccountNoteUpdateManyWithoutAccountNestedInput
+    socials?: AccountSocialLinkUpdateManyWithoutAccountNestedInput
+    touches?: TouchUpdateManyWithoutAccountNestedInput
+  }
+
+  export type AccountUncheckedUpdateWithoutIndustryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contacts?: ContactUncheckedUpdateManyWithoutAccountNestedInput
+    notes?: AccountNoteUncheckedUpdateManyWithoutAccountNestedInput
+    socials?: AccountSocialLinkUncheckedUpdateManyWithoutAccountNestedInput
+    touches?: TouchUncheckedUpdateManyWithoutAccountNestedInput
+  }
+
+  export type AccountUncheckedUpdateManyWithoutIndustryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextTouchType?: NullableStringFieldUpdateOperationsInput | string | null
+    nextTouchNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContactCreateManyAccountInput = {
+    id?: string
+    organizationId: string
+    firstName: string
+    lastName: string
+    title?: string | null
+    email?: string | null
+    phone?: string | null
+    officePhone?: string | null
+    isVip?: boolean
+    source?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AccountNoteCreateManyAccountInput = {
+    id?: string
+    organizationId: string
+    text: string
+    createdAt?: Date | string
+  }
+
+  export type AccountSocialLinkCreateManyAccountInput = {
+    id?: string
+    organizationId: string
+    platform: string
+    handle: string
+  }
+
+  export type TouchCreateManyAccountInput = {
+    id?: string
+    organizationId: string
+    contactId?: string | null
+    createdByUserId?: string | null
+    date?: Date | string
+    type: string
+    outcome?: string | null
+    source?: string | null
+    isAutomated?: boolean
+    notes?: string
+    amount?: number | null
+    estimateNumber?: string | null
+    socialPlatform?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ContactUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutContactsNestedInput
+    touches?: TouchUpdateManyWithoutContactNestedInput
+    notes?: ContactNoteUpdateManyWithoutContactNestedInput
+  }
+
+  export type ContactUncheckedUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    touches?: TouchUncheckedUpdateManyWithoutContactNestedInput
+    notes?: ContactNoteUncheckedUpdateManyWithoutContactNestedInput
+  }
+
+  export type ContactUncheckedUpdateManyWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    officePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    isVip?: BoolFieldUpdateOperationsInput | boolean
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountNoteUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutAccountNotesNestedInput
+  }
+
+  export type AccountNoteUncheckedUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type LeadNoteUncheckedUpdateWithoutLeadInput = {
+  export type AccountNoteUncheckedUpdateManyWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type LeadNoteUncheckedUpdateManyWithoutLeadInput = {
+  export type AccountSocialLinkUpdateWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    handle?: StringFieldUpdateOperationsInput | string
+    organization?: OrganizationUpdateOneRequiredWithoutAccountSocialsNestedInput
+  }
+
+  export type AccountSocialLinkUncheckedUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    handle?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AccountSocialLinkUncheckedUpdateManyWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    handle?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TouchUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: StringFieldUpdateOperationsInput | string
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    isAutomated?: BoolFieldUpdateOperationsInput | boolean
+    notes?: StringFieldUpdateOperationsInput | string
+    amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTouchesNestedInput
+    contact?: ContactUpdateOneWithoutTouchesNestedInput
+  }
+
+  export type TouchUncheckedUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: StringFieldUpdateOperationsInput | string
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    isAutomated?: BoolFieldUpdateOperationsInput | boolean
+    notes?: StringFieldUpdateOperationsInput | string
+    amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TouchUncheckedUpdateManyWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: StringFieldUpdateOperationsInput | string
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    isAutomated?: BoolFieldUpdateOperationsInput | boolean
+    notes?: StringFieldUpdateOperationsInput | string
+    amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TouchCreateManyContactInput = {
+    id?: string
+    organizationId: string
+    accountId: string
+    createdByUserId?: string | null
+    date?: Date | string
+    type: string
+    outcome?: string | null
+    source?: string | null
+    isAutomated?: boolean
+    notes?: string
+    amount?: number | null
+    estimateNumber?: string | null
+    socialPlatform?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ContactNoteCreateManyContactInput = {
+    id?: string
+    organizationId: string
+    text: string
+    createdAt?: Date | string
+  }
+
+  export type TouchUpdateWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: StringFieldUpdateOperationsInput | string
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    isAutomated?: BoolFieldUpdateOperationsInput | boolean
+    notes?: StringFieldUpdateOperationsInput | string
+    amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTouchesNestedInput
+    account?: AccountUpdateOneRequiredWithoutTouchesNestedInput
+  }
+
+  export type TouchUncheckedUpdateWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: StringFieldUpdateOperationsInput | string
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    isAutomated?: BoolFieldUpdateOperationsInput | boolean
+    notes?: StringFieldUpdateOperationsInput | string
+    amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TouchUncheckedUpdateManyWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    createdByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: StringFieldUpdateOperationsInput | string
+    outcome?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    isAutomated?: BoolFieldUpdateOperationsInput | boolean
+    notes?: StringFieldUpdateOperationsInput | string
+    amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    estimateNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    socialPlatform?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContactNoteUpdateWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutContactNotesNestedInput
+  }
+
+  export type ContactNoteUncheckedUpdateWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContactNoteUncheckedUpdateManyWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

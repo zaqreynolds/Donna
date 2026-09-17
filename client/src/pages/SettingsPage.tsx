@@ -344,7 +344,7 @@ export function SettingsPage() {
         <div className="flex flex-col gap-1">
           <h2 className="text-xl font-semibold tracking-tight">Settings</h2>
           <p className="text-sm text-muted-foreground">
-            Configure lead heat thresholds, industries, and touch types.
+            Configure account freshness, industries, and touch types.
           </p>
         </div>
 

@@ -16,7 +16,7 @@ type AppHeaderProps = {
 }
 
 export function AppHeader({ title, subtitle }: AppHeaderProps) {
-  const { openCreateLead, openCreateCompany } = useCrmForms()
+  const { openCreateContact, openCreateAccount } = useCrmForms()
 
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-border px-6">
@@ -38,13 +38,13 @@ export function AppHeader({ title, subtitle }: AppHeaderProps) {
         <DropdownMenuContent align="end" className="w-48">
           <DropdownMenuLabel>Create</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={openCreateLead}>
-            <UserPlus className="size-4" />
-            + New Lead
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={openCreateCompany}>
+          <DropdownMenuItem onClick={() => openCreateAccount()}>
             <Building2 className="size-4" />
-            + New Company
+            + New Account
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => openCreateContact()}>
+            <UserPlus className="size-4" />
+            + New Contact
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

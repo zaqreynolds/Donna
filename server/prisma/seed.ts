@@ -3,6 +3,8 @@ import "dotenv/config"
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3"
 import { PrismaClient } from "../generated/prisma"
 
+const DEFAULT_ORG_ID = "00000000-0000-4000-8000-000000000001"
+
 const INDUSTRIES = [
   "Commercial Real Estate",
   "Apartments/Property Management",
@@ -34,12 +36,13 @@ const TOUCH_TYPES = [
   "Invoice",
 ] as const
 
-const DEMO_COMPANIES = [
+const DEMO_ACCOUNTS = [
   {
     name: "Northwind Labs",
     address: "120 Market St, Austin, TX",
     phone: "555-0100",
     isVip: true,
+    status: "NEW",
     industry: "Commercial Real Estate",
   },
   {
@@ -47,6 +50,7 @@ const DEMO_COMPANIES = [
     address: "88 Industrial Blvd, Dallas, TX",
     phone: "555-0142",
     isVip: false,
+    status: "CONTACTED",
     industry: "Manufacturing",
   },
   {
@@ -54,6 +58,7 @@ const DEMO_COMPANIES = [
     address: "400 Clinic Way, Houston, TX",
     phone: "555-0199",
     isVip: false,
+    status: "QUALIFIED",
     industry: "Healthcare",
   },
   {
@@ -61,6 +66,7 @@ const DEMO_COMPANIES = [
     address: "12 Lakeview Dr, Seattle, WA",
     phone: null,
     isVip: true,
+    status: "NURTURING",
     industry: "Apartments/Property Management",
   },
   {
@@ -68,6 +74,7 @@ const DEMO_COMPANIES = [
     address: "900 Crane Ave, Denver, CO",
     phone: "555-0177",
     isVip: false,
+    status: "NEW",
     industry: "Construction",
   },
   {
@@ -75,6 +82,7 @@ const DEMO_COMPANIES = [
     address: "1 Campus Rd, Portland, OR",
     phone: "555-0111",
     isVip: false,
+    status: "CONTACTED",
     industry: "Education",
   },
   {
@@ -82,6 +90,7 @@ const DEMO_COMPANIES = [
     address: "220 Commerce Ave, Chicago, IL",
     phone: "555-0166",
     isVip: false,
+    status: "LOST",
     industry: "Retail",
   },
   {
@@ -89,6 +98,7 @@ const DEMO_COMPANIES = [
     address: "45 Chapel St, Nashville, TN",
     phone: null,
     isVip: false,
+    status: "NEW",
     industry: "Religious",
   },
   {
@@ -96,6 +106,7 @@ const DEMO_COMPANIES = [
     address: "77 Foundry Ln, Pittsburgh, PA",
     phone: "555-0188",
     isVip: true,
+    status: "QUALIFIED",
     industry: "Manufacturing",
   },
   {
@@ -103,19 +114,19 @@ const DEMO_COMPANIES = [
     address: "900 Care Blvd, Phoenix, AZ",
     phone: "555-0122",
     isVip: false,
+    status: "NURTURING",
     industry: "Healthcare",
   },
 ] as const
 
-const DEMO_LEADS = [
+const DEMO_CONTACTS = [
   {
     firstName: "Alex",
     lastName: "Morgan",
     title: "VP Sales",
     email: "alex@northwind.io",
-    status: "NEW",
     isVip: true,
-    company: "Northwind Labs",
+    account: "Northwind Labs",
     createdAt: new Date("2026-07-18T16:12:00.000Z"),
   },
   {
@@ -123,9 +134,8 @@ const DEMO_LEADS = [
     lastName: "Lee",
     title: "Director",
     email: "jordan@acme.co",
-    status: "CONTACTED",
     isVip: false,
-    company: "Acme Co",
+    account: "Acme Co",
     createdAt: new Date("2026-07-18T14:40:00.000Z"),
   },
   {
@@ -133,9 +143,8 @@ const DEMO_LEADS = [
     lastName: "Rivera",
     title: null,
     email: "sam@brightline.com",
-    status: "QUALIFIED",
     isVip: true,
-    company: "Brightline",
+    account: "Brightline",
     createdAt: new Date("2026-07-17T21:05:00.000Z"),
   },
   {
@@ -143,9 +152,8 @@ const DEMO_LEADS = [
     lastName: "Nguyen",
     title: "Owner",
     email: "casey@harborpm.com",
-    status: "NURTURING",
     isVip: false,
-    company: "Harbor Property",
+    account: "Harbor Property",
     createdAt: new Date("2026-07-17T18:22:00.000Z"),
   },
   {
@@ -153,9 +161,8 @@ const DEMO_LEADS = [
     lastName: "Chen",
     title: "Facilities Lead",
     email: "riley@summitbuild.com",
-    status: "NEW",
     isVip: false,
-    company: "Summit Build",
+    account: "Summit Build",
     createdAt: new Date("2026-07-16T12:10:00.000Z"),
   },
   {
@@ -163,9 +170,8 @@ const DEMO_LEADS = [
     lastName: "Brooks",
     title: null,
     email: "taylor@oakcrest.edu",
-    status: "CONTACTED",
     isVip: false,
-    company: "Oakcrest Schools",
+    account: "Oakcrest Schools",
     createdAt: new Date("2026-07-16T09:45:00.000Z"),
   },
   {
@@ -173,9 +179,8 @@ const DEMO_LEADS = [
     lastName: "Patel",
     title: "Buyer",
     email: "morgan@retailnorth.com",
-    status: "LOST",
     isVip: false,
-    company: "Retail North",
+    account: "Retail North",
     createdAt: new Date("2026-07-15T20:00:00.000Z"),
   },
   {
@@ -183,9 +188,8 @@ const DEMO_LEADS = [
     lastName: "Kim",
     title: "Coordinator",
     email: "avery@faithhall.org",
-    status: "NEW",
     isVip: false,
-    company: "Faith Hall",
+    account: "Faith Hall",
     createdAt: new Date("2026-07-15T15:30:00.000Z"),
   },
   {
@@ -193,9 +197,8 @@ const DEMO_LEADS = [
     lastName: "Foster",
     title: "Ops Manager",
     email: "quinn@forgeworks.com",
-    status: "QUALIFIED",
     isVip: true,
-    company: "Forgeworks",
+    account: "Forgeworks",
     createdAt: new Date("2026-07-14T11:18:00.000Z"),
   },
   {
@@ -203,9 +206,8 @@ const DEMO_LEADS = [
     lastName: "Ortiz",
     title: null,
     email: "jamie@crestmed.com",
-    status: "NURTURING",
     isVip: false,
-    company: "Crest Medical",
+    account: "Crest Medical",
     createdAt: new Date("2026-07-14T08:05:00.000Z"),
   },
 ] as const
@@ -224,19 +226,34 @@ const adapter = new PrismaBetterSqlite3({ url: databaseUrl })
 const prisma = new PrismaClient({ adapter })
 
 async function main() {
+  const organization = await prisma.organization.upsert({
+    where: { id: DEFAULT_ORG_ID },
+    update: { name: "Local Center", slug: "local-center" },
+    create: {
+      id: DEFAULT_ORG_ID,
+      name: "Local Center",
+      slug: "local-center",
+    },
+  })
+  const organizationId = organization.id
+
   for (const name of INDUSTRIES) {
     await prisma.industry.upsert({
-      where: { name },
+      where: {
+        organizationId_name: { organizationId, name },
+      },
       update: { isSystem: true },
-      create: { name, isSystem: true },
+      create: { name, isSystem: true, organizationId },
     })
   }
 
   for (const name of TOUCH_TYPES) {
     await prisma.touchType.upsert({
-      where: { name },
+      where: {
+        organizationId_name: { organizationId, name },
+      },
       update: { isSystem: true },
-      create: { name, isSystem: true },
+      create: { name, isSystem: true, organizationId },
     })
   }
 
@@ -253,80 +270,93 @@ async function main() {
 
   for (const name of SOCIAL_PLATFORMS) {
     await prisma.socialPlatform.upsert({
-      where: { name },
+      where: {
+        organizationId_name: { organizationId, name },
+      },
       update: { isSystem: true },
-      create: { name, isSystem: true },
+      create: { name, isSystem: true, organizationId },
     })
   }
 
-  const industries = await prisma.industry.findMany()
-  const touchTypeCount = await prisma.touchType.count()
+  const industries = await prisma.industry.findMany({ where: { organizationId } })
+  const touchTypeCount = await prisma.touchType.count({ where: { organizationId } })
   const industryByName = Object.fromEntries(
     industries.map((industry) => [industry.name, industry.id]),
   )
 
   // Reset demo CRM rows so seed is idempotent.
-  await prisma.touch.deleteMany()
-  await prisma.leadNote.deleteMany()
-  await prisma.companyNote.deleteMany()
-  await prisma.lead.deleteMany()
-  await prisma.company.deleteMany()
+  await prisma.touch.deleteMany({ where: { organizationId } })
+  await prisma.contactNote.deleteMany({ where: { organizationId } })
+  await prisma.accountNote.deleteMany({ where: { organizationId } })
+  await prisma.accountSocialLink.deleteMany({ where: { organizationId } })
+  await prisma.contact.deleteMany({ where: { organizationId } })
+  await prisma.account.deleteMany({ where: { organizationId } })
 
-  const companyByName: Record<string, string> = {}
-  for (const company of DEMO_COMPANIES) {
-    const created = await prisma.company.create({
+  const accountByName: Record<string, string> = {}
+  for (const account of DEMO_ACCOUNTS) {
+    const created = await prisma.account.create({
       data: {
-        name: company.name,
-        address: company.address,
-        phone: company.phone,
-        isVip: company.isVip,
-        industryId: industryByName[company.industry],
+        name: account.name,
+        address: account.address,
+        phone: account.phone,
+        isVip: account.isVip,
+        status: account.status,
+        organizationId,
+        industryId: industryByName[account.industry],
       },
     })
-    companyByName[company.name] = created.id
+    accountByName[account.name] = created.id
   }
 
-  const leadIds: string[] = []
-  for (const lead of DEMO_LEADS) {
-    const created = await prisma.lead.create({
+  const contactIds: string[] = []
+  for (const contact of DEMO_CONTACTS) {
+    const accountId = accountByName[contact.account]
+    const created = await prisma.contact.create({
       data: {
-        firstName: lead.firstName,
-        lastName: lead.lastName,
-        title: lead.title,
-        email: lead.email,
-        status: lead.status,
-        isVip: lead.isVip,
-        companyId: companyByName[lead.company],
-        createdAt: lead.createdAt,
+        firstName: contact.firstName,
+        lastName: contact.lastName,
+        title: contact.title,
+        email: contact.email,
+        isVip: contact.isVip,
+        accountId,
+        organizationId,
+        createdAt: contact.createdAt,
       },
     })
-    leadIds.push(created.id)
+    contactIds.push(created.id)
   }
 
   const touchSeeds = [
-    { leadIndex: 0, type: "Email", notes: "Intro email sent" },
-    { leadIndex: 0, type: "Phone", notes: "Discovery call scheduled" },
+    { contactIndex: 0, type: "Email", notes: "Intro email sent" },
+    { contactIndex: 0, type: "Phone", notes: "Discovery call scheduled" },
     {
-      leadIndex: 1,
+      contactIndex: 1,
       type: "Social Media",
       socialPlatform: "LinkedIn",
       notes: "Connected on LinkedIn",
     },
-    { leadIndex: 2, type: "Face to Face", notes: "Site walkthrough" },
-    { leadIndex: 2, type: "Estimate", notes: "Sent preliminary estimate" },
-    { leadIndex: 3, type: "Voicemail", notes: "Left voicemail" },
-    { leadIndex: 4, type: "Cold Call", notes: "Initial outreach" },
-    { leadIndex: 5, type: "Email", notes: "Follow-up with brochure" },
-    { leadIndex: 8, type: "Networking", notes: "Met at industry mixer" },
-    { leadIndex: 9, type: "Text", notes: "Confirmed next steps" },
+    { contactIndex: 2, type: "Face to Face", notes: "Site walkthrough" },
+    { contactIndex: 2, type: "Estimate", notes: "Sent preliminary estimate" },
+    { contactIndex: 3, type: "Voicemail", notes: "Left voicemail" },
+    { contactIndex: 4, type: "Cold Call", notes: "Initial outreach" },
+    { contactIndex: 5, type: "Email", notes: "Follow-up with brochure" },
+    { contactIndex: 8, type: "Networking", notes: "Met at industry mixer" },
+    { contactIndex: 9, type: "Text", notes: "Confirmed next steps" },
   ] as const
 
   for (const touch of touchSeeds) {
+    const contactId = contactIds[touch.contactIndex]
+    const contact = await prisma.contact.findUniqueOrThrow({
+      where: { id: contactId },
+      select: { accountId: true },
+    })
     await prisma.touch.create({
       data: {
         type: touch.type,
         notes: touch.notes,
-        leadId: leadIds[touch.leadIndex],
+        accountId: contact.accountId,
+        contactId,
+        organizationId,
         ...("socialPlatform" in touch && touch.socialPlatform
           ? { socialPlatform: touch.socialPlatform }
           : {}),
@@ -334,14 +364,14 @@ async function main() {
     })
   }
 
-  const [companyCount, leadCount, touchCount] = await Promise.all([
-    prisma.company.count(),
-    prisma.lead.count(),
-    prisma.touch.count(),
+  const [accountCount, contactCount, touchCount] = await Promise.all([
+    prisma.account.count({ where: { organizationId } }),
+    prisma.contact.count({ where: { organizationId } }),
+    prisma.touch.count({ where: { organizationId } }),
   ])
 
   console.log(
-    `Seeded industries (${industries.length}), touch types (${touchTypeCount}), companies (${companyCount}), leads (${leadCount}), touches (${touchCount})`,
+    `Seeded org (${organization.name}), industries (${industries.length}), touch types (${touchTypeCount}), accounts (${accountCount}), contacts (${contactCount}), touches (${touchCount})`,
   )
 }
 

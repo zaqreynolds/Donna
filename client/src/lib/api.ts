@@ -1,30 +1,44 @@
 import {
   DEFAULT_TOUCH_TYPES,
-  MOCK_COMPANIES,
-  MOCK_LEADS,
-  type Company,
-  type CompanySocialLink,
+  MOCK_ACCOUNTS,
+  MOCK_CONTACTS,
+  type Account,
+  type AccountSocialLink,
+  type Contact,
+  type ContactSummary,
   type EntityNote,
-  type Lead,
-  type LeadTouch,
+  type Touch,
 } from "@/lib/types"
 
 /** Prefer same-origin `/api` so Vite can proxy to the Express server. */
 const API_BASE = "/api"
-const LEADS_URL = `${API_BASE}/leads`
-const COMPANIES_URL = `${API_BASE}/companies`
+const ACCOUNTS_URL = `${API_BASE}/accounts`
+const CONTACTS_URL = `${API_BASE}/contacts`
 const INDUSTRIES_URL = `${API_BASE}/industries`
 const TOUCH_TYPES_URL = `${API_BASE}/touch-types`
 
-export type LeadsFetchResult = {
-  leads: Lead[]
+export type AccountsFetchResult = {
+  accounts: Account[]
+  source: "api" | "mock"
+}
+
+export type ContactsFetchResult = {
+  contacts: Contact[]
   touchCount: number
   source: "api" | "mock"
 }
 
-export type CompaniesFetchResult = {
-  companies: Company[]
-  source: "api" | "mock"
+export type TouchInput = {
+  type: string
+  notes?: string
+  date?: string
+  amount?: number | null
+  estimateNumber?: string | null
+  socialPlatform?: string | null
+  contactId?: string | null
+  outcome?: string | null
+  source?: string | null
+  isAutomated?: boolean
 }
 
 function normalizeNote(raw: Record<string, unknown>): EntityNote {
@@ -45,7 +59,7 @@ function normalizeNotes(value: unknown): EntityNote[] {
     .filter((note) => note.text.trim().length > 0)
 }
 
-function normalizeTouch(raw: Record<string, unknown>): LeadTouch {
+function normalizeTouch(raw: Record<string, unknown>): Touch {
   const amountRaw = raw.amount
   const amount =
     typeof amountRaw === "number" && Number.isFinite(amountRaw)
@@ -66,89 +80,31 @@ function normalizeTouch(raw: Record<string, unknown>): LeadTouch {
       typeof raw.estimateNumber === "string" ? raw.estimateNumber : null,
     socialPlatform:
       typeof raw.socialPlatform === "string" ? raw.socialPlatform : null,
+    accountId: typeof raw.accountId === "string" ? raw.accountId : undefined,
+    contactId:
+      typeof raw.contactId === "string"
+        ? raw.contactId
+        : raw.contactId === null
+          ? null
+          : undefined,
+    outcome: typeof raw.outcome === "string" ? raw.outcome : null,
+    source: typeof raw.source === "string" ? raw.source : null,
+    isAutomated: raw.isAutomated === undefined ? undefined : Boolean(raw.isAutomated),
+    createdByUserId:
+      typeof raw.createdByUserId === "string" ? raw.createdByUserId : null,
   }
 }
 
-function normalizeTouches(value: unknown): LeadTouch[] {
+function normalizeTouches(value: unknown): Touch[] {
   if (!Array.isArray(value)) return []
   return value.map((touch) =>
     normalizeTouch((touch ?? {}) as Record<string, unknown>),
   )
 }
 
-function normalizeLead(raw: Record<string, unknown>): Lead {
-  let firstName =
-    typeof raw.firstName === "string" ? raw.firstName : undefined
-  let lastName = typeof raw.lastName === "string" ? raw.lastName : undefined
-
-  if (!firstName && !lastName && typeof raw.name === "string") {
-    const parts = raw.name.trim().split(/\s+/)
-    firstName = parts[0] ?? ""
-    lastName = parts.slice(1).join(" ")
-  }
-
-  const companyRaw = raw.company
-  let company: Lead["company"] = { id: "", name: "—" }
-
-  if (typeof companyRaw === "string") {
-    company = { id: "", name: companyRaw }
-  } else if (
-    companyRaw &&
-    typeof companyRaw === "object" &&
-    "name" in companyRaw &&
-    typeof (companyRaw as { name: unknown }).name === "string"
-  ) {
-    const industryRaw = (companyRaw as { industry?: unknown }).industry
-    const industry =
-      industryRaw &&
-      typeof industryRaw === "object" &&
-      "name" in industryRaw &&
-      typeof (industryRaw as { name: unknown }).name === "string"
-        ? {
-            id:
-              "id" in industryRaw &&
-              typeof (industryRaw as { id: unknown }).id === "string"
-                ? (industryRaw as { id: string }).id
-                : "",
-            name: (industryRaw as { name: string }).name,
-          }
-        : null
-
-    company = {
-      id:
-        "id" in companyRaw &&
-        typeof (companyRaw as { id: unknown }).id === "string"
-          ? (companyRaw as { id: string }).id
-          : "",
-      name: (companyRaw as { name: string }).name,
-      isVip:
-        "isVip" in companyRaw
-          ? Boolean((companyRaw as { isVip: unknown }).isVip)
-          : undefined,
-      industry,
-    }
-  }
-
-  return {
-    id: typeof raw.id === "string" ? raw.id : "",
-    firstName: firstName ?? "",
-    lastName: lastName ?? "",
-    title: typeof raw.title === "string" ? raw.title : null,
-    email: typeof raw.email === "string" ? raw.email : null,
-    phone: typeof raw.phone === "string" ? raw.phone : null,
-    officePhone: typeof raw.officePhone === "string" ? raw.officePhone : null,
-    status: String(raw.status ?? "NEW").toUpperCase(),
-    isVip: Boolean(raw.isVip),
-    company,
-    createdAt: typeof raw.createdAt === "string" ? raw.createdAt : undefined,
-    notes: normalizeNotes(raw.notes),
-    touches: normalizeTouches(raw.touches),
-  }
-}
-
-function normalizeCompanySocials(value: unknown): CompanySocialLink[] {
+function normalizeAccountSocials(value: unknown): AccountSocialLink[] {
   if (!Array.isArray(value)) return []
-  const links: CompanySocialLink[] = []
+  const links: AccountSocialLink[] = []
   for (const row of value) {
     if (!row || typeof row !== "object") continue
     const platform = (row as { platform?: unknown }).platform
@@ -167,278 +123,442 @@ function normalizeCompanySocials(value: unknown): CompanySocialLink[] {
   return links
 }
 
-function normalizeCompany(raw: Record<string, unknown>): Company {
-  const industryRaw = raw.industry
-  const industry =
-    industryRaw &&
-    typeof industryRaw === "object" &&
-    "name" in industryRaw &&
-    typeof (industryRaw as { name: unknown }).name === "string"
-      ? {
-          id:
-            "id" in industryRaw &&
-            typeof (industryRaw as { id: unknown }).id === "string"
-              ? (industryRaw as { id: string }).id
-              : "",
-          name: (industryRaw as { name: string }).name,
-        }
-      : { id: "", name: "—" }
+function normalizeContactSummary(raw: Record<string, unknown>): ContactSummary {
+  return {
+    id: typeof raw.id === "string" ? raw.id : "",
+    firstName: typeof raw.firstName === "string" ? raw.firstName : "",
+    lastName: typeof raw.lastName === "string" ? raw.lastName : "",
+    title: typeof raw.title === "string" ? raw.title : null,
+    email: typeof raw.email === "string" ? raw.email : null,
+    phone: typeof raw.phone === "string" ? raw.phone : null,
+    officePhone: typeof raw.officePhone === "string" ? raw.officePhone : null,
+    isVip: raw.isVip === undefined ? undefined : Boolean(raw.isVip),
+    touches: normalizeTouches(raw.touches),
+  }
+}
+
+function normalizeIndustry(raw: unknown): { id: string; name: string } {
+  if (
+    raw &&
+    typeof raw === "object" &&
+    "name" in raw &&
+    typeof (raw as { name: unknown }).name === "string"
+  ) {
+    return {
+      id:
+        "id" in raw && typeof (raw as { id: unknown }).id === "string"
+          ? (raw as { id: string }).id
+          : "",
+      name: (raw as { name: string }).name,
+    }
+  }
+  return { id: "", name: "—" }
+}
+
+export function normalizeAccount(raw: Record<string, unknown>): Account {
+  const countRaw = raw._count
+  let contactCount: number | undefined
+  if (typeof raw.contactCount === "number") {
+    contactCount = raw.contactCount
+  } else if (
+    countRaw &&
+    typeof countRaw === "object" &&
+    "contacts" in countRaw &&
+    typeof (countRaw as { contacts: unknown }).contacts === "number"
+  ) {
+    contactCount = (countRaw as { contacts: number }).contacts
+  }
+
+  const contacts = Array.isArray(raw.contacts)
+    ? raw.contacts.map((row) =>
+        normalizeContactSummary((row ?? {}) as Record<string, unknown>),
+      )
+    : undefined
 
   return {
     id: typeof raw.id === "string" ? raw.id : "",
+    organizationId:
+      typeof raw.organizationId === "string" ? raw.organizationId : undefined,
     name: typeof raw.name === "string" ? raw.name : "—",
     address: typeof raw.address === "string" ? raw.address : null,
     phone: typeof raw.phone === "string" ? raw.phone : null,
     website: typeof raw.website === "string" ? raw.website : null,
+    status: String(raw.status ?? "NEW").toUpperCase(),
     isVip: Boolean(raw.isVip),
+    source: typeof raw.source === "string" ? raw.source : null,
+    ownerUserId:
+      typeof raw.ownerUserId === "string" ? raw.ownerUserId : null,
+    createdByUserId:
+      typeof raw.createdByUserId === "string" ? raw.createdByUserId : null,
+    nextTouchAt:
+      typeof raw.nextTouchAt === "string" ? raw.nextTouchAt : null,
+    nextTouchType:
+      typeof raw.nextTouchType === "string" ? raw.nextTouchType : null,
+    nextTouchNote:
+      typeof raw.nextTouchNote === "string" ? raw.nextTouchNote : null,
     createdAt: typeof raw.createdAt === "string" ? raw.createdAt : "",
     updatedAt: typeof raw.updatedAt === "string" ? raw.updatedAt : undefined,
-    industry,
-    socials: normalizeCompanySocials(raw.socials),
+    industry: normalizeIndustry(raw.industry),
+    socials: normalizeAccountSocials(raw.socials),
     notes: normalizeNotes(raw.notes),
+    contacts,
+    touches: normalizeTouches(raw.touches),
+    contactCount:
+      contactCount ??
+      (contacts !== undefined ? contacts.length : undefined),
   }
 }
 
-export async function fetchLeads(): Promise<LeadsFetchResult> {
+export function normalizeContact(raw: Record<string, unknown>): Contact {
+  let firstName =
+    typeof raw.firstName === "string" ? raw.firstName : undefined
+  let lastName = typeof raw.lastName === "string" ? raw.lastName : undefined
+
+  if (!firstName && !lastName && typeof raw.name === "string") {
+    const parts = raw.name.trim().split(/\s+/)
+    firstName = parts[0] ?? ""
+    lastName = parts.slice(1).join(" ")
+  }
+
+  const accountRaw = raw.account
+  let account: Contact["account"] = { id: "", name: "—" }
+
+  if (typeof accountRaw === "string") {
+    account = { id: "", name: accountRaw }
+  } else if (
+    accountRaw &&
+    typeof accountRaw === "object" &&
+    "name" in accountRaw &&
+    typeof (accountRaw as { name: unknown }).name === "string"
+  ) {
+    const industryRaw = (accountRaw as { industry?: unknown }).industry
+    const industry =
+      industryRaw &&
+      typeof industryRaw === "object" &&
+      "name" in industryRaw &&
+      typeof (industryRaw as { name: unknown }).name === "string"
+        ? {
+            id:
+              "id" in industryRaw &&
+              typeof (industryRaw as { id: unknown }).id === "string"
+                ? (industryRaw as { id: string }).id
+                : "",
+            name: (industryRaw as { name: string }).name,
+          }
+        : null
+
+    account = {
+      id:
+        "id" in accountRaw &&
+        typeof (accountRaw as { id: unknown }).id === "string"
+          ? (accountRaw as { id: string }).id
+          : "",
+      name: (accountRaw as { name: string }).name,
+      industry,
+    }
+  }
+
+  const accountId =
+    typeof raw.accountId === "string" && raw.accountId
+      ? raw.accountId
+      : account.id
+
+  return {
+    id: typeof raw.id === "string" ? raw.id : "",
+    organizationId:
+      typeof raw.organizationId === "string" ? raw.organizationId : undefined,
+    accountId,
+    account,
+    firstName: firstName ?? "",
+    lastName: lastName ?? "",
+    title: typeof raw.title === "string" ? raw.title : null,
+    email: typeof raw.email === "string" ? raw.email : null,
+    phone: typeof raw.phone === "string" ? raw.phone : null,
+    officePhone: typeof raw.officePhone === "string" ? raw.officePhone : null,
+    isVip: Boolean(raw.isVip),
+    source: typeof raw.source === "string" ? raw.source : null,
+    createdAt: typeof raw.createdAt === "string" ? raw.createdAt : undefined,
+    updatedAt: typeof raw.updatedAt === "string" ? raw.updatedAt : undefined,
+    notes: normalizeNotes(raw.notes),
+    touches: normalizeTouches(raw.touches),
+  }
+}
+
+export async function fetchAccounts(): Promise<AccountsFetchResult> {
   try {
-    const response = await fetch(LEADS_URL)
+    const response = await fetch(ACCOUNTS_URL)
     if (!response.ok) {
-      throw new Error(`Leads request failed (${response.status})`)
+      throw new Error(`Accounts request failed (${response.status})`)
+    }
+
+    const payload = (await response.json()) as { accounts?: unknown[] }
+    const accounts = Array.isArray(payload.accounts)
+      ? payload.accounts.map((account) =>
+          normalizeAccount((account ?? {}) as Record<string, unknown>),
+        )
+      : []
+
+    return { accounts, source: "api" }
+  } catch {
+    return { accounts: MOCK_ACCOUNTS, source: "mock" }
+  }
+}
+
+export async function fetchContacts(): Promise<ContactsFetchResult> {
+  try {
+    const response = await fetch(CONTACTS_URL)
+    if (!response.ok) {
+      throw new Error(`Contacts request failed (${response.status})`)
     }
 
     const payload = (await response.json()) as {
-      leads?: unknown[]
+      contacts?: unknown[]
       touchCount?: number
     }
-    const leads = Array.isArray(payload.leads)
-      ? payload.leads.map((lead) =>
-          normalizeLead((lead ?? {}) as Record<string, unknown>),
+    const contacts = Array.isArray(payload.contacts)
+      ? payload.contacts.map((contact) =>
+          normalizeContact((contact ?? {}) as Record<string, unknown>),
         )
       : []
     const touchCount =
       typeof payload.touchCount === "number"
         ? payload.touchCount
-        : leads.reduce((sum, lead) => sum + (lead.touches?.length ?? 0), 0)
+        : contacts.reduce(
+            (sum, contact) => sum + (contact.touches?.length ?? 0),
+            0,
+          )
 
-    return { leads, touchCount, source: "api" }
+    return { contacts, touchCount, source: "api" }
   } catch {
-    return { leads: MOCK_LEADS, touchCount: MOCK_LEADS.length, source: "mock" }
-  }
-}
-
-export async function fetchCompanies(): Promise<CompaniesFetchResult> {
-  try {
-    const response = await fetch(COMPANIES_URL)
-    if (!response.ok) {
-      throw new Error(`Companies request failed (${response.status})`)
+    return {
+      contacts: MOCK_CONTACTS,
+      touchCount: MOCK_CONTACTS.length,
+      source: "mock",
     }
-
-    const payload = (await response.json()) as { companies?: unknown[] }
-    const companies = Array.isArray(payload.companies)
-      ? payload.companies.map((company) =>
-          normalizeCompany((company ?? {}) as Record<string, unknown>),
-        )
-      : []
-
-    return { companies, source: "api" }
-  } catch {
-    return { companies: MOCK_COMPANIES, source: "mock" }
   }
 }
 
-export async function fetchLeadDetail(leadId: string): Promise<Lead> {
-  const response = await fetch(`${LEADS_URL}/${leadId}`)
+export async function fetchAccountDetail(accountId: string): Promise<Account> {
+  const response = await fetch(`${ACCOUNTS_URL}/${accountId}`)
   if (!response.ok) {
-    throw new Error(`Failed to fetch lead (${response.status})`)
+    throw new Error(`Failed to fetch account (${response.status})`)
   }
-  const payload = (await response.json()) as { lead: unknown }
-  return normalizeLead((payload.lead ?? {}) as Record<string, unknown>)
+  const payload = (await response.json()) as { account: unknown }
+  return normalizeAccount((payload.account ?? {}) as Record<string, unknown>)
 }
 
-export async function fetchCompanyDetail(companyId: string): Promise<Company> {
-  const response = await fetch(`${COMPANIES_URL}/${companyId}`)
+export async function fetchContactDetail(contactId: string): Promise<Contact> {
+  const response = await fetch(`${CONTACTS_URL}/${contactId}`)
   if (!response.ok) {
-    throw new Error(`Failed to fetch company (${response.status})`)
+    throw new Error(`Failed to fetch contact (${response.status})`)
   }
-  const payload = (await response.json()) as { company: unknown }
-  return normalizeCompany((payload.company ?? {}) as Record<string, unknown>)
+  const payload = (await response.json()) as { contact: unknown }
+  return normalizeContact((payload.contact ?? {}) as Record<string, unknown>)
 }
 
-export type CompanyInput = {
+export type AccountInput = {
   name: string
   industryId: string
   phone?: string | null
   website?: string | null
   address?: string | null
+  status?: string
   isVip?: boolean
   socials?: Array<{ platform: string; handle: string }>
+  source?: string | null
 }
 
-export type LeadInput = {
+export type ContactInput = {
   firstName: string
   lastName: string
   email?: string | null
   phone?: string | null
   officePhone?: string | null
   title?: string | null
-  status?: string
   isVip?: boolean
-  companyId?: string
-  companyName?: string
+  accountId?: string
+  accountName?: string
   industryId?: string
+  source?: string | null
 }
 
-export async function createCompany(input: CompanyInput): Promise<Company> {
-  const response = await fetch(COMPANIES_URL, {
+export async function createAccount(input: AccountInput): Promise<Account> {
+  const response = await fetch(ACCOUNTS_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
   })
   if (!response.ok) {
-    throw new Error(`Failed to create company (${response.status})`)
+    throw new Error(`Failed to create account (${response.status})`)
   }
-  const payload = (await response.json()) as { company: unknown }
-  return normalizeCompany((payload.company ?? {}) as Record<string, unknown>)
+  const payload = (await response.json()) as { account: unknown }
+  return normalizeAccount((payload.account ?? {}) as Record<string, unknown>)
 }
 
-export async function updateCompany(
-  companyId: string,
-  input: CompanyInput,
-): Promise<Company> {
-  const response = await fetch(`${COMPANIES_URL}/${companyId}`, {
+export async function updateAccount(
+  accountId: string,
+  input: AccountInput,
+): Promise<Account> {
+  const response = await fetch(`${ACCOUNTS_URL}/${accountId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
   })
   if (!response.ok) {
-    throw new Error(`Failed to update company (${response.status})`)
+    throw new Error(`Failed to update account (${response.status})`)
   }
-  const payload = (await response.json()) as { company: unknown }
-  return normalizeCompany((payload.company ?? {}) as Record<string, unknown>)
+  const payload = (await response.json()) as { account: unknown }
+  return normalizeAccount((payload.account ?? {}) as Record<string, unknown>)
 }
 
-export async function createLead(input: LeadInput): Promise<Lead> {
-  const response = await fetch(LEADS_URL, {
+export async function createContact(input: ContactInput): Promise<Contact> {
+  const response = await fetch(CONTACTS_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
   })
   if (!response.ok) {
-    throw new Error(`Failed to create lead (${response.status})`)
+    throw new Error(`Failed to create contact (${response.status})`)
   }
-  const payload = (await response.json()) as { lead: unknown }
-  return normalizeLead((payload.lead ?? {}) as Record<string, unknown>)
+  const payload = (await response.json()) as { contact: unknown }
+  return normalizeContact((payload.contact ?? {}) as Record<string, unknown>)
 }
 
-export async function updateLead(leadId: string, input: LeadInput): Promise<Lead> {
-  const response = await fetch(`${LEADS_URL}/${leadId}`, {
+export async function updateContact(
+  contactId: string,
+  input: ContactInput,
+): Promise<Contact> {
+  const response = await fetch(`${CONTACTS_URL}/${contactId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
   })
   if (!response.ok) {
-    throw new Error(`Failed to update lead (${response.status})`)
+    throw new Error(`Failed to update contact (${response.status})`)
   }
-  const payload = (await response.json()) as { lead: unknown }
-  return normalizeLead((payload.lead ?? {}) as Record<string, unknown>)
+  const payload = (await response.json()) as { contact: unknown }
+  return normalizeContact((payload.contact ?? {}) as Record<string, unknown>)
 }
 
-export async function createLeadNote(
-  leadId: string,
+export async function createAccountNote(
+  accountId: string,
   text: string,
 ): Promise<EntityNote> {
-  const response = await fetch(`${LEADS_URL}/${leadId}/notes`, {
+  const response = await fetch(`${ACCOUNTS_URL}/${accountId}/notes`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ text }),
   })
   if (!response.ok) {
-    throw new Error(`Failed to create lead note (${response.status})`)
+    throw new Error(`Failed to create account note (${response.status})`)
   }
   const payload = (await response.json()) as { note: unknown }
   return normalizeNote((payload.note ?? {}) as Record<string, unknown>)
 }
 
-export async function createCompanyNote(
-  companyId: string,
+export async function createContactNote(
+  contactId: string,
   text: string,
 ): Promise<EntityNote> {
-  const response = await fetch(`${COMPANIES_URL}/${companyId}/notes`, {
+  const response = await fetch(`${CONTACTS_URL}/${contactId}/notes`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ text }),
   })
   if (!response.ok) {
-    throw new Error(`Failed to create company note (${response.status})`)
+    throw new Error(`Failed to create contact note (${response.status})`)
   }
   const payload = (await response.json()) as { note: unknown }
   return normalizeNote((payload.note ?? {}) as Record<string, unknown>)
 }
 
-export async function createLeadTouch(
-  leadId: string,
-  input: {
-    type: string
-    notes?: string
-    date?: string
-    amount?: number | null
-    estimateNumber?: string | null
-    socialPlatform?: string | null
-  },
-): Promise<LeadTouch> {
-  const response = await fetch(`${LEADS_URL}/${leadId}/touches`, {
+function serializeTouchInput(input: TouchInput): Record<string, unknown> {
+  return {
+    type: input.type,
+    notes: input.notes ?? "",
+    ...(input.date ? { date: input.date } : {}),
+    ...(input.amount !== undefined ? { amount: input.amount } : {}),
+    ...(input.estimateNumber !== undefined
+      ? { estimateNumber: input.estimateNumber }
+      : {}),
+    ...(input.socialPlatform !== undefined
+      ? { socialPlatform: input.socialPlatform }
+      : {}),
+    ...(input.contactId !== undefined ? { contactId: input.contactId } : {}),
+    ...(input.outcome !== undefined ? { outcome: input.outcome } : {}),
+    ...(input.source !== undefined ? { source: input.source } : {}),
+    ...(input.isAutomated !== undefined
+      ? { isAutomated: input.isAutomated }
+      : {}),
+  }
+}
+
+export async function createAccountTouch(
+  accountId: string,
+  input: TouchInput,
+): Promise<Touch> {
+  const response = await fetch(`${ACCOUNTS_URL}/${accountId}/touches`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      type: input.type,
-      notes: input.notes ?? "",
-      ...(input.date ? { date: input.date } : {}),
-      ...(input.amount !== undefined ? { amount: input.amount } : {}),
-      ...(input.estimateNumber !== undefined
-        ? { estimateNumber: input.estimateNumber }
-        : {}),
-      ...(input.socialPlatform !== undefined
-        ? { socialPlatform: input.socialPlatform }
-        : {}),
-    }),
+    body: JSON.stringify(serializeTouchInput(input)),
   })
   if (!response.ok) {
-    throw new Error(`Failed to create lead touch (${response.status})`)
+    throw new Error(`Failed to create account touch (${response.status})`)
   }
   const payload = (await response.json()) as { touch: unknown }
   return normalizeTouch((payload.touch ?? {}) as Record<string, unknown>)
 }
 
-export async function updateLeadTouch(
-  leadId: string,
+export async function updateAccountTouch(
+  accountId: string,
   touchId: string,
-  input: {
-    type?: string
-    notes?: string
-    date?: string
-    amount?: number | null
-    estimateNumber?: string | null
-    socialPlatform?: string | null
-  },
-): Promise<LeadTouch> {
-  const response = await fetch(`${LEADS_URL}/${leadId}/touches/${touchId}`, {
-    method: "PATCH",
+  input: Partial<TouchInput>,
+): Promise<Touch> {
+  const response = await fetch(
+    `${ACCOUNTS_URL}/${accountId}/touches/${touchId}`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...(input.type !== undefined ? { type: input.type } : {}),
+        ...(input.notes !== undefined ? { notes: input.notes } : {}),
+        ...(input.date !== undefined ? { date: input.date } : {}),
+        ...(input.amount !== undefined ? { amount: input.amount } : {}),
+        ...(input.estimateNumber !== undefined
+          ? { estimateNumber: input.estimateNumber }
+          : {}),
+        ...(input.socialPlatform !== undefined
+          ? { socialPlatform: input.socialPlatform }
+          : {}),
+        ...(input.contactId !== undefined
+          ? { contactId: input.contactId }
+          : {}),
+        ...(input.outcome !== undefined ? { outcome: input.outcome } : {}),
+        ...(input.source !== undefined ? { source: input.source } : {}),
+        ...(input.isAutomated !== undefined
+          ? { isAutomated: input.isAutomated }
+          : {}),
+      }),
+    },
+  )
+  if (!response.ok) {
+    throw new Error(`Failed to update account touch (${response.status})`)
+  }
+  const payload = (await response.json()) as { touch: unknown }
+  return normalizeTouch((payload.touch ?? {}) as Record<string, unknown>)
+}
+
+export async function createContactTouch(
+  contactId: string,
+  input: TouchInput,
+): Promise<Touch> {
+  const response = await fetch(`${CONTACTS_URL}/${contactId}/touches`, {
+    method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      ...(input.type !== undefined ? { type: input.type } : {}),
-      ...(input.notes !== undefined ? { notes: input.notes } : {}),
-      ...(input.date !== undefined ? { date: input.date } : {}),
-      ...(input.amount !== undefined ? { amount: input.amount } : {}),
-      ...(input.estimateNumber !== undefined
-        ? { estimateNumber: input.estimateNumber }
-        : {}),
-      ...(input.socialPlatform !== undefined
-        ? { socialPlatform: input.socialPlatform }
-        : {}),
-    }),
+    body: JSON.stringify(serializeTouchInput(input)),
   })
   if (!response.ok) {
-    throw new Error(`Failed to update lead touch (${response.status})`)
+    throw new Error(`Failed to create contact touch (${response.status})`)
   }
   const payload = (await response.json()) as { touch: unknown }
   return normalizeTouch((payload.touch ?? {}) as Record<string, unknown>)
@@ -659,57 +779,66 @@ export async function deleteSocialPlatform(id: string): Promise<void> {
   }
 }
 
-export async function updateCompanyVip(
-  companyId: string,
+export async function updateAccountVip(
+  accountId: string,
   isVip: boolean,
-): Promise<Company> {
-  const response = await fetch(`${COMPANIES_URL}/${companyId}`, {
+): Promise<Account> {
+  const response = await fetch(`${ACCOUNTS_URL}/${accountId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ isVip }),
   })
   if (!response.ok) {
-    throw new Error(`Failed to update company VIP (${response.status})`)
+    throw new Error(`Failed to update account VIP (${response.status})`)
   }
-  const payload = (await response.json()) as { company: unknown }
-  return normalizeCompany((payload.company ?? {}) as Record<string, unknown>)
+  const payload = (await response.json()) as { account: unknown }
+  return normalizeAccount((payload.account ?? {}) as Record<string, unknown>)
 }
 
-export async function updateLeadVip(leadId: string, isVip: boolean): Promise<Lead> {
-  const response = await fetch(`${LEADS_URL}/${leadId}`, {
+export async function updateContactVip(
+  contactId: string,
+  isVip: boolean,
+): Promise<Contact> {
+  const response = await fetch(`${CONTACTS_URL}/${contactId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ isVip }),
   })
   if (!response.ok) {
-    throw new Error(`Failed to update lead VIP (${response.status})`)
+    throw new Error(`Failed to update contact VIP (${response.status})`)
   }
-  const payload = (await response.json()) as { lead: unknown }
-  return normalizeLead((payload.lead ?? {}) as Record<string, unknown>)
+  const payload = (await response.json()) as { contact: unknown }
+  return normalizeContact((payload.contact ?? {}) as Record<string, unknown>)
 }
 
-export async function updateLeadStatus(
-  leadId: string,
+export async function updateAccountStatus(
+  accountId: string,
   status: string,
-): Promise<Lead> {
-  const response = await fetch(`${LEADS_URL}/${leadId}`, {
+): Promise<Account> {
+  const response = await fetch(`${ACCOUNTS_URL}/${accountId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ status }),
   })
   if (!response.ok) {
-    throw new Error(`Failed to update lead status (${response.status})`)
+    throw new Error(`Failed to update account status (${response.status})`)
   }
-  const payload = (await response.json()) as { lead: unknown }
-  return normalizeLead((payload.lead ?? {}) as Record<string, unknown>)
+  const payload = (await response.json()) as { account: unknown }
+  return normalizeAccount((payload.account ?? {}) as Record<string, unknown>)
 }
 
-export function formatLeadName(lead: Lead): string {
-  const name = `${lead.firstName ?? ""} ${lead.lastName ?? ""}`.trim()
-  return name || "Unnamed lead"
+export function formatContactName(contact: {
+  firstName?: string | null
+  lastName?: string | null
+}): string {
+  const name = `${contact.firstName ?? ""} ${contact.lastName ?? ""}`.trim()
+  return name || "Unnamed contact"
 }
 
-export function formatLeadDate(value?: string): string {
+/** @deprecated Use formatContactName */
+export const formatLeadName = formatContactName
+
+export function formatEntityDate(value?: string): string {
   if (!value) return "—"
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return "—"
@@ -719,6 +848,9 @@ export function formatLeadDate(value?: string): string {
     year: "numeric",
   })
 }
+
+/** @deprecated Use formatEntityDate */
+export const formatLeadDate = formatEntityDate
 
 export function formatNoteDateTime(value?: string): string {
   if (!value) return "—"
@@ -733,7 +865,7 @@ export function formatNoteDateTime(value?: string): string {
   })
 }
 
-export function uniqueTouchTypes(touches: LeadTouch[] | undefined): string[] {
+export function uniqueTouchTypes(touches: Touch[] | undefined): string[] {
   if (!touches?.length) return []
   const seen = new Set<string>()
   for (const touch of touches) {

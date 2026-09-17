@@ -4,7 +4,6 @@ import {
   ArrowUpDown,
   Building2,
   Factory,
-  Filter,
   Mail,
   Pencil,
   Phone,
@@ -25,10 +24,6 @@ import {
 } from "@/components/ui/select"
 import { NotesPanel } from "@/components/NotesPanel"
 import {
-  leadHealthRowClass,
-} from "@/components/LeadHealthIndicator"
-import { useLeadHealthSettings } from "@/components/LeadHealthSettingsProvider"
-import {
   TouchesPanel,
   type CreateTouchInput,
   type UpdateTouchInput,
@@ -36,76 +31,42 @@ import {
 import { VipStarToggle } from "@/components/VipStarToggle"
 import { useCrmForms } from "@/components/forms/CrmFormsProvider"
 import {
-  createLeadNote,
-  createLeadTouch,
-  fetchLeadDetail,
-  fetchLeads,
-  fetchTouchTypes,
+  createContactNote,
+  createContactTouch,
+  fetchContactDetail,
+  fetchContacts,
   fetchSocialPlatforms,
-  formatLeadDate,
-  formatLeadName,
+  fetchTouchTypes,
+  formatContactName,
+  formatEntityDate,
   uniqueTouchTypes,
-  updateLeadStatus,
-  updateLeadTouch,
-  updateLeadVip,
+  updateAccountTouch,
+  updateContactVip,
 } from "@/lib/api"
-import { daysSinceLastTouch, resolveLeadHealth } from "@/lib/leadHealth"
-import type { EntityNote, Lead, LeadStatus, LeadTouch } from "@/lib/types"
+import type { Contact, EntityNote, Touch } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 type SortKey =
-  | "heat-oldest"
   | "name-asc"
   | "name-desc"
-  | "company-asc"
-  | "company-desc"
-  | "status-asc"
-  | "status-desc"
+  | "account-asc"
+  | "account-desc"
   | "date-newest"
   | "date-oldest"
 
-const ALL_STATUSES = "all"
 const ALL_INDUSTRIES = "all"
 
-const STATUS_OPTIONS = [
-  "NEW",
-  "CONTACTED",
-  "QUALIFIED",
-  "NURTURING",
-  "LOST",
-] as const satisfies readonly LeadStatus[]
-
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
-  { value: "heat-oldest", label: "Heat / Inactivity (oldest first)" },
   { value: "name-asc", label: "Name (A–Z)" },
   { value: "name-desc", label: "Name (Z–A)" },
-  { value: "company-asc", label: "Company (A–Z)" },
-  { value: "company-desc", label: "Company (Z–A)" },
-  { value: "status-asc", label: "Status (A–Z)" },
-  { value: "status-desc", label: "Status (Z–A)" },
+  { value: "account-asc", label: "Account (A–Z)" },
+  { value: "account-desc", label: "Account (Z–A)" },
   { value: "date-newest", label: "Date added (newest)" },
   { value: "date-oldest", label: "Date added (oldest)" },
 ]
 
 function compareText(a: string, b: string): number {
   return a.localeCompare(b, undefined, { sensitivity: "base" })
-}
-
-function statusTone(status: string): string {
-  switch (status) {
-    case "NEW":
-      return "border-sky-500/40 bg-sky-500/10 text-sky-700"
-    case "CONTACTED":
-      return "border-amber-500/40 bg-amber-500/10 text-amber-700"
-    case "QUALIFIED":
-      return "border-emerald-500/40 bg-emerald-500/10 text-emerald-700"
-    case "NURTURING":
-      return "border-violet-500/40 bg-violet-500/10 text-violet-700"
-    case "LOST":
-      return "border-rose-500/40 bg-rose-500/10 text-rose-700"
-    default:
-      return ""
-  }
 }
 
 function isInteractiveRowTarget(target: EventTarget | null): boolean {
@@ -117,86 +78,29 @@ function isInteractiveRowTarget(target: EventTarget | null): boolean {
   )
 }
 
-function StatusSelect({
-  value,
-  disabled,
-  onChange,
-  className,
-  "aria-label": ariaLabel = "Lead status",
-}: {
-  value: string
-  disabled?: boolean
-  onChange: (status: string) => void
-  className?: string
-  "aria-label"?: string
-}) {
-  return (
-    <select
-      value={value}
-      disabled={disabled}
-      aria-label={ariaLabel}
-      onClick={(event) => event.stopPropagation()}
-      onMouseDown={(event) => event.stopPropagation()}
-      onChange={(event) => onChange(event.target.value)}
-      className={cn(
-        "h-7 shrink-0 rounded-md border px-2 text-xs font-medium outline-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50",
-        statusTone(value),
-        className,
-      )}
-    >
-      {STATUS_OPTIONS.map((status) => (
-        <option key={status} value={status}>
-          {status}
-        </option>
-      ))}
-      {!STATUS_OPTIONS.includes(value as (typeof STATUS_OPTIONS)[number]) &&
-      value ? (
-        <option value={value}>{value}</option>
-      ) : null}
-    </select>
-  )
-}
-
-function sortLeads(leads: Lead[], sort: SortKey): Lead[] {
-  const sorted = [...leads]
+function sortContacts(contacts: Contact[], sort: SortKey): Contact[] {
+  const sorted = [...contacts]
 
   sorted.sort((a, b) => {
     switch (sort) {
       case "name-asc":
-        return compareText(formatLeadName(a), formatLeadName(b))
+        return compareText(formatContactName(a), formatContactName(b))
       case "name-desc":
-        return compareText(formatLeadName(b), formatLeadName(a))
-      case "company-asc":
+        return compareText(formatContactName(b), formatContactName(a))
+      case "account-asc":
         return (
-          compareText(a.company?.name ?? "", b.company?.name ?? "") ||
-          compareText(formatLeadName(a), formatLeadName(b))
+          compareText(a.account?.name ?? "", b.account?.name ?? "") ||
+          compareText(formatContactName(a), formatContactName(b))
         )
-      case "company-desc":
+      case "account-desc":
         return (
-          compareText(b.company?.name ?? "", a.company?.name ?? "") ||
-          compareText(formatLeadName(a), formatLeadName(b))
-        )
-      case "status-asc":
-        return (
-          compareText(a.status, b.status) ||
-          compareText(formatLeadName(a), formatLeadName(b))
-        )
-      case "status-desc":
-        return (
-          compareText(b.status, a.status) ||
-          compareText(formatLeadName(a), formatLeadName(b))
+          compareText(b.account?.name ?? "", a.account?.name ?? "") ||
+          compareText(formatContactName(a), formatContactName(b))
         )
       case "date-newest":
         return Date.parse(b.createdAt ?? "") - Date.parse(a.createdAt ?? "")
       case "date-oldest":
         return Date.parse(a.createdAt ?? "") - Date.parse(b.createdAt ?? "")
-      case "heat-oldest": {
-        const inactivity =
-          daysSinceLastTouch(b.touches) - daysSinceLastTouch(a.touches)
-        return (
-          inactivity || compareText(formatLeadName(a), formatLeadName(b))
-        )
-      }
       default:
         return 0
     }
@@ -205,21 +109,18 @@ function sortLeads(leads: Lead[], sort: SortKey): Lead[] {
   return sorted
 }
 
-function matchesSearch(lead: Lead, query: string): boolean {
+function matchesSearch(contact: Contact, query: string): boolean {
   if (!query) return true
   const haystack = [
-    lead.firstName,
-    lead.lastName,
-    lead.title,
-    lead.email,
-    lead.phone,
-    lead.officePhone,
-    lead.status,
-    lead.company?.name,
-    lead.company?.industry?.name,
-    ...(lead.touches?.map((touch) => touch.type) ?? []),
-    ...(lead.touches?.map((touch) => touch.estimateNumber) ?? []),
-    ...(lead.touches?.map((touch) => touch.socialPlatform) ?? []),
+    contact.firstName,
+    contact.lastName,
+    contact.title,
+    contact.email,
+    contact.phone,
+    contact.officePhone,
+    contact.account?.name,
+    contact.account?.industry?.name,
+    ...(contact.touches?.map((touch) => touch.type) ?? []),
   ]
     .filter(Boolean)
     .join(" ")
@@ -228,21 +129,18 @@ function matchesSearch(lead: Lead, query: string): boolean {
   return haystack.includes(query)
 }
 
-export function LeadsPage() {
-  const { openEditLead, subscribe } = useCrmForms()
-  const { settings: healthSettings } = useLeadHealthSettings()
-  const [leads, setLeads] = useState<Lead[]>([])
+export function ContactsPage() {
+  const { openEditContact, subscribe } = useCrmForms()
+  const [contacts, setContacts] = useState<Contact[]>([])
   const [source, setSource] = useState<"api" | "mock">("mock")
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
-  const [statusFilter, setStatusFilter] = useState(ALL_STATUSES)
   const [industryFilter, setIndustryFilter] = useState(ALL_INDUSTRIES)
   const [vipOnly, setVipOnly] = useState(false)
-  const [hideLost, setHideLost] = useState(true)
-  const [sort, setSort] = useState<SortKey>("heat-oldest")
+  const [sort, setSort] = useState<SortKey>("name-asc")
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [selectedNotes, setSelectedNotes] = useState<EntityNote[]>([])
-  const [selectedTouches, setSelectedTouches] = useState<LeadTouch[]>([])
+  const [selectedTouches, setSelectedTouches] = useState<Touch[]>([])
   const [touchTypes, setTouchTypes] = useState<string[]>([])
   const [socialPlatforms, setSocialPlatforms] = useState<string[]>([])
   const [detailLoading, setDetailLoading] = useState(false)
@@ -254,12 +152,12 @@ export function LeadsPage() {
     async function load() {
       setLoading(true)
       const [result, types, platforms] = await Promise.all([
-        fetchLeads(),
+        fetchContacts(),
         fetchTouchTypes(),
         fetchSocialPlatforms(),
       ])
       if (!cancelled) {
-        setLeads(result.leads)
+        setContacts(result.contacts)
         setSource(result.source)
         setTouchTypes(types)
         setSocialPlatforms(platforms)
@@ -285,14 +183,14 @@ export function LeadsPage() {
       return
     }
 
-    const leadId = selectedId
+    const contactId = selectedId
     let cancelled = false
 
     async function loadDetail() {
       setDetailLoading(true)
       try {
         if (source === "api") {
-          const detail = await fetchLeadDetail(leadId)
+          const detail = await fetchContactDetail(contactId)
           if (!cancelled) {
             setSelectedNotes(detail.notes ?? [])
             setSelectedTouches(detail.touches ?? [])
@@ -322,86 +220,49 @@ export function LeadsPage() {
 
   const industryOptions = useMemo(() => {
     const byId = new Map<string, string>()
-    for (const lead of leads) {
-      if (lead.company?.industry?.id && lead.company.industry.name) {
-        byId.set(lead.company.industry.id, lead.company.industry.name)
+    for (const contact of contacts) {
+      if (contact.account?.industry?.id && contact.account.industry.name) {
+        byId.set(contact.account.industry.id, contact.account.industry.name)
       }
     }
     return [...byId.entries()]
       .map(([id, name]) => ({ id, name }))
-      .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }))
-  }, [leads])
+      .sort((a, b) =>
+        a.name.localeCompare(b.name, undefined, { sensitivity: "base" }),
+      )
+  }, [contacts])
 
-  const visibleLeads = useMemo(() => {
+  const visibleContacts = useMemo(() => {
     const query = deferredSearch.trim().toLowerCase()
-    const filtered = leads.filter((lead) => {
-      const isLost = String(lead.status).toUpperCase() === "LOST"
-      // Keep LOST visible when the status filter is explicitly LOST.
-      if (hideLost && isLost && statusFilter !== "LOST") return false
-
-      const matchesStatus =
-        statusFilter === ALL_STATUSES || lead.status === statusFilter
+    const filtered = contacts.filter((contact) => {
       const matchesIndustry =
         industryFilter === ALL_INDUSTRIES ||
-        lead.company?.industry?.id === industryFilter
-      const matchesVip = !vipOnly || Boolean(lead.isVip)
-      return (
-        matchesStatus &&
-        matchesIndustry &&
-        matchesVip &&
-        matchesSearch(lead, query)
-      )
+        contact.account?.industry?.id === industryFilter
+      const matchesVip = !vipOnly || Boolean(contact.isVip)
+      return matchesIndustry && matchesVip && matchesSearch(contact, query)
     })
-    return sortLeads(filtered, sort)
-  }, [
-    leads,
-    deferredSearch,
-    statusFilter,
-    industryFilter,
-    vipOnly,
-    hideLost,
-    sort,
-  ])
+    return sortContacts(filtered, sort)
+  }, [contacts, deferredSearch, industryFilter, vipOnly, sort])
 
-  const selectedLead = useMemo(
-    () => leads.find((lead) => lead.id === selectedId) ?? null,
-    [leads, selectedId],
+  const selectedContact = useMemo(
+    () => contacts.find((contact) => contact.id === selectedId) ?? null,
+    [contacts, selectedId],
   )
 
-  async function handleVipToggle(leadId: string, next: boolean) {
-    const previous = leads
-    setLeads((current) =>
-      current.map((lead) =>
-        lead.id === leadId ? { ...lead, isVip: next } : lead,
+  async function handleVipToggle(contactId: string, next: boolean) {
+    const previous = contacts
+    setContacts((current) =>
+      current.map((contact) =>
+        contact.id === contactId ? { ...contact, isVip: next } : contact,
       ),
     )
 
     try {
       if (source === "api") {
-        await updateLeadVip(leadId, next)
+        await updateContactVip(contactId, next)
       }
     } catch {
-      setLeads(previous)
-    }
-  }
-
-  async function handleStatusChange(leadId: string, status: string) {
-    const previous = leads
-    setLeads((current) =>
-      current.map((lead) =>
-        lead.id === leadId ? { ...lead, status } : lead,
-      ),
-    )
-
-    try {
-      if (source === "api") {
-        const updated = await updateLeadStatus(leadId, status)
-        setLeads((current) =>
-          current.map((lead) => (lead.id === leadId ? { ...lead, ...updated } : lead)),
-        )
-      }
-    } catch {
-      setLeads(previous)
+      setContacts(previous)
     }
   }
 
@@ -409,7 +270,7 @@ export function LeadsPage() {
     if (!selectedId) return
 
     if (source === "api") {
-      const note = await createLeadNote(selectedId, text)
+      const note = await createContactNote(selectedId, text)
       setSelectedNotes((current) => [note, ...current])
       return
     }
@@ -428,19 +289,22 @@ export function LeadsPage() {
     if (!selectedId) return
 
     if (source === "api") {
-      const touch = await createLeadTouch(selectedId, input)
+      const touch = await createContactTouch(selectedId, {
+        ...input,
+        contactId: selectedId,
+      })
       setSelectedTouches((current) => [touch, ...current])
-      setLeads((current) =>
-        current.map((lead) =>
-          lead.id === selectedId
-            ? { ...lead, touches: [touch, ...(lead.touches ?? [])] }
-            : lead,
+      setContacts((current) =>
+        current.map((contact) =>
+          contact.id === selectedId
+            ? { ...contact, touches: [touch, ...(contact.touches ?? [])] }
+            : contact,
         ),
       )
       return
     }
 
-    const touch: LeadTouch = {
+    const touch: Touch = {
       id: crypto.randomUUID(),
       type: input.type,
       notes: input.notes,
@@ -448,21 +312,26 @@ export function LeadsPage() {
       amount: input.amount ?? null,
       estimateNumber: input.estimateNumber ?? null,
       socialPlatform: input.socialPlatform ?? null,
+      contactId: selectedId,
+      outcome: input.outcome ?? null,
     }
     setSelectedTouches((current) => [touch, ...current])
-    setLeads((current) =>
-      current.map((lead) =>
-        lead.id === selectedId
-          ? { ...lead, touches: [touch, ...(lead.touches ?? [])] }
-          : lead,
+    setContacts((current) =>
+      current.map((contact) =>
+        contact.id === selectedId
+          ? { ...contact, touches: [touch, ...(contact.touches ?? [])] }
+          : contact,
       ),
     )
   }
 
   async function handleUpdateTouch(touchId: string, input: UpdateTouchInput) {
-    if (!selectedId) return
+    if (!selectedId || !selectedContact) return
 
-    const applyUpdate = (touch: LeadTouch): LeadTouch =>
+    const accountId = selectedContact.accountId || selectedContact.account?.id
+    if (!accountId && source === "api") return
+
+    const applyUpdate = (touch: Touch): Touch =>
       touch.id === touchId
         ? {
             ...touch,
@@ -478,28 +347,31 @@ export function LeadsPage() {
               input.socialPlatform !== undefined
                 ? input.socialPlatform
                 : touch.socialPlatform,
+            outcome:
+              input.outcome !== undefined ? input.outcome : touch.outcome,
           }
         : touch
 
-    if (source === "api") {
-      const touch = await updateLeadTouch(selectedId, touchId, input)
+    if (source === "api" && accountId) {
+      const touch = await updateAccountTouch(accountId, touchId, {
+        ...input,
+        contactId: selectedId,
+      })
       setSelectedTouches((current) =>
         current
           .map((row) => (row.id === touchId ? touch : row))
-          .sort(
-            (a, b) => Date.parse(b.date) - Date.parse(a.date),
-          ),
+          .sort((a, b) => Date.parse(b.date) - Date.parse(a.date)),
       )
-      setLeads((current) =>
-        current.map((lead) =>
-          lead.id === selectedId
+      setContacts((current) =>
+        current.map((contact) =>
+          contact.id === selectedId
             ? {
-                ...lead,
-                touches: (lead.touches ?? [])
+                ...contact,
+                touches: (contact.touches ?? [])
                   .map((row) => (row.id === touchId ? touch : row))
                   .sort((a, b) => Date.parse(b.date) - Date.parse(a.date)),
               }
-            : lead,
+            : contact,
         ),
       )
       return
@@ -510,16 +382,16 @@ export function LeadsPage() {
         .map(applyUpdate)
         .sort((a, b) => Date.parse(b.date) - Date.parse(a.date)),
     )
-    setLeads((current) =>
-      current.map((lead) =>
-        lead.id === selectedId
+    setContacts((current) =>
+      current.map((contact) =>
+        contact.id === selectedId
           ? {
-              ...lead,
-              touches: (lead.touches ?? [])
+              ...contact,
+              touches: (contact.touches ?? [])
                 .map(applyUpdate)
                 .sort((a, b) => Date.parse(b.date) - Date.parse(a.date)),
             }
-          : lead,
+          : contact,
       ),
     )
   }
@@ -530,11 +402,11 @@ export function LeadsPage() {
         <div className="flex shrink-0 flex-col gap-4 border-b border-border px-6 py-4">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div className="flex flex-col gap-1">
-              <h2 className="text-xl font-semibold tracking-tight">Leads</h2>
+              <h2 className="text-xl font-semibold tracking-tight">Contacts</h2>
               <p className="text-sm text-muted-foreground">
                 {loading
                   ? "Loading people…"
-                  : `${visibleLeads.length} of ${leads.length} people`}
+                  : `${visibleContacts.length} of ${contacts.length} people`}
                 {!loading && source === "mock" ? " · offline mock data" : ""}
               </p>
             </div>
@@ -546,49 +418,32 @@ export function LeadsPage() {
               <Input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search name, company, industry, email, status…"
+                placeholder="Search name, account, industry, email…"
                 className="pl-8"
-                aria-label="Search leads"
+                aria-label="Search contacts"
               />
-            </div>
-
-            <div className="flex min-w-[180px] items-center gap-2">
-              <Filter className="size-3.5 shrink-0 text-muted-foreground" />
-              <Select
-                value={statusFilter}
-                onValueChange={(value) => {
-                  if (value) setStatusFilter(value)
-                }}
-              >
-                <SelectTrigger className="w-full" aria-label="Filter by status">
-                  <SelectValue placeholder="All statuses" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={ALL_STATUSES}>All statuses</SelectItem>
-                  {STATUS_OPTIONS.map((status) => (
-                    <SelectItem key={status} value={status}>
-                      {status}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
 
             <div className="flex min-w-[200px] items-center gap-2">
               <Factory className="size-3.5 shrink-0 text-muted-foreground" />
-              <select
+              <Select
                 value={industryFilter}
-                onChange={(event) => setIndustryFilter(event.target.value)}
-                aria-label="Filter by industry"
-                className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                onValueChange={(value) => {
+                  if (value) setIndustryFilter(value)
+                }}
               >
-                <option value={ALL_INDUSTRIES}>All industries</option>
-                {industryOptions.map((industry) => (
-                  <option key={industry.id} value={industry.id}>
-                    {industry.name}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="w-full" aria-label="Filter by industry">
+                  <SelectValue placeholder="All industries" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ALL_INDUSTRIES}>All industries</SelectItem>
+                  {industryOptions.map((industry) => (
+                    <SelectItem key={industry.id} value={industry.id}>
+                      {industry.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <button
@@ -615,156 +470,150 @@ export function LeadsPage() {
               VIP
             </button>
 
-            <div className="flex min-w-[260px] flex-1 items-center gap-2 sm:max-w-xs">
+            <div className="flex min-w-[200px] items-center gap-2">
               <ArrowUpDown className="size-3.5 shrink-0 text-muted-foreground" />
-              <select
+              <Select
                 value={sort}
-                onChange={(event) => setSort(event.target.value as SortKey)}
-                aria-label="Sort leads"
-                className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                onValueChange={(value) => {
+                  if (value) setSort(value as SortKey)
+                }}
               >
-                {SORT_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="w-full" aria-label="Sort contacts">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  {SORT_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-
-            <label className="inline-flex h-8 shrink-0 cursor-pointer items-center gap-2 rounded-lg border border-input px-2.5 text-sm">
-              <input
-                type="checkbox"
-                checked={hideLost}
-                onChange={(event) => setHideLost(event.target.checked)}
-                className="size-3.5 rounded border-input accent-foreground"
-              />
-              <span className="whitespace-nowrap">Hide lost</span>
-            </label>
           </div>
         </div>
 
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
           {loading ? (
-            <p className="px-6 py-8 text-sm text-muted-foreground">Loading leads…</p>
-          ) : visibleLeads.length === 0 ? (
+            <p className="px-6 py-8 text-sm text-muted-foreground">
+              Loading contacts…
+            </p>
+          ) : visibleContacts.length === 0 ? (
             <div className="flex flex-col gap-2 px-6 py-8">
-              <p className="text-sm font-medium">No leads found</p>
+              <p className="text-sm font-medium">No contacts found</p>
               <p className="text-sm text-muted-foreground">
-                {leads.length === 0
-                  ? "Add a lead to get started."
-                  : "Try a different search, status, industry, VIP, or sort."}
+                {contacts.length === 0
+                  ? "Add a contact to get started."
+                  : "Try a different search, industry, VIP, or sort."}
               </p>
             </div>
           ) : (
             <ul className="flex flex-col">
-              {visibleLeads.map((lead) => {
-                const selected = lead.id === selectedId
-                const health = resolveLeadHealth(lead, healthSettings)
+              {visibleContacts.map((contact) => {
+                const selected = contact.id === selectedId
                 return (
-                  <li key={lead.id}>
+                  <li key={contact.id}>
                     <div
                       onClick={(event) => {
                         if (isInteractiveRowTarget(event.target)) return
                         setSelectedId((current) =>
-                          current === lead.id ? null : lead.id,
+                          current === contact.id ? null : contact.id,
                         )
                       }}
                       className={cn(
                         "flex w-full cursor-pointer items-start justify-between gap-4 border-b border-border/70 px-6 py-4 text-left transition-colors hover:bg-muted/40",
-                        leadHealthRowClass(health),
                         selected && "bg-muted/50",
                       )}
                     >
                       <div className="flex min-w-0 flex-1 flex-col gap-2">
                         <div className="flex min-w-0 flex-wrap items-center gap-2">
                           <VipStarToggle
-                            isVip={Boolean(lead.isVip)}
-                            onToggle={(next) => handleVipToggle(lead.id, next)}
-                            label={`Toggle VIP for ${formatLeadName(lead)}`}
+                            isVip={Boolean(contact.isVip)}
+                            onToggle={(next) =>
+                              handleVipToggle(contact.id, next)
+                            }
+                            label={`Toggle VIP for ${formatContactName(contact)}`}
                           />
                           <User className="size-4 shrink-0 text-muted-foreground" />
                           <span className="truncate text-sm font-medium">
-                            {formatLeadName(lead)}
+                            {formatContactName(contact)}
                           </span>
-                          {lead.title ? (
+                          {contact.title ? (
                             <span className="truncate text-xs text-muted-foreground">
-                              {lead.title}
+                              {contact.title}
                             </span>
                           ) : null}
-                          <StatusSelect
-                            value={lead.status}
-                            onChange={(status) =>
-                              void handleStatusChange(lead.id, status)
-                            }
-                            aria-label={`Status for ${formatLeadName(lead)}`}
-                          />
                         </div>
 
                         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                          {lead.company?.name ? (
+                          {contact.account?.name ? (
                             <Link
-                              to="/companies"
+                              to="/accounts"
                               onClick={(event) => event.stopPropagation()}
                               className="inline-flex items-center gap-1 underline-offset-2 hover:text-foreground hover:underline"
                             >
                               <Building2 className="size-3" />
-                              {lead.company.name}
+                              {contact.account.name}
                             </Link>
                           ) : null}
-                          {lead.email ? (
+                          {contact.email ? (
                             <span className="inline-flex items-center gap-1">
                               <Mail className="size-3" />
-                              {lead.email}
+                              {contact.email}
                             </span>
                           ) : null}
-                          {lead.phone || lead.officePhone ? (
+                          {contact.phone || contact.officePhone ? (
                             <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1">
-                              {lead.phone ? (
+                              {contact.phone ? (
                                 <span className="inline-flex items-center gap-1">
                                   <Phone className="size-3" />
                                   <span className="text-[10px] uppercase tracking-wide">
                                     Cell
                                   </span>
-                                  {lead.phone}
+                                  {contact.phone}
                                 </span>
                               ) : null}
-                              {lead.officePhone ? (
+                              {contact.officePhone ? (
                                 <span className="inline-flex items-center gap-1">
                                   <Phone className="size-3" />
                                   <span className="text-[10px] uppercase tracking-wide">
                                     Office
                                   </span>
-                                  {lead.officePhone}
+                                  {contact.officePhone}
                                 </span>
                               ) : null}
                             </span>
                           ) : null}
-                          <span>Added {formatLeadDate(lead.createdAt)}</span>
+                          <span>
+                            Added {formatEntityDate(contact.createdAt)}
+                          </span>
                         </div>
 
                         <div className="flex flex-wrap items-center gap-1.5">
                           <span className="text-xs text-muted-foreground">
-                            {(lead.touches?.length ?? 0) === 1
+                            {(contact.touches?.length ?? 0) === 1
                               ? "1 touch"
-                              : `${lead.touches?.length ?? 0} touches`}
+                              : `${contact.touches?.length ?? 0} touches`}
                           </span>
-                          {uniqueTouchTypes(lead.touches).map((touchType) => (
-                            <Badge
-                              key={`${lead.id}-${touchType}`}
-                              variant="outline"
-                              className="text-[10px] font-normal"
-                            >
-                              {touchType}
-                            </Badge>
-                          ))}
+                          {uniqueTouchTypes(contact.touches).map(
+                            (touchType) => (
+                              <Badge
+                                key={`${contact.id}-${touchType}`}
+                                variant="outline"
+                                className="text-[10px] font-normal"
+                              >
+                                {touchType}
+                              </Badge>
+                            ),
+                          )}
                         </div>
                       </div>
                       <Button
                         type="button"
                         variant="ghost"
                         size="icon-sm"
-                        aria-label={`Edit ${formatLeadName(lead)}`}
-                        onClick={() => openEditLead(lead.id)}
+                        aria-label={`Edit ${formatContactName(contact)}`}
+                        onClick={() => openEditContact(contact.id)}
                       >
                         <Pencil className="size-3.5" />
                       </Button>
@@ -777,26 +626,29 @@ export function LeadsPage() {
         </div>
       </div>
 
-      {selectedLead ? (
+      {selectedContact ? (
         <aside className="flex w-full max-w-md shrink-0 flex-col overflow-hidden border-l border-border bg-background">
           <div className="flex items-start justify-between gap-3 border-b border-border px-4 py-4">
             <div className="min-w-0 flex flex-1 flex-col gap-2">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex flex-col gap-1">
                   <p className="truncate text-sm font-semibold">
-                    {formatLeadName(selectedLead)}
+                    {formatContactName(selectedContact)}
                   </p>
-                  <p className="truncate text-xs text-muted-foreground">
-                    {selectedLead.company?.name ?? "No company"}
-                  </p>
+                  <Link
+                    to="/accounts"
+                    className="truncate text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                  >
+                    {selectedContact.account?.name ?? "No account"}
+                  </Link>
                 </div>
                 <div className="flex shrink-0 items-center gap-1">
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    onClick={() => openEditLead(selectedLead.id)}
-                    aria-label={`Edit ${formatLeadName(selectedLead)}`}
+                    onClick={() => openEditContact(selectedContact.id)}
+                    aria-label={`Edit ${formatContactName(selectedContact)}`}
                   >
                     <Pencil className="size-4" />
                   </Button>
@@ -805,25 +657,12 @@ export function LeadsPage() {
                     variant="ghost"
                     size="icon-sm"
                     onClick={() => setSelectedId(null)}
-                    aria-label="Close lead detail"
+                    aria-label="Close contact detail"
                   >
                     <X className="size-4" />
                   </Button>
                 </div>
               </div>
-              <label className="flex flex-col gap-1">
-                <span className="text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
-                  Status
-                </span>
-                <StatusSelect
-                  value={selectedLead.status}
-                  onChange={(status) =>
-                    void handleStatusChange(selectedLead.id, status)
-                  }
-                  aria-label={`Status for ${formatLeadName(selectedLead)}`}
-                  className="h-8 w-full text-sm"
-                />
-              </label>
             </div>
           </div>
           <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto p-4">
@@ -831,6 +670,7 @@ export function LeadsPage() {
               touches={selectedTouches}
               touchTypes={touchTypes}
               socialPlatforms={socialPlatforms}
+              contactId={selectedContact.id}
               loading={detailLoading}
               onAdd={handleAddTouch}
               onUpdate={handleUpdateTouch}

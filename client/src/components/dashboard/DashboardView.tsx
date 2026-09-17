@@ -1,18 +1,18 @@
 import { useEffect, useMemo, useState } from "react"
 import { MetricSummary } from "@/components/dashboard/MetricSummary"
-import { RecentLeadsPanel } from "@/components/dashboard/RecentLeadsPanel"
+import { RecentAccountsPanel } from "@/components/dashboard/RecentAccountsPanel"
 import { ScorecardView } from "@/components/dashboard/ScorecardView"
-import { fetchLeads, updateLeadVip } from "@/lib/api"
-import type { Lead } from "@/lib/types"
+import { fetchAccounts, updateAccountVip } from "@/lib/api"
+import type { Account } from "@/lib/types"
 
 const FOLLOW_UP_WINDOW_MS = 14 * 24 * 60 * 60 * 1000
 
-function leadStatus(lead: Lead): string {
-  return String(lead.status).toUpperCase()
+function accountStatus(account: Account): string {
+  return String(account.status).toUpperCase()
 }
 
-function hasRecentTouch(lead: Lead, sinceMs: number): boolean {
-  const touches = lead.touches ?? []
+function hasRecentTouch(account: Account, sinceMs: number): boolean {
+  const touches = account.touches ?? []
   if (touches.length === 0) return false
   return touches.some((touch) => {
     const time = new Date(touch.date).getTime()
@@ -20,13 +20,13 @@ function hasRecentTouch(lead: Lead, sinceMs: number): boolean {
   })
 }
 
-function leadNeedsFollowUp(lead: Lead, sinceMs: number): boolean {
-  if (leadStatus(lead) === "CONTACTED") return true
-  return !hasRecentTouch(lead, sinceMs)
+function accountNeedsFollowUp(account: Account, sinceMs: number): boolean {
+  if (accountStatus(account) === "CONTACTED") return true
+  return !hasRecentTouch(account, sinceMs)
 }
 
 export function DashboardView() {
-  const [leads, setLeads] = useState<Lead[]>([])
+  const [accounts, setAccounts] = useState<Account[]>([])
   const [source, setSource] = useState<"api" | "mock">("mock")
   const [loading, setLoading] = useState(true)
 
@@ -35,9 +35,9 @@ export function DashboardView() {
 
     async function load() {
       setLoading(true)
-      const result = await fetchLeads()
+      const result = await fetchAccounts()
       if (!cancelled) {
-        setLeads(result.leads)
+        setAccounts(result.accounts)
         setSource(result.source)
         setLoading(false)
       }
@@ -50,34 +50,38 @@ export function DashboardView() {
     }
   }, [])
 
-  async function handleVipToggle(leadId: string, next: boolean) {
-    const previous = leads
-    setLeads((current) =>
-      current.map((lead) =>
-        lead.id === leadId ? { ...lead, isVip: next } : lead,
+  async function handleVipToggle(accountId: string, next: boolean) {
+    const previous = accounts
+    setAccounts((current) =>
+      current.map((account) =>
+        account.id === accountId ? { ...account, isVip: next } : account,
       ),
     )
 
     try {
       if (source === "api") {
-        await updateLeadVip(leadId, next)
+        await updateAccountVip(accountId, next)
       }
     } catch {
-      setLeads(previous)
+      setAccounts(previous)
     }
   }
 
   const metrics = useMemo(() => {
     const sinceMs = Date.now() - FOLLOW_UP_WINDOW_MS
     return {
-      newUncontacted: leads.filter((lead) => leadStatus(lead) === "NEW").length,
-      qualifiedPipeline: leads.filter(
-        (lead) => leadStatus(lead) === "QUALIFIED" || lead.isVip,
+      newUncontacted: accounts.filter(
+        (account) => accountStatus(account) === "NEW",
       ).length,
-      needsFollowUp: leads.filter((lead) => leadNeedsFollowUp(lead, sinceMs))
-        .length,
+      qualifiedPipeline: accounts.filter(
+        (account) =>
+          accountStatus(account) === "QUALIFIED" || account.isVip,
+      ).length,
+      needsFollowUp: accounts.filter((account) =>
+        accountNeedsFollowUp(account, sinceMs),
+      ).length,
     }
-  }, [leads])
+  }, [accounts])
 
   return (
     <div className="flex min-h-0 flex-1 overflow-hidden">
@@ -94,8 +98,8 @@ export function DashboardView() {
         <ScorecardView />
       </div>
 
-      <RecentLeadsPanel
-        leads={leads}
+      <RecentAccountsPanel
+        accounts={accounts}
         source={source}
         onVipToggle={handleVipToggle}
       />

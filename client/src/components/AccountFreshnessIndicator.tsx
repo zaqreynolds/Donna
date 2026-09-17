@@ -1,11 +1,13 @@
-import type { LeadHealth } from "@/lib/leadHealth"
+import type { AccountFreshness } from "@/lib/accountFreshness"
 
 /** Left-border accent only. Fresh / LOST (null) stay clean. */
-export function leadHealthRowClass(tone: LeadHealth | null): string {
+export function accountFreshnessRowClass(
+  tone: AccountFreshness | null,
+): string {
   switch (tone) {
-    case "warning":
+    case "stale":
       return "border-l-4 border-l-amber-500"
-    case "danger":
+    case "rotten":
       return "border-l-4 border-l-rose-500"
     case "fresh":
     case null:

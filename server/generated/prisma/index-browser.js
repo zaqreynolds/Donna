@@ -117,80 +117,112 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.OrganizationScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.IndustryScalarFieldEnum = {
   id: 'id',
+  organizationId: 'organizationId',
   name: 'name',
   isSystem: 'isSystem'
 };
 
 exports.Prisma.TouchTypeScalarFieldEnum = {
   id: 'id',
+  organizationId: 'organizationId',
   name: 'name',
   isSystem: 'isSystem'
 };
 
 exports.Prisma.SocialPlatformScalarFieldEnum = {
   id: 'id',
+  organizationId: 'organizationId',
   name: 'name',
   isSystem: 'isSystem'
 };
 
-exports.Prisma.CompanyScalarFieldEnum = {
+exports.Prisma.AccountScalarFieldEnum = {
   id: 'id',
+  organizationId: 'organizationId',
   name: 'name',
   address: 'address',
   phone: 'phone',
   website: 'website',
+  status: 'status',
   isVip: 'isVip',
+  source: 'source',
+  ownerUserId: 'ownerUserId',
+  createdByUserId: 'createdByUserId',
+  nextTouchAt: 'nextTouchAt',
+  nextTouchType: 'nextTouchType',
+  nextTouchNote: 'nextTouchNote',
   industryId: 'industryId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.CompanySocialLinkScalarFieldEnum = {
+exports.Prisma.AccountSocialLinkScalarFieldEnum = {
   id: 'id',
-  companyId: 'companyId',
+  organizationId: 'organizationId',
+  accountId: 'accountId',
   platform: 'platform',
   handle: 'handle'
 };
 
-exports.Prisma.CompanyNoteScalarFieldEnum = {
+exports.Prisma.AccountNoteScalarFieldEnum = {
   id: 'id',
+  organizationId: 'organizationId',
   text: 'text',
-  companyId: 'companyId',
+  accountId: 'accountId',
   createdAt: 'createdAt'
 };
 
-exports.Prisma.LeadScalarFieldEnum = {
+exports.Prisma.ContactScalarFieldEnum = {
   id: 'id',
+  organizationId: 'organizationId',
+  accountId: 'accountId',
   firstName: 'firstName',
   lastName: 'lastName',
   title: 'title',
   email: 'email',
   phone: 'phone',
   officePhone: 'officePhone',
-  status: 'status',
   isVip: 'isVip',
-  companyId: 'companyId',
-  createdAt: 'createdAt'
+  source: 'source',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
-exports.Prisma.LeadNoteScalarFieldEnum = {
+exports.Prisma.ContactNoteScalarFieldEnum = {
   id: 'id',
+  organizationId: 'organizationId',
   text: 'text',
-  leadId: 'leadId',
+  contactId: 'contactId',
   createdAt: 'createdAt'
 };
 
 exports.Prisma.TouchScalarFieldEnum = {
   id: 'id',
+  organizationId: 'organizationId',
+  accountId: 'accountId',
+  contactId: 'contactId',
+  createdByUserId: 'createdByUserId',
   date: 'date',
   type: 'type',
+  outcome: 'outcome',
+  source: 'source',
+  isAutomated: 'isAutomated',
   notes: 'notes',
   amount: 'amount',
   estimateNumber: 'estimateNumber',
   socialPlatform: 'socialPlatform',
-  leadId: 'leadId'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -205,14 +237,15 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
+  Organization: 'Organization',
   Industry: 'Industry',
   TouchType: 'TouchType',
   SocialPlatform: 'SocialPlatform',
-  Company: 'Company',
-  CompanySocialLink: 'CompanySocialLink',
-  CompanyNote: 'CompanyNote',
-  Lead: 'Lead',
-  LeadNote: 'LeadNote',
+  Account: 'Account',
+  AccountSocialLink: 'AccountSocialLink',
+  AccountNote: 'AccountNote',
+  Contact: 'Contact',
+  ContactNote: 'ContactNote',
   Touch: 'Touch'
 };
 

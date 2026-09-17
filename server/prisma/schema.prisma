@@ -7,146 +7,212 @@ datasource db {
   provider = "sqlite"
 }
 
-/// Core industry taxonomy used when creating companies.
-/// Seeded values: Commercial Real Estate, Apartments/Property Management,
-/// Construction, Healthcare, Education, Retail, Manufacturing, Religious, Other.
+/// Placeholder for a FASTSIGNS center. Clerk Organization will map here later.
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  industries       Industry[]
+  touchTypes       TouchType[]
+  socialPlatforms  SocialPlatform[]
+  accounts         Account[]
+  contacts         Contact[]
+  touches          Touch[]
+  accountNotes     AccountNote[]
+  contactNotes     ContactNote[]
+  accountSocials   AccountSocialLink[]
+}
+
+/// Core industry taxonomy used when creating accounts.
 model Industry {
-  id       String    @id @default(uuid())
-  name     String    @unique
+  id             String   @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
   /// Built-in seeded industries cannot be renamed or deleted in Settings.
-  isSystem Boolean   @default(false)
-  companies Company[]
+  isSystem       Boolean  @default(false)
+  accounts       Account[]
+
+  @@unique([organizationId, name])
+  @@index([organizationId])
 }
 
 /// Outreach channel labels used by Touch.type.
-/// Seeded defaults: Phone, Email, Networking, Canvassing, Cold Call, Face to Face,
-/// Retreva, Text, Voicemail, Video Message, Post Card, Social Media,
-/// Estimate, Invoice. Additional types can be added in Settings.
-/// LinkedIn lives under Social Media platforms (not a standalone touch type).
 model TouchType {
-  id       String  @id @default(uuid())
-  name     String  @unique
+  id             String  @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
   /// Built-in seeded touch types cannot be renamed or deleted in Settings.
-  isSystem Boolean @default(false)
+  isSystem       Boolean @default(false)
 
+  @@unique([organizationId, name])
+  @@index([organizationId])
   @@index([name])
 }
 
 /// Platforms available when Touch.type is "Social Media".
-/// Seeded defaults: Instagram, Facebook, LinkedIn, X, TikTok, YouTube, Nextdoor, Other.
 model SocialPlatform {
-  id       String  @id @default(uuid())
-  name     String  @unique
+  id             String  @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
   /// Built-in seeded platforms cannot be renamed or deleted in Settings.
-  isSystem Boolean @default(false)
+  isSystem       Boolean @default(false)
 
+  @@unique([organizationId, name])
+  @@index([organizationId])
   @@index([name])
 }
 
-model Company {
-  id         String              @id @default(uuid())
-  name       String
-  address    String?
-  phone      String?
-  website    String?
-  isVip      Boolean             @default(false)
-  industryId String
-  industry   Industry            @relation(fields: [industryId], references: [id], onDelete: Restrict)
-  leads      Lead[]
-  notes      CompanyNote[]
-  socials    CompanySocialLink[]
-  createdAt  DateTime            @default(now())
-  updatedAt  DateTime            @updatedAt
+/// Primary prospecting target (business, property, school, GC, etc.).
+model Account {
+  id             String    @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  address        String?
+  phone          String?
+  website        String?
+  /// Pipeline / prospecting state (separate from freshness).
+  /// Allowed: "NEW" | "CONTACTED" | "QUALIFIED" | "NURTURING" | "LOST"
+  status         String    @default("NEW")
+  isVip          Boolean   @default(false)
+  source         String?
+  /// Responsibility only — does not restrict coworker visibility.
+  ownerUserId    String?
+  createdByUserId String?
+  nextTouchAt    DateTime?
+  nextTouchType  String?
+  nextTouchNote  String?
+  industryId     String
+  industry       Industry  @relation(fields: [industryId], references: [id], onDelete: Restrict)
+  contacts       Contact[]
+  notes          AccountNote[]
+  socials        AccountSocialLink[]
+  touches        Touch[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
+  @@index([organizationId])
   @@index([industryId])
   @@index([name])
   @@index([isVip])
+  @@index([status])
+  @@index([ownerUserId])
+  @@index([nextTouchAt])
 }
 
-/// Social profile handles for a company (Instagram, LinkedIn, etc.).
-/// `platform` should match a SocialPlatform.name from Settings.
-model CompanySocialLink {
-  id        String  @id @default(uuid())
-  companyId String
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  platform  String
-  handle    String
+model AccountSocialLink {
+  id             String  @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  accountId      String
+  account        Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  platform       String
+  handle         String
 
-  @@unique([companyId, platform])
-  @@index([companyId])
+  @@unique([accountId, platform])
+  @@index([organizationId])
+  @@index([accountId])
   @@index([platform])
 }
 
-model CompanyNote {
-  id        String   @id @default(uuid())
-  text      String
-  companyId String
-  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
+model AccountNote {
+  id             String   @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  text           String
+  accountId      String
+  account        Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
 
-  @@index([companyId])
+  @@index([organizationId])
+  @@index([accountId])
 }
 
-model Lead {
-  id          String     @id @default(uuid())
-  firstName   String
-  lastName    String
-  title       String?
-  email       String?
+/// Person associated with an Account. Secondary to Account prospecting.
+model Contact {
+  id             String    @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  accountId      String
+  account        Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  firstName      String
+  lastName       String
+  title          String?
+  email          String?
   /// Cell / mobile number.
-  phone       String?
+  phone          String?
   /// Office / desk number.
-  officePhone String?
-  /// Pipeline stage.
-  /// Allowed values: "NEW" | "CONTACTED" | "QUALIFIED" | "NURTURING" | "LOST"
-  status      String     @default("NEW")
-  isVip       Boolean    @default(false)
-  companyId   String
-  company     Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  touches     Touch[]
-  notes       LeadNote[]
-  createdAt   DateTime   @default(now())
+  officePhone    String?
+  isVip          Boolean   @default(false)
+  source         String?
+  touches        Touch[]
+  notes          ContactNote[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
-  @@index([companyId])
+  @@index([organizationId])
+  @@index([accountId])
   @@index([lastName, firstName])
   @@index([email])
-  @@index([status])
-  @@index([createdAt])
   @@index([isVip])
-}
-
-model LeadNote {
-  id        String   @id @default(uuid())
-  text      String
-  leadId    String
-  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-
-  @@index([leadId])
   @@index([createdAt])
 }
 
-model Touch {
-  id     String   @id @default(uuid())
-  date   DateTime @default(now())
-  /// Outreach channel — must match a TouchType.name (see Settings).
-  /// Scorecard categories map from names like Phone/PHONE, Email/EMAIL,
-  /// Meeting/MEETING/Face to Face, Estimate/ESTIMATE, Sale/SALE/DEAL_WON.
-  type   String
-  notes  String   @default("")
-  /// Optional dollar value for Estimate / Sale touches.
-  /// Estimate amounts feed estimate pipeline $ only — never revenue.
-  amount Float?
-  /// POS / estimate reference number (Estimate touches only).
-  estimateNumber String?
-  /// Platform name when type is Social Media (must match SocialPlatform.name).
-  socialPlatform String?
-  leadId String
-  lead   Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+model ContactNote {
+  id             String   @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  text           String
+  contactId      String
+  contact        Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
 
-  @@index([leadId])
+  @@index([organizationId])
+  @@index([contactId])
+  @@index([createdAt])
+}
+
+/// Prospecting interaction. Always on an Account; optionally on a Contact.
+model Touch {
+  id              String   @id @default(uuid())
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  accountId       String
+  account         Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  contactId       String?
+  contact         Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  createdByUserId String?
+  date            DateTime @default(now())
+  /// Outreach channel — must match a TouchType.name (see Settings).
+  type            String
+  /// Structured outcome (No answer, Voicemail, etc.). Optional.
+  outcome         String?
+  /// Origin of the touch (manual, apollo, import, etc.).
+  source          String?
+  /// When true, may later be excluded/weighted in Account freshness.
+  isAutomated     Boolean  @default(false)
+  notes           String   @default("")
+  /// Optional dollar value for Estimate / Sale touches.
+  amount          Float?
+  estimateNumber  String?
+  socialPlatform  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([accountId])
+  @@index([contactId])
+  @@index([organizationId, date])
   @@index([date])
   @@index([type])
+  @@index([outcome])
   @@index([estimateNumber])
   @@index([socialPlatform])
+  @@index([isAutomated])
 }

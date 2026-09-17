@@ -2,13 +2,17 @@ import { useEffect, useState, type FormEvent } from "react"
 import { Handshake, Pencil, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
-  formatLeadDate,
+  formatEntityDate,
   formatNoteDateTime,
   touchIsEstimate,
   touchIsSocialMedia,
   touchSupportsAmount,
 } from "@/lib/api"
-import type { LeadTouch } from "@/lib/types"
+import {
+  DEFAULT_TOUCH_OUTCOMES,
+  type ContactSummary,
+  type Touch,
+} from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 export type CreateTouchInput = {
@@ -18,6 +22,8 @@ export type CreateTouchInput = {
   amount?: number | null
   estimateNumber?: string | null
   socialPlatform?: string | null
+  contactId?: string | null
+  outcome?: string | null
 }
 
 export type UpdateTouchInput = {
@@ -27,12 +33,19 @@ export type UpdateTouchInput = {
   amount?: number | null
   estimateNumber?: string | null
   socialPlatform?: string | null
+  contactId?: string | null
+  outcome?: string | null
 }
 
 type TouchesPanelProps = {
-  touches: LeadTouch[]
+  touches: Touch[]
   touchTypes: string[]
   socialPlatforms?: string[]
+  /** When logging from an account, optional contact picker */
+  contacts?: ContactSummary[]
+  /** Prefill / lock contact when logging from a contact detail */
+  contactId?: string | null
+  outcomes?: readonly string[]
   loading?: boolean
   disabled?: boolean
   onAdd: (input: CreateTouchInput) => Promise<void>
@@ -82,22 +95,35 @@ function formatAmount(value: number | null | undefined): string {
   })
 }
 
+function contactLabel(contact: ContactSummary): string {
+  const name = `${contact.firstName} ${contact.lastName}`.trim()
+  return name || "Unnamed contact"
+}
+
 export function TouchesPanel({
   touches,
   touchTypes,
   socialPlatforms = [],
+  contacts,
+  contactId: lockedContactId = null,
+  outcomes = DEFAULT_TOUCH_OUTCOMES,
   loading = false,
   disabled = false,
   onAdd,
   onUpdate,
   className,
 }: TouchesPanelProps) {
+  const showContactPicker =
+    !lockedContactId && Array.isArray(contacts) && contacts.length > 0
+
   const [type, setType] = useState("")
   const [notes, setNotes] = useState("")
   const [date, setDate] = useState(todayInputValue)
   const [amount, setAmount] = useState("")
   const [estimateNumber, setEstimateNumber] = useState("")
   const [socialPlatform, setSocialPlatform] = useState("")
+  const [outcome, setOutcome] = useState("")
+  const [selectedContactId, setSelectedContactId] = useState("")
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -108,6 +134,8 @@ export function TouchesPanel({
   const [editAmount, setEditAmount] = useState("")
   const [editEstimateNumber, setEditEstimateNumber] = useState("")
   const [editSocialPlatform, setEditSocialPlatform] = useState("")
+  const [editOutcome, setEditOutcome] = useState("")
+  const [editContactId, setEditContactId] = useState("")
   const [editSaving, setEditSaving] = useState(false)
   const [editError, setEditError] = useState<string | null>(null)
 
@@ -158,7 +186,7 @@ export function TouchesPanel({
     }
   }, [touches, editingId])
 
-  function startEditing(touch: LeadTouch) {
+  function startEditing(touch: Touch) {
     setEditingId(touch.id)
     setEditType(touch.type)
     setEditNotes(touch.notes ?? "")
@@ -170,12 +198,20 @@ export function TouchesPanel({
     )
     setEditEstimateNumber(touch.estimateNumber ?? "")
     setEditSocialPlatform(touch.socialPlatform ?? "")
+    setEditOutcome(touch.outcome ?? "")
+    setEditContactId(touch.contactId ?? "")
     setEditError(null)
   }
 
   function cancelEditing() {
     setEditingId(null)
     setEditError(null)
+  }
+
+  function resolveContactId(value: string): string | null | undefined {
+    if (lockedContactId) return lockedContactId
+    if (!showContactPicker) return undefined
+    return value || null
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -204,12 +240,16 @@ export function TouchesPanel({
           ? estimateNumber.trim() || null
           : null,
         socialPlatform: showSocialPlatform ? socialPlatform : null,
+        contactId: resolveContactId(selectedContactId),
+        outcome: outcome || null,
       })
       setNotes("")
       setType("")
       setAmount("")
       setEstimateNumber("")
       setSocialPlatform("")
+      setOutcome("")
+      setSelectedContactId("")
       setDate(todayInputValue())
     } catch {
       setError("Couldn’t save touch. Try again.")
@@ -248,6 +288,8 @@ export function TouchesPanel({
           ? editEstimateNumber.trim() || null
           : null,
         socialPlatform: showEditSocialPlatform ? editSocialPlatform : null,
+        contactId: resolveContactId(editContactId),
+        outcome: editOutcome || null,
       })
       setEditingId(null)
     } catch {
@@ -288,6 +330,49 @@ export function TouchesPanel({
             </option>
           ))}
         </select>
+
+        {showContactPicker ? (
+          <label className="flex flex-col gap-1">
+            <span className="text-xs font-medium text-muted-foreground">
+              Contact (optional)
+            </span>
+            <select
+              value={selectedContactId}
+              onChange={(event) => setSelectedContactId(event.target.value)}
+              disabled={disabled || saving}
+              className={fieldClassName}
+              aria-label="Contact for touch"
+            >
+              <option value="">Account only</option>
+              {contacts!.map((contact) => (
+                <option key={contact.id} value={contact.id}>
+                  {contactLabel(contact)}
+                  {contact.title ? ` · ${contact.title}` : ""}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
+
+        <label className="flex flex-col gap-1">
+          <span className="text-xs font-medium text-muted-foreground">
+            Outcome (optional)
+          </span>
+          <select
+            value={outcome}
+            onChange={(event) => setOutcome(event.target.value)}
+            disabled={disabled || saving}
+            className={fieldClassName}
+            aria-label="Touch outcome"
+          >
+            <option value="">No outcome</option>
+            {outcomes.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+        </label>
 
         {showSocialPlatform ? (
           <label className="flex flex-col gap-1">
@@ -447,6 +532,58 @@ export function TouchesPanel({
                         ) : null}
                       </select>
 
+                      {showContactPicker ? (
+                        <label className="flex flex-col gap-1">
+                          <span className="text-xs font-medium text-muted-foreground">
+                            Contact (optional)
+                          </span>
+                          <select
+                            value={editContactId}
+                            onChange={(event) =>
+                              setEditContactId(event.target.value)
+                            }
+                            disabled={disabled || editSaving}
+                            className={fieldClassName}
+                            aria-label="Edit contact for touch"
+                          >
+                            <option value="">Account only</option>
+                            {contacts!.map((contact) => (
+                              <option key={contact.id} value={contact.id}>
+                                {contactLabel(contact)}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      ) : null}
+
+                      <label className="flex flex-col gap-1">
+                        <span className="text-xs font-medium text-muted-foreground">
+                          Outcome (optional)
+                        </span>
+                        <select
+                          value={editOutcome}
+                          onChange={(event) =>
+                            setEditOutcome(event.target.value)
+                          }
+                          disabled={disabled || editSaving}
+                          className={fieldClassName}
+                          aria-label="Edit touch outcome"
+                        >
+                          <option value="">No outcome</option>
+                          {outcomes.map((item) => (
+                            <option key={item} value={item}>
+                              {item}
+                            </option>
+                          ))}
+                          {editOutcome &&
+                          !outcomes.includes(
+                            editOutcome as (typeof outcomes)[number],
+                          ) ? (
+                            <option value={editOutcome}>{editOutcome}</option>
+                          ) : null}
+                        </select>
+                      </label>
+
                       {showEditSocialPlatform ? (
                         <label className="flex flex-col gap-1">
                           <span className="text-xs font-medium text-muted-foreground">
@@ -572,6 +709,10 @@ export function TouchesPanel({
                 )
               }
 
+              const linkedContact = contacts?.find(
+                (c) => c.id === touch.contactId,
+              )
+
               return (
                 <li
                   key={touch.id}
@@ -591,9 +732,19 @@ export function TouchesPanel({
                           className="text-[11px] font-medium tracking-wide text-muted-foreground uppercase"
                           title={formatNoteDateTime(touch.date)}
                         >
-                          {formatLeadDate(touch.date)}
+                          {formatEntityDate(touch.date)}
                         </time>
                       </div>
+                      {touch.outcome ? (
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          Outcome: {touch.outcome}
+                        </p>
+                      ) : null}
+                      {linkedContact ? (
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          Contact: {contactLabel(linkedContact)}
+                        </p>
+                      ) : null}
                       {touch.estimateNumber ? (
                         <p className="mt-1 text-xs text-muted-foreground">
                           Estimate # {touch.estimateNumber}
